@@ -10,9 +10,7 @@ class Matiere extends Model
 
     protected $fillable = [
 
-        'nom',
-
-        'coefficient'
+        'nom'
 
     ];
 
@@ -21,18 +19,25 @@ class Matiere extends Model
 
 
     /**
-     * Classes qui suivent cette matière
+     * Classes qui utilisent cette matière
      */
     public function classes()
     {
 
         return $this->belongsToMany(
+
             Classe::class,
+
             'classe_matiere'
+
         )
 
         ->withPivot(
-            'enseignant_id'
+
+            'enseignant_id',
+
+            'coefficient'
+
         )
 
         ->withTimestamps();
@@ -46,13 +51,15 @@ class Matiere extends Model
 
 
     /**
-     * Notes de cette matière
+     * Notes liées à cette matière
      */
     public function notes()
     {
 
         return $this->hasMany(
+
             Note::class
+
         );
 
     }
@@ -70,18 +77,24 @@ class Matiere extends Model
     {
 
         return $this->belongsToMany(
+
             Enseignant::class,
+
             'classe_matiere'
+
         )
 
         ->withPivot(
-            'classe_id'
+
+            'classe_id',
+
+            'coefficient'
+
         )
 
         ->withTimestamps();
 
     }
-
 
 
 }

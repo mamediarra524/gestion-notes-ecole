@@ -1,0 +1,326 @@
+<h1>
+  Gestion des élèves
+</h1>
+
+
+<!-- Bouton retour -->
+
+<button
+  type="button"
+  class="btn-retour"
+  (click)="retourDashboard()"
+>
+
+  ⬅️ Retour Dashboard
+
+</button>
+
+
+
+<p *ngIf="message" class="message">
+  {{ message }}
+</p>
+
+
+
+<h2>
+  {{ modification ? 'Modifier un élève' : 'Ajouter un élève' }}
+</h2>
+
+
+
+<form 
+(ngSubmit)="modification ? enregistrerModification() : ajouterEleve()">
+
+
+
+  <label>
+    Nom :
+  </label>
+
+  <input
+    type="text"
+    [(ngModel)]="eleve.nom"
+    name="nom"
+    required
+  >
+
+
+  <br><br>
+
+
+
+  <label>
+    Prénom :
+  </label>
+
+  <input
+    type="text"
+    [(ngModel)]="eleve.prenom"
+    name="prenom"
+    required
+  >
+
+
+  <br><br>
+
+
+
+  <label>
+    Date de naissance :
+  </label>
+
+  <input
+    type="date"
+    [(ngModel)]="eleve.date_naissance"
+    name="date_naissance"
+    required
+  >
+
+
+  <br><br>
+
+
+
+  <label>
+    Classe :
+  </label>
+
+
+  <select
+    [(ngModel)]="eleve.classe_id"
+    name="classe_id"
+    required
+  >
+
+
+    <option [ngValue]="null">
+      Choisir une classe
+    </option>
+
+
+    <option
+      *ngFor="let classe of classes"
+      [ngValue]="classe.id"
+    >
+
+      {{ classe.nom }} - {{ classe.niveau }}
+
+    </option>
+
+
+  </select>
+
+
+
+  <br><br>
+
+
+
+  <button type="submit">
+
+    {{ modification ? 'Modifier' : 'Ajouter' }}
+
+  </button>
+
+
+
+  <button
+    type="button"
+    *ngIf="modification"
+    (click)="resetForm()"
+  >
+
+    Annuler
+
+  </button>
+
+
+
+</form>
+
+
+
+<hr>
+
+
+
+
+<h2>
+  Liste des élèves
+</h2>
+
+
+
+<!-- Recherche -->
+
+<div class="recherche">
+
+
+  <label>
+    Rechercher :
+  </label>
+
+
+  <input
+
+    type="text"
+
+    [(ngModel)]="recherche"
+
+    placeholder="Nom ou prénom..."
+
+  >
+
+
+</div>
+
+
+
+<br>
+
+
+
+<p>
+  Nombre d'élèves trouvés :
+  {{ elevesFiltres.length }}
+</p>
+
+
+
+
+
+<table border="1" width="100%">
+
+
+  <thead>
+
+    <tr>
+
+      <th>
+        ID
+      </th>
+
+
+      <th>
+        Nom
+      </th>
+
+
+      <th>
+        Prénom
+      </th>
+
+
+      <th>
+        Date naissance
+      </th>
+
+
+      <th>
+        Classe
+      </th>
+
+
+      <th>
+        Actions
+      </th>
+
+
+    </tr>
+
+  </thead>
+
+
+
+
+
+  <tbody>
+
+
+    <tr *ngFor="let eleve of elevesFiltres">
+
+
+      <td>
+        {{ eleve.id }}
+      </td>
+
+
+
+      <td>
+        {{ eleve.nom }}
+      </td>
+
+
+
+      <td>
+        {{ eleve.prenom }}
+      </td>
+
+
+
+      <td>
+        {{ eleve.date_naissance | date:'dd/MM/yyyy' }}
+      </td>
+
+
+
+      <td>
+
+        {{ eleve.classe?.nom || 'Sans classe' }}
+
+      </td>
+
+
+
+      <td>
+
+
+        <button
+          (click)="modifier(eleve)"
+        >
+
+          ✏️ Modifier
+
+        </button>
+
+
+
+
+        <button
+          (click)="supprimer(eleve.id)"
+        >
+
+          🗑️ Supprimer
+
+        </button>
+
+
+      </td>
+
+
+    </tr>
+
+
+
+
+
+    <tr *ngIf="elevesFiltres.length === 0">
+
+
+      <td colspan="6">
+
+        Aucun élève trouvé
+
+      </td>
+
+
+    </tr>
+
+
+
+  </tbody>
+
+
+
+</table>

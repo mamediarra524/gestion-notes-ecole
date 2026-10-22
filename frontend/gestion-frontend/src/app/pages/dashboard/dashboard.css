@@ -1,0 +1,369 @@
+/* Conteneur principal */
+
+.dashboard-container {
+
+  min-height: 100vh;
+
+  padding: 30px;
+
+  background: #f4f7fb;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+}
+
+
+
+
+
+
+/* En-tête */
+
+.dashboard-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  background: white;
+
+  padding: 25px 30px;
+
+  border-radius: 15px;
+
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+
+  margin-bottom: 30px;
+
+}
+
+
+
+
+
+.dashboard-header h1 {
+
+  margin: 0;
+
+  font-size: 32px;
+
+  color: #1e293b;
+
+}
+
+
+
+
+
+.welcome {
+
+  margin-top: 10px;
+
+  color: #64748b;
+
+  font-size: 16px;
+
+}
+
+
+
+
+
+
+
+/* Bouton déconnexion */
+
+.logout-btn {
+
+  background: #dc2626;
+
+  color: white;
+
+  border: none;
+
+  padding: 12px 22px;
+
+  border-radius: 10px;
+
+  font-size: 15px;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+
+}
+
+
+
+
+
+.logout-btn:hover {
+
+  background: #b91c1c;
+
+  transform: translateY(-2px);
+
+}
+
+
+
+
+
+
+
+
+/* Cartes */
+
+.cards {
+
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+  gap: 25px;
+
+}
+
+
+
+
+
+
+
+.card {
+
+  background: white;
+
+  padding: 30px;
+
+  border-radius: 18px;
+
+  text-align: center;
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+
+  transition: 0.3s;
+
+  border-top: 5px solid transparent;
+
+}
+
+
+
+
+
+.card:hover {
+
+  transform: translateY(-8px);
+
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+
+}
+
+
+
+
+
+.icon {
+
+  font-size: 45px;
+
+  margin-bottom: 15px;
+
+}
+
+
+
+
+
+.card h2 {
+
+  margin: 10px 0;
+
+  color: #1e293b;
+
+}
+
+
+
+
+
+.card p {
+
+  color: #64748b;
+
+  margin-bottom: 20px;
+
+}
+
+
+
+
+
+
+
+/* Boutons des cartes */
+
+.card button {
+
+  border: none;
+
+  padding: 10px 25px;
+
+  border-radius: 8px;
+
+  color: white;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  transition: 0.3s;
+
+}
+
+
+
+
+
+.card button:hover {
+
+  opacity: 0.85;
+
+}
+
+
+
+
+
+
+
+/* Couleurs des cartes */
+
+
+.blue {
+
+  border-top-color: #2563eb;
+
+}
+
+
+.blue button {
+
+  background: #2563eb;
+
+}
+
+
+
+
+
+
+.green {
+
+  border-top-color: #16a34a;
+
+}
+
+
+.green button {
+
+  background: #16a34a;
+
+}
+
+
+
+
+
+
+.orange {
+
+  border-top-color: #ea580c;
+
+}
+
+
+.orange button {
+
+  background: #ea580c;
+
+}
+
+
+
+
+
+
+.purple {
+
+  border-top-color: #9333ea;
+
+}
+
+
+.purple button {
+
+  background: #9333ea;
+
+}
+
+
+
+
+
+
+.red {
+
+  border-top-color: #dc2626;
+
+}
+
+
+.red button {
+
+  background: #dc2626;
+
+}
+
+
+
+
+
+
+
+
+/* Responsive */
+
+@media(max-width:700px){
+
+
+  .dashboard-container {
+
+    padding:15px;
+
+  }
+
+
+
+  .dashboard-header {
+
+    flex-direction:column;
+
+    gap:20px;
+
+    text-align:center;
+
+  }
+
+
+  .dashboard-header h1 {
+
+    font-size:26px;
+
+  }
+
+
+}

@@ -5,17 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\Matiere;
 use Illuminate\Http\Request;
 
+
 class MatiereController extends Controller
 {
+
+
     /**
      * Afficher toutes les matières
      */
     public function index()
     {
+
         return response()->json(
+
             Matiere::all()
+
         );
+
     }
+
+
+
+
+
 
 
     /**
@@ -23,23 +35,76 @@ class MatiereController extends Controller
      */
     public function store(Request $request)
     {
+
+
         $request->validate([
-            'nom' => 'required|string',
-            'coefficient' => 'required|integer'
+
+
+            'nom' => 'required|string|max:100'
+
+
+        ],
+        [
+
+
+            'nom.required' =>
+            'Le nom de la matière est obligatoire',
+
+
+            'nom.string' =>
+            'Le nom doit être un texte',
+
+
+            'nom.max' =>
+            'Le nom ne peut pas dépasser 100 caractères'
+
+
         ]);
+
+
+
+
+
 
 
         $matiere = Matiere::create([
-            'nom' => $request->nom,
-            'coefficient' => $request->coefficient
+
+
+            'nom' => $request->nom
+
+
         ]);
 
 
+
+
+
+
+
+
         return response()->json([
-            'message' => 'Matière créée avec succès',
-            'matiere' => $matiere
-        ], 201);
+
+
+            'message' =>
+            'Matière créée avec succès',
+
+
+            'matiere' =>
+            $matiere
+
+
+        ],201);
+
+
+
     }
+
+
+
+
+
+
+
 
 
     /**
@@ -47,8 +112,23 @@ class MatiereController extends Controller
      */
     public function show(Matiere $matiere)
     {
-        return response()->json($matiere);
+
+
+        return response()->json(
+
+            $matiere
+
+        );
+
+
     }
+
+
+
+
+
+
+
 
 
     /**
@@ -56,23 +136,77 @@ class MatiereController extends Controller
      */
     public function update(Request $request, Matiere $matiere)
     {
+
+
         $request->validate([
-            'nom' => 'required|string',
-            'coefficient' => 'required|integer'
+
+
+            'nom' => 'required|string|max:100'
+
+
+        ],
+        [
+
+
+            'nom.required' =>
+            'Le nom de la matière est obligatoire',
+
+
+            'nom.string' =>
+            'Le nom doit être un texte',
+
+
+            'nom.max' =>
+            'Le nom ne peut pas dépasser 100 caractères'
+
+
         ]);
+
+
+
+
+
+
 
 
         $matiere->update([
-            'nom' => $request->nom,
-            'coefficient' => $request->coefficient
+
+
+            'nom' => $request->nom
+
+
         ]);
+
+
+
+
+
+
 
 
         return response()->json([
-            'message' => 'Matière modifiée avec succès',
-            'matiere' => $matiere
+
+
+            'message' =>
+            'Matière modifiée avec succès',
+
+
+            'matiere' =>
+            $matiere
+
+
         ]);
+
+
+
     }
+
+
+
+
+
+
+
 
 
     /**
@@ -80,11 +214,26 @@ class MatiereController extends Controller
      */
     public function destroy(Matiere $matiere)
     {
+
+
         $matiere->delete();
 
 
+
+
         return response()->json([
-            'message' => 'Matière supprimée avec succès'
+
+
+            'message' =>
+            'Matière supprimée avec succès'
+
+
         ]);
+
+
+
     }
+
+
+
 }

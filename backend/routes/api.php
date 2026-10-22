@@ -29,8 +29,8 @@ Route::post('/login', [AuthController::class, 'login']);
 
 
 
-Route::middleware('auth:sanctum')->group(function () {
 
+Route::middleware('auth:sanctum')->group(function () {
 
 
     /*
@@ -38,7 +38,6 @@ Route::middleware('auth:sanctum')->group(function () {
     | Utilisateur connecté
     |--------------------------------------------------------------------------
     */
-
 
     Route::get('/user', function (Request $request) {
 
@@ -52,14 +51,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-
-
     /*
     |--------------------------------------------------------------------------
     | CRUD Classes
     |--------------------------------------------------------------------------
     */
-
 
     Route::apiResource('classes', ClasseController::class)
 
@@ -89,16 +85,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-
-
-
-
     /*
     |--------------------------------------------------------------------------
     | CRUD Élèves
     |--------------------------------------------------------------------------
     */
-
 
     Route::apiResource('eleves', EleveController::class)
 
@@ -107,8 +98,6 @@ Route::middleware('auth:sanctum')->group(function () {
             'eleves' => 'eleve'
 
         ]);
-
-
 
 
 
@@ -121,6 +110,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
+
+
     /*
     |--------------------------------------------------------------------------
     | Bulletins
@@ -128,16 +119,11 @@ Route::middleware('auth:sanctum')->group(function () {
     */
 
 
-    // Affichage bulletin JSON
-
     Route::get(
         'eleves/{id}/bulletin',
         [BulletinController::class, 'show']
     );
 
-
-
-    // Génération bulletin PDF
 
     Route::get(
         'eleves/{id}/bulletin/pdf',
@@ -150,14 +136,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-
-
     /*
     |--------------------------------------------------------------------------
     | CRUD Matières
     |--------------------------------------------------------------------------
     */
-
 
     Route::apiResource('matieres', MatiereController::class)
 
@@ -173,16 +156,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-
-
-
-
     /*
     |--------------------------------------------------------------------------
     | CRUD Enseignants
     |--------------------------------------------------------------------------
     */
-
 
     Route::apiResource('enseignants', EnseignantController::class)
 
@@ -198,17 +176,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-
-
-
-
     /*
     |--------------------------------------------------------------------------
-    | Affectation
-    | Classe - Matière - Enseignant
+    | Affectation Classe - Matière - Enseignant
     |--------------------------------------------------------------------------
+    |
+    | Le coefficient appartient à cette relation
+    |
     */
-
 
     Route::apiResource(
         'classe-matieres',
@@ -217,13 +192,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     ->parameters([
 
-        'classe-matieres' => 'classeMatiere'
+        'classe-matieres' => 'classe_matiere'
 
     ]);
-
-
-
-
 
 
 
@@ -236,7 +207,6 @@ Route::middleware('auth:sanctum')->group(function () {
     | CRUD Notes
     |--------------------------------------------------------------------------
     */
-
 
     Route::apiResource('notes', NoteController::class)
 

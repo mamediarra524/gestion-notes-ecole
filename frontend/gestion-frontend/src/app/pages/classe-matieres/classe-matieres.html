@@ -1,0 +1,522 @@
+<div class="container">
+
+
+  <div class="header">
+
+    <h1>
+      🔗 Affectation Classe - Matière
+    </h1>
+
+
+    <button
+      class="back-btn"
+      routerLink="/dashboard">
+
+      ⬅ Retour Dashboard
+
+    </button>
+
+
+  </div>
+
+
+
+
+
+  <p
+    *ngIf="message"
+    class="message">
+
+    {{ message }}
+
+  </p>
+
+
+
+
+
+
+
+  <!-- FORMULAIRE -->
+
+  <div class="card">
+
+
+    <h2>
+
+      {{ modification ? 'Modifier affectation' : 'Nouvelle affectation' }}
+
+    </h2>
+
+
+
+
+
+    <form
+      (ngSubmit)="modification ? enregistrerModification() : ajouter()">
+
+
+
+
+
+      <!-- CLASSE -->
+
+      <div class="form-group">
+
+
+        <label>
+          Classe
+        </label>
+
+
+
+        <select
+
+          [(ngModel)]="affectation.classe_id"
+
+          name="classe_id"
+
+          required>
+
+
+
+          <option
+            [ngValue]="null">
+
+            Sélectionner une classe
+
+          </option>
+
+
+
+
+          <option
+
+            *ngFor="let classe of classes"
+
+            [ngValue]="classe.id">
+
+
+            {{ classe.nom }}
+
+
+          </option>
+
+
+
+        </select>
+
+
+      </div>
+
+
+
+
+
+
+
+      <!-- MATIERE -->
+
+      <div class="form-group">
+
+
+        <label>
+          Matière
+        </label>
+
+
+
+        <select
+
+          [(ngModel)]="affectation.matiere_id"
+
+          name="matiere_id"
+
+          required>
+
+
+
+          <option
+            [ngValue]="null">
+
+            Sélectionner une matière
+
+          </option>
+
+
+
+
+          <option
+
+            *ngFor="let matiere of matieres"
+
+            [ngValue]="matiere.id">
+
+
+            {{ matiere.nom }}
+
+
+          </option>
+
+
+
+        </select>
+
+
+      </div>
+
+
+
+
+
+
+
+
+      <!-- ENSEIGNANT -->
+
+      <div class="form-group">
+
+
+        <label>
+          Enseignant
+        </label>
+
+
+
+        <select
+
+          [(ngModel)]="affectation.enseignant_id"
+
+          name="enseignant_id"
+
+          required>
+
+
+
+          <option
+            [ngValue]="null">
+
+            Sélectionner un enseignant
+
+          </option>
+
+
+
+
+          <option
+
+            *ngFor="let enseignant of enseignants"
+
+            [ngValue]="enseignant.id">
+
+
+            {{ enseignant.nom }}
+            {{ enseignant.prenom }}
+
+
+          </option>
+
+
+
+        </select>
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+      <!-- COEFFICIENT -->
+
+      <div class="form-group">
+
+
+        <label>
+          Coefficient
+        </label>
+
+
+
+        <input
+
+          type="number"
+
+          min="1"
+
+          max="10"
+
+          [(ngModel)]="affectation.coefficient"
+
+          name="coefficient"
+
+          required>
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+      <button
+
+        type="submit"
+
+        class="save-btn">
+
+
+        💾
+
+        {{ modification ? 'Modifier' : 'Enregistrer' }}
+
+
+      </button>
+
+
+
+
+
+
+
+
+      <button
+
+        type="button"
+
+        class="cancel-btn"
+
+        *ngIf="modification"
+
+        (click)="reset()">
+
+
+        ❌ Annuler
+
+
+      </button>
+
+
+
+
+
+    </form>
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- LISTE -->
+
+  <div class="card">
+
+
+    <h2>
+      Liste des affectations
+    </h2>
+
+
+
+
+
+
+    <table>
+
+
+      <thead>
+
+
+        <tr>
+
+
+          <th>
+            Classe
+          </th>
+
+
+          <th>
+            Matière
+          </th>
+
+
+          <th>
+            Enseignant
+          </th>
+
+
+          <th>
+            Coefficient
+          </th>
+
+
+          <th>
+            Actions
+          </th>
+
+
+        </tr>
+
+
+      </thead>
+
+
+
+
+
+
+
+      <tbody>
+
+
+        <tr
+
+          *ngFor="let item of affectations">
+
+
+
+
+
+          <td>
+
+            {{ item.classe?.nom }}
+
+          </td>
+
+
+
+
+
+          <td>
+
+            {{ item.matiere?.nom }}
+
+          </td>
+
+
+
+
+
+          <td>
+
+            {{ item.enseignant?.nom }}
+
+            {{ item.enseignant?.prenom }}
+
+          </td>
+
+
+
+
+
+
+          <td>
+
+            {{ item.coefficient ?? item.pivot?.coefficient }}
+
+          </td>
+
+
+
+
+
+
+
+          <td>
+
+
+            <button
+
+              class="edit-btn"
+
+              (click)="modifier(item)">
+
+
+              ✏️ Modifier
+
+
+            </button>
+
+
+
+
+
+
+            <button
+
+              class="delete-btn"
+
+              (click)="supprimer(item.id)">
+
+
+              🗑 Supprimer
+
+
+            </button>
+
+
+
+          </td>
+
+
+
+
+
+        </tr>
+
+
+
+
+
+
+
+        <tr *ngIf="affectations.length === 0">
+
+
+          <td colspan="5">
+
+            Aucune affectation trouvée
+
+          </td>
+
+
+        </tr>
+
+
+
+
+
+      </tbody>
+
+
+
+    </table>
+
+
+
+  </div>
+
+
+
+
+
+
+</div>

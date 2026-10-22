@@ -1,0 +1,116 @@
+
+<div class="login-container">
+
+
+  <div class="login-content">
+
+
+
+    <!-- Présentation application -->
+
+    <div class="app-presentation">
+
+
+      <h1>
+        EduGestion
+      </h1>
+
+
+      <h2>
+        Gestion scolaire simplifiée
+      </h2>
+
+
+      <p>
+        Une solution moderne pour gérer
+        les élèves, les classes et les notes.
+      </p>
+
+
+    </div>
+
+
+
+
+
+    <!-- Carte connexion -->
+
+    <div class="login-card">
+
+
+      <h1>
+        🔐 Connexion
+      </h1>
+
+
+
+      <p *ngIf="message" class="message">
+        {{ message }}
+      </p>
+
+
+
+
+      <form (ngSubmit)="connexion()">
+
+
+
+        <div class="form-group">
+
+          <label>
+            Email
+          </label>
+
+          <input
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            placeholder="Entrez votre email"
+            required
+          >
+
+        </div>
+
+
+
+
+
+        <div class="form-group">
+
+          <label>
+            Mot de passe
+          </label>
+
+
+          <input
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Entrez votre mot de passe"
+            required
+          >
+
+        </div>
+
+
+
+
+        <button type="submit">
+
+          Se connecter
+
+        </button>
+
+
+
+      </form>
+
+
+    </div>
+
+
+
+  </div>
+
+
+</div>

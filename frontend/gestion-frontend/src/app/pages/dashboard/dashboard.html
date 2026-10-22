@@ -1,0 +1,236 @@
+<div class="dashboard-container">
+
+
+  <div class="dashboard-header">
+
+
+    <div>
+
+      <h1>
+        Tableau de bord
+      </h1>
+
+
+      <p class="welcome">
+        Bienvenue dans l'application de gestion des notes de l'école
+      </p>
+
+    </div>
+
+
+
+
+    <button
+      class="logout-btn"
+      (click)="deconnexion()"
+    >
+
+      🚪 Déconnexion
+
+    </button>
+
+
+
+  </div>
+
+
+
+
+
+
+
+  <div class="cards">
+
+
+
+
+
+    <!-- Classes -->
+
+    <div class="card green">
+
+
+      <div class="icon">
+        🏫
+      </div>
+
+
+      <h2>
+        Classes
+      </h2>
+
+
+      <p>
+        Gestion des classes
+      </p>
+
+
+      <button routerLink="/classes">
+
+        Voir
+
+      </button>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- Élèves -->
+
+    <div class="card blue">
+
+
+      <div class="icon">
+        👨‍🎓
+      </div>
+
+
+      <h2>
+        Élèves
+      </h2>
+
+
+      <p>
+        Gestion des élèves
+      </p>
+
+
+      <button routerLink="/eleves">
+
+        Voir
+
+      </button>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- Matières -->
+
+    <div class="card orange">
+
+
+      <div class="icon">
+        📚
+      </div>
+
+
+      <h2>
+        Matières
+      </h2>
+
+
+      <p>
+        Gestion des matières
+      </p>
+
+
+      <button routerLink="/matieres">
+
+        Voir
+
+      </button>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- Classe Matière -->
+
+    <div class="card purple">
+
+
+      <div class="icon">
+        🔗
+      </div>
+
+
+      <h2>
+        Affectations
+      </h2>
+
+
+      <p>
+        Classe - Matière - Enseignant
+      </p>
+
+
+      <button routerLink="/classe-matieres">
+
+        Voir
+
+      </button>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- Notes -->
+
+    <div class="card red">
+
+
+      <div class="icon">
+        📝
+      </div>
+
+
+      <h2>
+        Notes
+      </h2>
+
+
+      <p>
+        Gestion des notes
+      </p>
+
+
+      <button routerLink="/notes">
+
+        Voir
+
+      </button>
+
+
+    </div>
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+</div>

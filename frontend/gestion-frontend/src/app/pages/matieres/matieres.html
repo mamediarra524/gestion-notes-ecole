@@ -1,0 +1,255 @@
+<div class="matieres-container">
+
+
+  <a routerLink="/dashboard" class="back-btn">
+    ⬅ Retour Dashboard
+  </a>
+
+
+
+  <h1>
+    Gestion des matières
+  </h1>
+
+
+
+  <p *ngIf="message" class="message">
+    {{ message }}
+  </p>
+
+
+
+
+
+  <!-- FORMULAIRE -->
+
+  <div class="form-card">
+
+
+    <h2>
+      {{ modification ? 'Modifier une matière' : 'Ajouter une matière' }}
+    </h2>
+
+
+
+
+    <form
+      (ngSubmit)="modification ? enregistrerModification() : ajouterMatiere()"
+    >
+
+
+
+      <label>
+        Nom de la matière
+      </label>
+
+
+      <input
+
+        type="text"
+
+        [(ngModel)]="matiere.nom"
+
+        name="nom"
+
+        placeholder="Exemple : Mathématiques"
+
+        required
+
+      >
+
+
+
+
+      <button type="submit">
+
+        {{ modification ? 'Modifier' : 'Ajouter' }}
+
+      </button>
+
+
+
+
+
+      <button
+
+        type="button"
+
+        class="cancel"
+
+        *ngIf="modification"
+
+        (click)="resetForm()"
+
+      >
+
+        Annuler
+
+      </button>
+
+
+
+
+    </form>
+
+
+  </div>
+
+
+
+
+
+
+
+  <!-- RECHERCHE -->
+
+
+  <div class="search-box">
+
+
+    <label>
+      Rechercher une matière :
+    </label>
+
+
+
+    <input
+
+      type="text"
+
+      [(ngModel)]="recherche"
+
+      placeholder="Mathématiques..."
+
+    >
+
+
+  </div>
+
+
+
+
+
+
+
+  <!-- TABLEAU -->
+
+
+  <div class="table-card">
+
+
+    <table>
+
+
+      <thead>
+
+        <tr>
+
+          <th>
+            ID
+          </th>
+
+
+          <th>
+            Matière
+          </th>
+
+
+          <th>
+            Actions
+          </th>
+
+
+        </tr>
+
+      </thead>
+
+
+
+
+
+      <tbody>
+
+
+        <tr *ngFor="let matiere of matieresFiltrees">
+
+
+          <td>
+            {{ matiere.id }}
+          </td>
+
+
+
+          <td>
+            {{ matiere.nom }}
+          </td>
+
+
+
+
+          <td>
+
+
+            <button
+
+              class="edit"
+
+              (click)="modifier(matiere)"
+
+            >
+
+              ✏️ Modifier
+
+            </button>
+
+
+
+
+
+            <button
+
+              class="delete"
+
+              (click)="supprimer(matiere.id)"
+
+            >
+
+              🗑 Supprimer
+
+            </button>
+
+
+          </td>
+
+
+        </tr>
+
+
+
+
+
+        <tr *ngIf="matieresFiltrees.length === 0">
+
+
+          <td colspan="3">
+
+            Aucune matière trouvée
+
+          </td>
+
+
+        </tr>
+
+
+
+      </tbody>
+
+
+    </table>
+
+
+  </div>
+
+
+
+</div>

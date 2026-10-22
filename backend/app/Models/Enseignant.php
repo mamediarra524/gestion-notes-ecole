@@ -3,56 +3,120 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+
 
 class Enseignant extends Model
 {
+
+
     protected $fillable = [
+
         'nom',
         'prenom',
         'email',
         'telephone',
         'user_id'
+
     ];
 
 
+
+
+
+
+
     /**
-     * Un enseignant appartient à un compte utilisateur.
+     * Un enseignant est lié à un compte utilisateur.
      */
     public function user()
     {
-        return $this->belongsTo(User::class);
+
+        return $this->belongsTo(
+            User::class
+        );
+
     }
 
 
+
+
+
+
+
+
     /**
-     * Un enseignant peut enseigner plusieurs matières
-     * dans plusieurs classes.
+     * Classes et matières enseignées.
+     *
+     * Relation N-N via classe_matiere
      */
     public function classes()
     {
-        return $this->belongsToMany(Classe::class, 'classe_matiere')
-            ->withPivot('matiere_id')
-            ->withTimestamps();
+
+        return $this->belongsToMany(
+
+            Classe::class,
+
+            'classe_matiere'
+
+        )
+
+        ->withPivot([
+
+            'matiere_id',
+            'coefficient'
+
+        ])
+
+        ->withTimestamps();
+
     }
 
 
+
+
+
+
+
+
     /**
-     * Les affectations de l'enseignant.
+     * Affectations complètes :
      *
-     * Exemple :
-     * Moussa → 6ème B → Mathématiques
+     * Classe
+     * Matière
+     * Enseignant
      */
     public function affectations()
     {
-        return $this->hasMany(ClasseMatiere::class);
+
+        return $this->hasMany(
+
+            ClasseMatiere::class
+
+        );
+
     }
+
+
+
+
+
+
 
 
     /**
-     * Notes saisies par l'enseignant.
+     * Notes saisies par cet enseignant.
      */
     public function notes()
     {
-        return $this->hasMany(Note::class);
+
+        return $this->hasMany(
+
+            Note::class
+
+        );
+
     }
+
+
 }

@@ -1,1 +1,479 @@
-<p>enseignants works!</p>
+<div class="enseignants-container">
+
+
+  <!-- Retour Dashboard -->
+
+  <a routerLink="/dashboard" class="back-btn">
+
+    ⬅ Retour Dashboard
+
+  </a>
+
+
+
+
+
+  <h1>
+    Gestion des enseignants
+  </h1>
+
+
+
+
+
+  <!-- Message -->
+
+  <p *ngIf="message" class="message">
+
+    {{ message }}
+
+  </p>
+
+
+
+
+
+
+
+
+  <!-- FORMULAIRE -->
+
+  <div class="form-card">
+
+
+    <h2>
+
+      {{ modification ? 'Modifier un enseignant' : 'Ajouter un enseignant' }}
+
+    </h2>
+
+
+
+
+
+    <form
+
+      (ngSubmit)="modification ? enregistrerModification() : ajouterEnseignant()"
+
+    >
+
+
+
+
+
+
+      <label>
+        Nom
+      </label>
+
+
+      <input
+
+        type="text"
+
+        [(ngModel)]="enseignant.nom"
+
+        name="nom"
+
+        placeholder="Nom"
+
+        required
+
+      >
+
+
+
+
+
+
+
+      <label>
+        Prénom
+      </label>
+
+
+      <input
+
+        type="text"
+
+        [(ngModel)]="enseignant.prenom"
+
+        name="prenom"
+
+        placeholder="Prénom"
+
+        required
+
+      >
+
+
+
+
+
+
+
+      <label>
+        Email
+      </label>
+
+
+      <input
+
+        type="email"
+
+        [(ngModel)]="enseignant.email"
+
+        name="email"
+
+        placeholder="exemple@gmail.com"
+
+        required
+
+      >
+
+
+
+
+
+
+
+      <label>
+        Téléphone
+      </label>
+
+
+      <input
+
+        type="text"
+
+        [(ngModel)]="enseignant.telephone"
+
+        name="telephone"
+
+        placeholder="77 000 00 00"
+
+      >
+
+
+
+
+
+
+
+      <!-- Bouton Ajouter / Modifier -->
+
+
+      <button type="submit">
+
+
+        {{ modification ? '✏️ Modifier' : '➕ Ajouter' }}
+
+
+      </button>
+
+
+
+
+
+
+
+
+      <!-- Bouton Annuler -->
+
+
+      <button
+
+        type="button"
+
+        class="cancel"
+
+        *ngIf="modification"
+
+        (click)="resetForm()"
+
+      >
+
+
+        ❌ Annuler
+
+
+      </button>
+
+
+
+
+
+
+    </form>
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+  <!-- RECHERCHE -->
+
+
+  <div class="search-box">
+
+
+    <label>
+
+      Rechercher un enseignant :
+
+    </label>
+
+
+
+    <input
+
+
+      type="text"
+
+
+      [(ngModel)]="recherche"
+
+
+      placeholder="Nom, prénom ou email..."
+
+    >
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+  <!-- TABLEAU -->
+
+
+  <div class="table-card">
+
+
+    <table>
+
+
+      <thead>
+
+
+        <tr>
+
+
+          <th>
+            ID
+          </th>
+
+
+          <th>
+            Nom
+          </th>
+
+
+          <th>
+            Prénom
+          </th>
+
+
+          <th>
+            Email
+          </th>
+
+
+          <th>
+            Téléphone
+          </th>
+
+
+          <th>
+            Actions
+          </th>
+
+
+        </tr>
+
+
+      </thead>
+
+
+
+
+
+
+
+
+      <tbody>
+
+
+        <tr *ngFor="let e of enseignantsFiltres">
+
+
+
+
+
+          <td>
+
+            {{ e.id }}
+
+          </td>
+
+
+
+
+
+          <td>
+
+            {{ e.nom }}
+
+          </td>
+
+
+
+
+
+          <td>
+
+            {{ e.prenom }}
+
+          </td>
+
+
+
+
+
+          <td>
+
+            {{ e.email }}
+
+          </td>
+
+
+
+
+
+          <td>
+
+            {{ e.telephone || '-' }}
+
+          </td>
+
+
+
+
+
+
+
+          <td>
+
+
+
+
+            <!-- Modifier -->
+
+
+            <button
+
+              class="edit"
+
+              (click)="modifier(e)"
+
+            >
+
+
+              ✏️ Modifier
+
+
+            </button>
+
+
+
+
+
+
+
+
+            <!-- Supprimer -->
+
+
+            <button
+
+              class="delete"
+
+              (click)="supprimer(e.id)"
+
+            >
+
+
+              🗑 Supprimer
+
+
+            </button>
+
+
+
+
+
+          </td>
+
+
+
+
+        </tr>
+
+
+
+
+
+
+
+
+        <!-- Aucun résultat -->
+
+
+        <tr *ngIf="enseignantsFiltres.length === 0">
+
+
+          <td colspan="6">
+
+
+            Aucun enseignant trouvé
+
+
+          </td>
+
+
+        </tr>
+
+
+
+
+
+
+      </tbody>
+
+
+
+
+    </table>
+
+
+
+
+  </div>
+
+
+
+
+
+</div>

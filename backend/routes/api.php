@@ -1,7 +1,9 @@
 <?php
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 
 use App\Http\Controllers\AuthController;
@@ -12,25 +14,50 @@ use App\Http\Controllers\NoteController;
 use App\Http\Controllers\EnseignantController;
 use App\Http\Controllers\ClasseMatiereController;
 use App\Http\Controllers\BulletinController;
+use App\Http\Controllers\DashboardController;
+
+
 
 
 
 /*
 |--------------------------------------------------------------------------
-| Authentification
+| AUTHENTIFICATION
 |--------------------------------------------------------------------------
 */
 
-Route::post('/register', [AuthController::class, 'register']);
 
-Route::post('/login', [AuthController::class, 'login']);
-
-
-
-
+Route::post(
+    '/register',
+    [AuthController::class,'register']
+);
 
 
-Route::middleware('auth:sanctum')->group(function () {
+
+Route::post(
+    '/login',
+    [AuthController::class,'login']
+);
+
+
+
+
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| ROUTES PROTEGEES
+|--------------------------------------------------------------------------
+*/
+
+
+Route::middleware('auth:sanctum')->group(function(){
+
+
+
 
 
     /*
@@ -39,9 +66,257 @@ Route::middleware('auth:sanctum')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/user', function (Request $request) {
 
-        return $request->user();
+    Route::get(
+        '/user',
+        function(Request $request){
+
+            return $request->user();
+
+        }
+    );
+
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD
+    |--------------------------------------------------------------------------
+    |
+    | ADMIN + ENSEIGNANT
+    |
+    */
+
+
+    Route::get(
+
+        '/dashboard',
+
+        [
+            DashboardController::class,
+            'index'
+        ]
+
+    );
+
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADMINISTRATION
+    |--------------------------------------------------------------------------
+    */
+
+
+    Route::middleware('role:ADMIN')->group(function(){
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Classes
+        |--------------------------------------------------------------------------
+        */
+
+
+        Route::apiResource(
+
+            'classes',
+
+            ClasseController::class
+
+        )
+
+        ->parameters([
+
+            'classes'=>'classe'
+
+        ]);
+
+
+
+
+
+        Route::get(
+
+            'classes/{id}/moyenne',
+
+            [
+
+                ClasseController::class,
+
+                'moyenne'
+
+            ]
+
+        );
+
+
+
+
+
+        Route::get(
+
+            'classes/{id}/classement',
+
+            [
+
+                ClasseController::class,
+
+                'classement'
+
+            ]
+
+        );
+
+
+
+
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Élèves
+        |--------------------------------------------------------------------------
+        */
+
+
+        Route::apiResource(
+
+            'eleves',
+
+            EleveController::class
+
+        )
+
+        ->parameters([
+
+            'eleves'=>'eleve'
+
+        ]);
+
+
+
+
+
+        Route::get(
+
+            'eleves/{id}/moyenne',
+
+            [
+
+                EleveController::class,
+
+                'moyenne'
+
+            ]
+
+        );
+
+
+
+
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Matières
+        |--------------------------------------------------------------------------
+        */
+
+
+        Route::apiResource(
+
+            'matieres',
+
+            MatiereController::class
+
+        )
+
+        ->parameters([
+
+            'matieres'=>'matiere'
+
+        ]);
+
+
+
+
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Enseignants
+        |--------------------------------------------------------------------------
+        */
+
+
+        Route::apiResource(
+
+            'enseignants',
+
+            EnseignantController::class
+
+        )
+
+        ->parameters([
+
+            'enseignants'=>'enseignant'
+
+        ]);
+
+
+
+
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Affectations Classe - Matière - Enseignant
+        |--------------------------------------------------------------------------
+        */
+
+
+        Route::apiResource(
+
+            'classe-matieres',
+
+            ClasseMatiereController::class
+
+        )
+
+        ->parameters([
+
+            'classe-matieres'=>'classe_matiere'
+
+        ]);
+
+
+
 
     });
 
@@ -51,148 +326,29 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | CRUD Classes
-    |--------------------------------------------------------------------------
-    */
-
-    Route::apiResource('classes', ClasseController::class)
-
-        ->parameters([
-
-            'classes' => 'classe'
-
-        ]);
-
-
-
-    Route::get(
-        'classes/{id}/moyenne',
-        [ClasseController::class, 'moyenne']
-    );
-
-
-
-    Route::get(
-        'classes/{id}/classement',
-        [ClasseController::class, 'classement']
-    );
-
-
-
-
-
 
 
     /*
     |--------------------------------------------------------------------------
-    | CRUD Élèves
-    |--------------------------------------------------------------------------
-    */
-
-    Route::apiResource('eleves', EleveController::class)
-
-        ->parameters([
-
-            'eleves' => 'eleve'
-
-        ]);
-
-
-
-    Route::get(
-        'eleves/{id}/moyenne',
-        [EleveController::class, 'moyenne']
-    );
-
-
-
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Bulletins
-    |--------------------------------------------------------------------------
-    */
-
-
-    Route::get(
-        'eleves/{id}/bulletin',
-        [BulletinController::class, 'show']
-    );
-
-
-    Route::get(
-        'eleves/{id}/bulletin/pdf',
-        [BulletinController::class, 'pdf']
-    );
-
-
-
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | CRUD Matières
-    |--------------------------------------------------------------------------
-    */
-
-    Route::apiResource('matieres', MatiereController::class)
-
-        ->parameters([
-
-            'matieres' => 'matiere'
-
-        ]);
-
-
-
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | CRUD Enseignants
-    |--------------------------------------------------------------------------
-    */
-
-    Route::apiResource('enseignants', EnseignantController::class)
-
-        ->parameters([
-
-            'enseignants' => 'enseignant'
-
-        ]);
-
-
-
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Affectation Classe - Matière - Enseignant
+    | NOTES
     |--------------------------------------------------------------------------
     |
-    | Le coefficient appartient à cette relation
+    | ADMIN + ENSEIGNANT
     |
     */
+
 
     Route::apiResource(
-        'classe-matieres',
-        ClasseMatiereController::class
+
+        'notes',
+
+        NoteController::class
+
     )
 
     ->parameters([
 
-        'classe-matieres' => 'classe_matiere'
+        'notes'=>'note'
 
     ]);
 
@@ -202,19 +358,78 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
+
+
     /*
     |--------------------------------------------------------------------------
-    | CRUD Notes
+    | BULLETINS
+    |--------------------------------------------------------------------------
+    |
+    | ADMIN + ENSEIGNANT
+    |
+    */
+
+
+    Route::get(
+
+        'eleves/{id}/bulletin',
+
+        [
+
+            BulletinController::class,
+
+            'show'
+
+        ]
+
+    );
+
+
+
+
+
+    Route::get(
+
+        'eleves/{id}/bulletin/pdf',
+
+        [
+
+            BulletinController::class,
+
+            'pdf'
+
+        ]
+
+    );
+
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LOGOUT
     |--------------------------------------------------------------------------
     */
 
-    Route::apiResource('notes', NoteController::class)
 
-        ->parameters([
+    Route::post(
 
-            'notes' => 'note'
+        '/logout',
 
-        ]);
+        [
+
+            AuthController::class,
+
+            'logout'
+
+        ]
+
+    );
 
 
 

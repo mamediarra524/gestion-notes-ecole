@@ -1,0 +1,531 @@
+<div class="stat-container">
+
+
+    <!-- BOUTON RETOUR DASHBOARD -->
+
+    <button
+        class="retour-btn"
+        routerLink="/dashboard">
+
+        ⬅ Retour au tableau de bord
+
+    </button>
+
+
+
+
+
+    <h1>
+        📊 Statistiques de l'école
+    </h1>
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- STATISTIQUES GENERALES -->
+    <!-- ========================= -->
+
+
+    <div class="cards" *ngIf="data">
+
+
+
+        <div class="card">
+
+            <div class="icon">
+                👨‍🎓
+            </div>
+
+            <h2>
+                {{ data.statistiques.total_eleves }}
+            </h2>
+
+            <p>
+                Élèves
+            </p>
+
+        </div>
+
+
+
+
+
+
+        <div class="card">
+
+            <div class="icon">
+                🏫
+            </div>
+
+            <h2>
+                {{ data.statistiques.total_classes }}
+            </h2>
+
+            <p>
+                Classes
+            </p>
+
+        </div>
+
+
+
+
+
+
+        <div class="card">
+
+            <div class="icon">
+                📚
+            </div>
+
+            <h2>
+                {{ data.statistiques.total_matieres }}
+            </h2>
+
+            <p>
+                Matières
+            </p>
+
+        </div>
+
+
+
+
+
+
+
+        <div class="card">
+
+            <div class="icon">
+                👨‍🏫
+            </div>
+
+            <h2>
+                {{ data.statistiques.total_enseignants }}
+            </h2>
+
+            <p>
+                Enseignants
+            </p>
+
+        </div>
+
+
+
+
+
+
+
+        <div class="card">
+
+            <div class="icon">
+                📝
+            </div>
+
+            <h2>
+                {{ data.statistiques.total_notes }}
+            </h2>
+
+            <p>
+                Notes saisies
+            </p>
+
+        </div>
+
+
+
+
+
+
+
+        <div class="card">
+
+            <div class="icon">
+                ⭐
+            </div>
+
+            <h2>
+                {{ data.statistiques.moyenne_generale }}
+            </h2>
+
+            <p>
+                Moyenne générale
+            </p>
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- MEILLEUR ELEVE ECOLE -->
+    <!-- ========================= -->
+
+
+    <div class="meilleur" *ngIf="data">
+
+
+
+        <h2>
+            🏆 Meilleur élève de l'école
+        </h2>
+
+
+
+
+        <p>
+
+            Nom :
+
+            <strong>
+                {{ data.meilleur_eleve.nom }}
+            </strong>
+
+        </p>
+
+
+
+
+        <p>
+
+            Prénom :
+
+            <strong>
+                {{ data.meilleur_eleve.prenom }}
+            </strong>
+
+        </p>
+
+
+
+
+
+        <p>
+
+            Moyenne :
+
+            ⭐
+
+            <strong>
+                {{ data.meilleur_eleve.moyenne }}
+            </strong>
+
+        </p>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- RESULTATS PAR CLASSE -->
+    <!-- ========================= -->
+
+
+    <div class="classes-statistiques"
+         *ngIf="data">
+
+
+
+        <h2>
+            📚 Résultats par classe
+        </h2>
+
+
+
+
+
+        <table>
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Classe
+                    </th>
+
+
+                    <th>
+                        Moyenne classe
+                    </th>
+
+
+                    <th>
+                        Niveau
+                    </th>
+
+
+                    <th>
+                        🏆 Meilleur élève
+                    </th>
+
+
+                    <th>
+                        Moyenne élève
+                    </th>
+
+
+                </tr>
+
+            </thead>
+
+
+
+
+
+
+            <tbody>
+
+
+                <tr *ngFor="let classe of data.moyenne_par_classe">
+
+
+
+                    <td>
+                        {{ classe.classe }}
+                    </td>
+
+
+
+
+                    <td>
+                        ⭐ {{ classe.moyenne }}
+                    </td>
+
+
+
+
+                    <td>
+
+
+                        <span *ngIf="classe.moyenne >= 16">
+                            Excellent
+                        </span>
+
+
+                        <span *ngIf="classe.moyenne >= 12 && classe.moyenne < 16">
+                            Bien
+                        </span>
+
+
+                        <span *ngIf="classe.moyenne >= 10 && classe.moyenne < 12">
+                            Moyen
+                        </span>
+
+
+                        <span *ngIf="classe.moyenne < 10">
+                            Insuffisant
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span *ngIf="classe.meilleur_eleve">
+
+
+                            🏆
+
+                            {{ classe.meilleur_eleve.prenom }}
+
+                            {{ classe.meilleur_eleve.nom }}
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <span *ngIf="classe.meilleur_eleve">
+
+
+                            ⭐
+
+                            {{ classe.meilleur_eleve.moyenne }}
+
+
+                        </span>
+
+
+                    </td>
+
+
+
+                </tr>
+
+
+
+            </tbody>
+
+
+
+        </table>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- ========================= -->
+    <!-- REPARTITION DES NOTES -->
+    <!-- ========================= -->
+
+
+    <div class="repartition"
+         *ngIf="data">
+
+
+
+        <h2>
+            📈 Répartition des résultats
+        </h2>
+
+
+
+
+
+        <div class="resultats">
+
+
+
+
+
+            <div class="result">
+
+                <h3>
+                    {{ data.repartition_notes.excellent }}
+                </h3>
+
+
+                <p>
+                    🟢 Excellent
+                </p>
+
+            </div>
+
+
+
+
+
+
+            <div class="result">
+
+                <h3>
+                    {{ data.repartition_notes.bien }}
+                </h3>
+
+
+                <p>
+                    🔵 Bien
+                </p>
+
+            </div>
+
+
+
+
+
+
+
+            <div class="result">
+
+                <h3>
+                    {{ data.repartition_notes.moyen }}
+                </h3>
+
+
+                <p>
+                    🟡 Moyen
+                </p>
+
+            </div>
+
+
+
+
+
+
+
+            <div class="result">
+
+                <h3>
+                    {{ data.repartition_notes.insuffisant }}
+                </h3>
+
+
+                <p>
+                    🔴 Insuffisant
+                </p>
+
+            </div>
+
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+</div>

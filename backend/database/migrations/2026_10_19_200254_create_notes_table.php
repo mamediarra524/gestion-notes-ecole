@@ -6,38 +6,54 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Créer la table notes
-     */
+
     public function up(): void
     {
         Schema::create('notes', function (Blueprint $table) {
 
+
             $table->id();
 
-            // Relation avec la table eleves
+
+
+            // Élève concerné
             $table->foreignId('eleve_id')
-                  ->constrained('eleves')
-                  ->cascadeOnDelete();
+                ->constrained('eleves')
+                ->cascadeOnDelete();
 
-            // Relation avec la table matieres
+
+
+            // Matière
             $table->foreignId('matiere_id')
-                  ->constrained('matieres')
-                  ->cascadeOnDelete();
+                ->constrained('matieres')
+                ->cascadeOnDelete();
 
-            // Valeur de la note
-            $table->decimal('note', 5, 2);
+
+
+            // Enseignant qui saisit la note
+            $table->foreignId('enseignant_id')
+                ->nullable()
+                ->constrained('enseignants')
+                ->nullOnDelete();
+
+
+
+            // Note sur 20
+            $table->decimal('note',5,2);
+
+
 
             $table->timestamps();
+
+
         });
     }
 
 
-    /**
-     * Supprimer la table notes
-     */
+
     public function down(): void
     {
         Schema::dropIfExists('notes');
     }
+
 };

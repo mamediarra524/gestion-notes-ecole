@@ -2,16 +2,45 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+
 
 class Note extends Model
 {
+
+    use HasFactory;
+
+
+
     protected $fillable = [
+
         'eleve_id',
+
         'matiere_id',
+
         'enseignant_id',
+
         'note'
+
     ];
+
+
+
+
+
+    protected $casts = [
+
+        'note' => 'decimal:2'
+
+    ];
+
+
+
+
+
 
 
     /**
@@ -19,8 +48,17 @@ class Note extends Model
      */
     public function eleve()
     {
-        return $this->belongsTo(Eleve::class);
+
+        return $this->belongsTo(
+            Eleve::class
+        );
+
     }
+
+
+
+
+
 
 
     /**
@@ -28,8 +66,17 @@ class Note extends Model
      */
     public function matiere()
     {
-        return $this->belongsTo(Matiere::class);
+
+        return $this->belongsTo(
+            Matiere::class
+        );
+
     }
+
+
+
+
+
 
 
     /**
@@ -37,6 +84,13 @@ class Note extends Model
      */
     public function enseignant()
     {
-        return $this->belongsTo(Enseignant::class);
+
+        return $this->belongsTo(
+            Enseignant::class
+        );
+
     }
+
+
+
 }

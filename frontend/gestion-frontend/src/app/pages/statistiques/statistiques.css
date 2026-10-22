@@ -1,0 +1,555 @@
+.stat-container {
+
+    padding: 20px;
+
+    min-height: 100vh;
+
+    background: #f5f7fb;
+
+    font-family: Arial, sans-serif;
+
+}
+
+
+
+
+
+
+/* ========================= */
+/* BOUTON RETOUR DASHBOARD */
+/* ========================= */
+
+
+.retour-btn {
+
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 22px;
+
+    border-radius:10px;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    margin-bottom:15px;
+
+    transition:0.3s;
+
+
+}
+
+
+
+.retour-btn:hover {
+
+
+    background:#1d4ed8;
+
+    transform:translateY(-2px);
+
+
+}
+
+
+
+
+
+
+
+h1 {
+
+    text-align:center;
+
+    color:#1f2937;
+
+    margin-bottom:20px;
+
+    font-size:30px;
+
+}
+
+
+
+
+
+
+
+/* ========================= */
+/* CARTES STATISTIQUES */
+/* ========================= */
+
+
+.cards {
+
+
+    display:grid;
+
+    grid-template-columns:repeat(6,1fr);
+
+    gap:15px;
+
+    margin-bottom:20px;
+
+
+}
+
+
+
+
+
+
+.card {
+
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:15px;
+
+    text-align:center;
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,0.08);
+
+    transition:0.3s;
+
+
+}
+
+
+
+
+
+.card:hover {
+
+
+    transform:translateY(-5px);
+
+
+}
+
+
+
+
+
+
+
+.icon {
+
+
+    font-size:35px;
+
+    margin-bottom:5px;
+
+
+}
+
+
+
+
+
+
+
+.card h2 {
+
+
+    margin:5px;
+
+    font-size:28px;
+
+    color:#2563eb;
+
+
+}
+
+
+
+
+
+
+
+.card p {
+
+
+    margin:0;
+
+    color:#555;
+
+    font-weight:bold;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ========================= */
+/* MEILLEUR ELEVE */
+/* ========================= */
+
+
+.meilleur {
+
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:15px;
+
+    margin-bottom:20px;
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,0.08);
+
+
+}
+
+
+
+
+
+.meilleur h2 {
+
+
+    color:#f59e0b;
+
+    margin-top:0;
+
+
+}
+
+
+
+
+
+.meilleur p {
+
+
+    margin:8px 0;
+
+    font-size:16px;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ========================= */
+/* RESULTATS PAR CLASSE */
+/* ========================= */
+
+
+.classes-statistiques {
+
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    margin-bottom:20px;
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,0.08);
+
+
+}
+
+
+
+
+
+.classes-statistiques h2 {
+
+
+    color:#2563eb;
+
+    margin-top:0;
+
+
+}
+
+
+
+
+
+
+
+table {
+
+
+    width:100%;
+
+    border-collapse:collapse;
+
+
+}
+
+
+
+
+
+thead {
+
+
+    background:#2563eb;
+
+    color:white;
+
+
+}
+
+
+
+
+
+th {
+
+
+    padding:12px;
+
+    text-align:center;
+
+
+}
+
+
+
+
+
+td {
+
+
+    padding:10px;
+
+    text-align:center;
+
+    border-bottom:1px solid #ddd;
+
+
+}
+
+
+
+
+
+tbody tr:hover {
+
+
+    background:#f1f5f9;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ========================= */
+/* REPARTITION DES NOTES */
+/* ========================= */
+
+
+.repartition {
+
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    margin-bottom:20px;
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,0.08);
+
+
+}
+
+
+
+
+
+.repartition h2 {
+
+
+    color:#16a34a;
+
+
+}
+
+
+
+
+
+
+
+.resultats {
+
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:15px;
+
+
+}
+
+
+
+
+
+
+
+.result {
+
+
+    background:#f8fafc;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    text-align:center;
+
+
+}
+
+
+
+
+
+.result h3 {
+
+
+    font-size:28px;
+
+    margin:0;
+
+    color:#111827;
+
+
+}
+
+
+
+
+
+.result p {
+
+
+    margin:5px;
+
+    font-weight:bold;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ========================= */
+/* ADAPTATION ECRAN */
+/* ========================= */
+
+
+@media(max-width:1200px){
+
+
+    .cards {
+
+
+        grid-template-columns:repeat(3,1fr);
+
+
+    }
+
+
+}
+
+
+
+
+
+@media(max-width:700px){
+
+
+    .cards {
+
+
+        grid-template-columns:repeat(2,1fr);
+
+
+    }
+
+
+
+
+
+    .resultats {
+
+
+        grid-template-columns:1fr;
+
+
+    }
+
+
+
+
+
+    table {
+
+
+        font-size:12px;
+
+
+    }
+
+
+
+
+
+    .stat-container {
+
+
+        padding:10px;
+
+
+    }
+
+
+}

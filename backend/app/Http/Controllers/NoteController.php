@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\Note;
 use App\Models\Eleve;
 use App\Models\ClasseMatiere;
@@ -11,13 +10,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
-
 class NoteController extends Controller
 {
 
 
     /**
-     * Afficher les notes selon le rôle
+     * Liste des notes
      */
     public function index()
     {
@@ -25,11 +23,8 @@ class NoteController extends Controller
         $user = Auth::user();
 
 
+        // ADMIN : toutes les notes
 
-        // ==========================
-        // ADMIN
-        // Toutes les notes
-        // ==========================
         if($user->role === 'ADMIN')
         {
 
@@ -47,16 +42,9 @@ class NoteController extends Controller
 
 
 
-
-
-        // ==========================
-        // ENSEIGNANT
-        // Ses propres notes uniquement
-        // ==========================
-
+        // ENSEIGNANT : uniquement ses notes
 
         $enseignant = $user->enseignant;
-
 
 
         if(!$enseignant)
@@ -69,8 +57,6 @@ class NoteController extends Controller
             ],403);
 
         }
-
-
 
 
 
@@ -91,8 +77,6 @@ class NoteController extends Controller
 
 
 
-
-
         return response()->json($notes);
 
     }
@@ -103,8 +87,9 @@ class NoteController extends Controller
 
 
 
+
     /**
-     * Créer une note
+     * Ajouter une note
      */
     public function store(Request $request)
     {
@@ -112,13 +97,37 @@ class NoteController extends Controller
 
         $request->validate([
 
-            'eleve_id'=>'required|exists:eleves,id',
 
-            'matiere_id'=>'required|exists:matieres,id',
+            'eleve_id'=>
+            'required|exists:eleves,id',
 
-            'note'=>'required|numeric|min:0|max:20'
+
+            'matiere_id'=>
+            'required|exists:matieres,id',
+
+
+            'enseignant_id'=>
+            'nullable|exists:enseignants,id',
+
+
+            'note'=>
+            'required|numeric|min:0|max:20'
+
+
+        ],
+        [
+
+
+            'note.min'=>
+            'La note minimum est 0',
+
+
+            'note.max'=>
+            'La note maximum est 20'
+
 
         ]);
+
 
 
 
@@ -133,9 +142,8 @@ class NoteController extends Controller
 
 
 
-        // ==========================
+
         // Vérification enseignant
-        // ==========================
 
         if($user->role !== 'ADMIN')
         {
@@ -150,12 +158,11 @@ class NoteController extends Controller
 
                 return response()->json([
 
-                    'message'=>'Aucun enseignant associé à ce compte.'
+                    'message'=>'Aucun enseignant associé.'
 
                 ],403);
 
             }
-
 
 
 
@@ -173,7 +180,6 @@ class NoteController extends Controller
 
 
 
-            // Vérifier affectation classe/matière/enseignant
 
             $autorise = ClasseMatiere::where(
 
@@ -205,13 +211,15 @@ class NoteController extends Controller
 
 
 
+
+
             if(!$autorise)
             {
 
                 return response()->json([
 
                     'message'=>
-                    'Vous n’êtes pas autorisé à saisir cette note.'
+                    'Vous n êtes pas autorisé à saisir cette note.'
 
                 ],403);
 
@@ -219,6 +227,14 @@ class NoteController extends Controller
 
 
         }
+        else
+        {
+
+            $enseignant_id =
+            $request->enseignant_id;
+
+        }
+
 
 
 
@@ -229,16 +245,20 @@ class NoteController extends Controller
         $note = Note::create([
 
 
-            'eleve_id'=>$request->eleve_id,
+            'eleve_id'=>
+            $request->eleve_id,
 
 
-            'matiere_id'=>$request->matiere_id,
+            'matiere_id'=>
+            $request->matiere_id,
 
 
-            'enseignant_id'=>$enseignant_id,
+            'enseignant_id'=>
+            $enseignant_id,
 
 
-            'note'=>$request->note
+            'note'=>
+            $request->note
 
 
         ]);
@@ -252,10 +272,13 @@ class NoteController extends Controller
         return response()->json([
 
 
-            'message'=>'Note créée avec succès',
+            'message'=>
+            'Note ajoutée avec succès',
 
 
-            'note'=>$note->load([
+            'note'=>
+
+            $note->load([
 
                 'eleve',
 
@@ -300,7 +323,6 @@ class NoteController extends Controller
 
         );
 
-
     }
 
 
@@ -314,20 +336,26 @@ class NoteController extends Controller
     /**
      * Modifier une note
      */
-    public function update(Request $request, Note $note)
+    public function update(
+        Request $request,
+        Note $note
+    )
     {
 
 
         $request->validate([
 
 
-            'eleve_id'=>'required|exists:eleves,id',
+            'eleve_id'=>
+            'required|exists:eleves,id',
 
 
-            'matiere_id'=>'required|exists:matieres,id',
+            'matiere_id'=>
+            'required|exists:matieres,id',
 
 
-            'note'=>'required|numeric|min:0|max:20'
+            'note'=>
+            'required|numeric|min:0|max:20'
 
 
         ]);
@@ -343,15 +371,12 @@ class NoteController extends Controller
 
 
 
-
-
         if($user->role !== 'ADMIN')
         {
 
 
-            $enseignant = $user->enseignant;
-
-
+            $enseignant =
+            $user->enseignant;
 
 
 
@@ -360,7 +385,7 @@ class NoteController extends Controller
 
                 return response()->json([
 
-                    'message'=>'Aucun enseignant associé à ce compte.'
+                    'message'=>'Aucun enseignant associé.'
 
                 ],403);
 
@@ -371,7 +396,8 @@ class NoteController extends Controller
 
 
 
-            $eleve = Eleve::findOrFail(
+            $eleve =
+            Eleve::findOrFail(
                 $request->eleve_id
             );
 
@@ -419,7 +445,7 @@ class NoteController extends Controller
                 return response()->json([
 
                     'message'=>
-                    'Vous n’êtes pas autorisé à modifier cette note.'
+                    'Modification non autorisée.'
 
                 ],403);
 
@@ -428,9 +454,8 @@ class NoteController extends Controller
 
 
 
-
-
-            $note->enseignant_id = $enseignant->id;
+            $note->enseignant_id =
+            $enseignant->id;
 
 
         }
@@ -441,20 +466,23 @@ class NoteController extends Controller
 
 
 
-
         $note->update([
 
 
-            'eleve_id'=>$request->eleve_id,
+            'eleve_id'=>
+            $request->eleve_id,
 
 
-            'matiere_id'=>$request->matiere_id,
+            'matiere_id'=>
+            $request->matiere_id,
 
 
-            'note'=>$request->note,
+            'note'=>
+            $request->note,
 
 
-            'enseignant_id'=>$note->enseignant_id
+            'enseignant_id'=>
+            $note->enseignant_id
 
 
         ]);
@@ -468,10 +496,13 @@ class NoteController extends Controller
         return response()->json([
 
 
-            'message'=>'Note modifiée avec succès',
+            'message'=>
+            'Note modifiée avec succès',
 
 
-            'note'=>$note->load([
+            'note'=>
+
+            $note->load([
 
                 'eleve',
 
@@ -506,15 +537,12 @@ class NoteController extends Controller
 
 
 
-
-
         if($user->role !== 'ADMIN')
         {
 
 
-            $enseignant = $user->enseignant;
-
-
+            $enseignant =
+            $user->enseignant;
 
 
 
@@ -523,7 +551,7 @@ class NoteController extends Controller
 
                 return response()->json([
 
-                    'message'=>'Aucun enseignant associé à ce compte.'
+                    'message'=>'Aucun enseignant associé.'
 
                 ],403);
 
@@ -534,54 +562,13 @@ class NoteController extends Controller
 
 
 
-
-            $eleve = $note->eleve;
-
-
-
-
-
-
-
-            $autorise = ClasseMatiere::where(
-
-                'classe_id',
-
-                $eleve->classe_id
-
-            )
-
-            ->where(
-
-                'matiere_id',
-
-                $note->matiere_id
-
-            )
-
-            ->where(
-
-                'enseignant_id',
-
-                $enseignant->id
-
-            )
-
-            ->exists();
-
-
-
-
-
-
-
-            if(!$autorise)
+            if($note->enseignant_id != $enseignant->id)
             {
 
                 return response()->json([
 
                     'message'=>
-                    'Vous n’êtes pas autorisé à supprimer cette note.'
+                    'Suppression non autorisée.'
 
                 ],403);
 
@@ -595,9 +582,7 @@ class NoteController extends Controller
 
 
 
-
         $note->delete();
-
 
 
 
@@ -607,13 +592,13 @@ class NoteController extends Controller
         return response()->json([
 
 
-            'message'=>'Note supprimée avec succès'
+            'message'=>
+            'Note supprimée avec succès'
 
 
         ]);
 
     }
-
 
 
 }

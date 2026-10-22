@@ -80,6 +80,10 @@ class ClasseMatiereController extends Controller
             'Le coefficient est obligatoire',
 
 
+            'coefficient.integer' =>
+            'Le coefficient doit être un nombre entier',
+
+
             'coefficient.min' =>
             'Le coefficient doit être au minimum 1',
 
@@ -96,19 +100,24 @@ class ClasseMatiereController extends Controller
 
 
 
-        $affectation = ClasseMatière::create([
+        $affectation = ClasseMatiere::create([
+
 
             'classe_id' =>
             $request->classe_id,
 
+
             'matiere_id' =>
             $request->matiere_id,
+
 
             'enseignant_id' =>
             $request->enseignant_id,
 
+
             'coefficient' =>
             $request->coefficient
+
 
         ]);
 
@@ -120,13 +129,20 @@ class ClasseMatiereController extends Controller
 
         return response()->json([
 
+
             'message' =>
             'Affectation créée avec succès',
 
-            'affectation' =>
-            $affectation
 
-        ], 201);
+            'affectation' =>
+            $affectation->load([
+                'classe',
+                'matiere',
+                'enseignant'
+            ])
+
+
+        ],201);
 
 
     }
@@ -144,6 +160,7 @@ class ClasseMatiereController extends Controller
      */
     public function show(ClasseMatiere $classe_matiere)
     {
+
 
         return response()->json(
 
@@ -168,7 +185,10 @@ class ClasseMatiereController extends Controller
     /**
      * Modifier une affectation
      */
-    public function update(Request $request, ClasseMatière $classe_matiere)
+    public function update(
+        Request $request,
+        ClasseMatiere $classe_matiere
+    )
     {
 
 
@@ -234,7 +254,11 @@ class ClasseMatiereController extends Controller
 
 
             'affectation' =>
-            $classe_matiere
+            $classe_matiere->load([
+                'classe',
+                'matiere',
+                'enseignant'
+            ])
 
 
         ]);

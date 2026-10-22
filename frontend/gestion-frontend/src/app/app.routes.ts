@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+
 import { Login } from './pages/login/login';
 import { Dashboard } from './pages/dashboard/dashboard';
 
@@ -9,6 +10,10 @@ import { Matieres } from './pages/matieres/matieres';
 import { Notes } from './pages/notes/notes';
 import { Enseignants } from './pages/enseignants/enseignants';
 import { ClasseMatieres } from './pages/classe-matieres/classe-matieres';
+
+import { Statistiques } from './pages/statistiques/statistiques';
+
+import { NotFound } from './pages/not-found/not-found';
 
 import { authGuard } from './guards/auth-guard';
 
@@ -28,12 +33,7 @@ export const routes: Routes = [
 
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Authentification
-  |--------------------------------------------------------------------------
-  */
-
+  // Connexion
 
   {
     path: 'login',
@@ -47,67 +47,16 @@ export const routes: Routes = [
 
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Pages protégées
-  |--------------------------------------------------------------------------
-  */
+
+  // Dashboard principal
 
 
   {
     path: 'dashboard',
-
     component: Dashboard,
-
-    canActivate: [
+    canActivate:[
       authGuard
     ]
-
-  },
-
-
-
-
-  {
-    path: 'eleves',
-
-    component: Eleves,
-
-    canActivate: [
-      authGuard
-    ]
-
-  },
-
-
-
-
-
-  {
-    path: 'classes',
-
-    component: Classes,
-
-    canActivate: [
-      authGuard
-    ]
-
-  },
-
-
-
-
-
-
-  {
-    path: 'matieres',
-
-    component: Matieres,
-
-    canActivate: [
-      authGuard
-    ]
-
   },
 
 
@@ -116,15 +65,17 @@ export const routes: Routes = [
 
 
 
+
+
+  // Élèves
+
+
   {
-    path: 'enseignants',
-
-    component: Enseignants,
-
-    canActivate: [
+    path:'eleves',
+    component:Eleves,
+    canActivate:[
       authGuard
     ]
-
   },
 
 
@@ -133,15 +84,17 @@ export const routes: Routes = [
 
 
 
+
+
+  // Classes
+
+
   {
-    path: 'classe-matieres',
-
-    component: ClasseMatieres,
-
-    canActivate: [
+    path:'classes',
+    component:Classes,
+    canActivate:[
       authGuard
     ]
-
   },
 
 
@@ -150,15 +103,111 @@ export const routes: Routes = [
 
 
 
+
+
+  // Matières
+
+
   {
-    path: 'notes',
-
-    component: Notes,
-
-    canActivate: [
+    path:'matieres',
+    component:Matieres,
+    canActivate:[
       authGuard
     ]
+  },
 
+
+
+
+
+
+
+
+
+  // Enseignants
+
+
+  {
+    path:'enseignants',
+    component:Enseignants,
+    canActivate:[
+      authGuard
+    ]
+  },
+
+
+
+
+
+
+
+
+
+  // Affectations
+
+
+  {
+    path:'classe-matieres',
+    component:ClasseMatieres,
+    canActivate:[
+      authGuard
+    ]
+  },
+
+
+
+
+
+
+
+
+
+  // Notes
+
+
+  {
+    path:'notes',
+    component:Notes,
+    canActivate:[
+      authGuard
+    ]
+  },
+
+
+
+
+
+
+
+
+
+  // Statistiques
+
+
+  {
+    path:'statistiques',
+    component:Statistiques,
+    canActivate:[
+      authGuard
+    ]
+  },
+
+
+
+
+
+
+
+
+
+  // Page inexistante
+
+
+  {
+    path:'**',
+    component:NotFound
   }
+
+
 
 ];

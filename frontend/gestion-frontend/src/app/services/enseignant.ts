@@ -13,9 +13,11 @@ export class EnseignantService {
 
 
 
+
   constructor(
-    private http:HttpClient
-  ){}
+    private http: HttpClient
+  ) {}
+
 
 
 
@@ -26,13 +28,18 @@ export class EnseignantService {
 
     return {
 
-      headers:new HttpHeaders({
+      headers: new HttpHeaders({
+
 
         'Authorization':
         'Bearer ' + localStorage.getItem('token'),
 
 
         'Accept':
+        'application/json',
+
+
+        'Content-Type':
         'application/json'
 
 
@@ -48,6 +55,8 @@ export class EnseignantService {
 
 
 
+
+  // Liste des enseignants
 
   getEnseignants(){
 
@@ -69,14 +78,16 @@ export class EnseignantService {
 
 
 
-  ajouterEnseignant(data:any){
+  // Ajouter un enseignant
+
+  ajouterEnseignant(enseignant:any){
 
 
     return this.http.post(
 
       this.apiUrl,
 
-      data,
+      enseignant,
 
       this.headers()
 
@@ -91,9 +102,11 @@ export class EnseignantService {
 
 
 
+  // Modifier un enseignant
+
   modifierEnseignant(
     id:number,
-    data:any
+    enseignant:any
   ){
 
 
@@ -101,7 +114,7 @@ export class EnseignantService {
 
       `${this.apiUrl}/${id}`,
 
-      data,
+      enseignant,
 
       this.headers()
 
@@ -115,6 +128,8 @@ export class EnseignantService {
 
 
 
+
+  // Supprimer un enseignant
 
   supprimerEnseignant(id:number){
 

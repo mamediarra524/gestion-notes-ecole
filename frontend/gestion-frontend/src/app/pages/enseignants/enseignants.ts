@@ -1,9 +1,561 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+
+import { EnseignantService } from '../../services/enseignant';
+
+
 
 @Component({
-  imports: [],
+
   selector: 'app-enseignants',
-  styleUrl: './enseignants.css',
+
+  standalone: true,
+
+  imports: [
+
+    CommonModule,
+
+    FormsModule,
+
+    RouterLink
+
+  ],
+
   templateUrl: './enseignants.html',
+
+  styleUrl: './enseignants.css'
+
 })
-export class Enseignants {}
+
+
+export class Enseignants implements OnInit {
+
+
+  enseignants:any[] = [];
+
+
+  message:string = '';
+
+
+  recherche:string = '';
+
+
+
+  modification:boolean = false;
+
+
+  idModification:number|null = null;
+
+
+
+
+
+  enseignant:any = {
+
+
+    nom:'',
+
+    prenom:'',
+
+    email:'',
+
+    telephone:''
+
+
+  };
+
+
+
+
+
+
+
+  constructor(
+
+    private enseignantService:EnseignantService,
+
+    private cd:ChangeDetectorRef
+
+  ) {}
+
+
+
+
+
+
+
+  ngOnInit(){
+
+
+    this.chargerEnseignants();
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // Charger les enseignants
+
+  chargerEnseignants(){
+
+
+    this.enseignantService
+
+    .getEnseignants()
+
+    .subscribe({
+
+
+
+      next:(data:any)=>{
+
+
+        console.log(
+
+          "Enseignants reçus :",
+
+          data
+
+        );
+
+
+
+        this.enseignants = [...data];
+
+
+
+        // Rafraîchir l'affichage Angular
+
+        this.cd.detectChanges();
+
+
+
+      },
+
+
+
+      error:(error:any)=>{
+
+
+        console.log(error);
+
+
+        this.message =
+
+        "Erreur chargement enseignants";
+
+
+      }
+
+
+
+    });
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // Recherche
+
+  get enseignantsFiltres(){
+
+
+    const texte =
+
+    this.recherche
+
+    .toLowerCase()
+
+    .trim();
+
+
+
+
+
+    if(!texte){
+
+
+      return this.enseignants;
+
+
+    }
+
+
+
+
+
+
+    return this.enseignants.filter((e:any)=>
+
+
+      e.nom.toLowerCase().includes(texte)
+
+      ||
+
+      e.prenom.toLowerCase().includes(texte)
+
+      ||
+
+      e.email.toLowerCase().includes(texte)
+
+
+    );
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // Ajouter un enseignant
+
+  ajouterEnseignant(){
+
+
+
+    if(
+
+      !this.enseignant.nom ||
+
+      !this.enseignant.prenom ||
+
+      !this.enseignant.email
+
+    ){
+
+
+      this.message =
+
+      "Veuillez remplir les champs obligatoires";
+
+
+      return;
+
+
+    }
+
+
+
+
+
+
+
+    this.enseignantService
+
+    .ajouterEnseignant(
+
+      this.enseignant
+
+    )
+
+    .subscribe({
+
+
+
+      next:(response:any)=>{
+
+
+        console.log(
+
+          "Réponse ajout :",
+
+          response
+
+        );
+
+
+
+        this.message =
+
+        "Enseignant ajouté avec succès";
+
+
+
+        this.resetForm();
+
+
+
+        this.chargerEnseignants();
+
+
+
+      },
+
+
+
+      error:(error:any)=>{
+
+
+        console.log(error);
+
+
+
+        this.message =
+
+        "Erreur ajout enseignant";
+
+
+      }
+
+
+
+    });
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // Modifier
+
+  modifier(e:any){
+
+
+
+    this.enseignant = {
+
+
+      nom:e.nom,
+
+      prenom:e.prenom,
+
+      email:e.email,
+
+      telephone:e.telephone
+
+
+    };
+
+
+
+    this.idModification = e.id;
+
+
+
+    this.modification = true;
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // Enregistrer modification
+
+  enregistrerModification(){
+
+
+
+    if(this.idModification){
+
+
+
+      this.enseignantService
+
+      .modifierEnseignant(
+
+        this.idModification,
+
+        this.enseignant
+
+      )
+
+      .subscribe({
+
+
+
+        next:()=>{
+
+
+          this.message =
+
+          "Enseignant modifié avec succès";
+
+
+
+          this.resetForm();
+
+
+
+          this.chargerEnseignants();
+
+
+
+        },
+
+
+
+        error:(error:any)=>{
+
+
+          console.log(error);
+
+
+
+          this.message =
+
+          "Erreur modification enseignant";
+
+
+        }
+
+
+
+      });
+
+
+
+    }
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // Supprimer
+
+  supprimer(id:number){
+
+
+
+    if(confirm(
+
+      "Voulez-vous supprimer cet enseignant ?"
+
+    )){
+
+
+
+      this.enseignantService
+
+      .supprimerEnseignant(id)
+
+      .subscribe({
+
+
+
+        next:()=>{
+
+
+          this.message =
+
+          "Enseignant supprimé avec succès";
+
+
+
+          this.chargerEnseignants();
+
+
+
+        },
+
+
+
+        error:(error:any)=>{
+
+
+          console.log(error);
+
+
+
+          this.message =
+
+          "Erreur suppression";
+
+
+        }
+
+
+
+      });
+
+
+
+    }
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // Réinitialiser formulaire
+
+  resetForm(){
+
+
+
+    this.enseignant = {
+
+
+      nom:'',
+
+      prenom:'',
+
+      email:'',
+
+      telephone:''
+
+
+    };
+
+
+
+    this.modification = false;
+
+
+    this.idModification = null;
+
+
+
+  }
+
+
+
+}

@@ -9,11 +9,11 @@ import { EnseignantService } from '../../services/enseignant';
 
 @Component({
 
-  selector: 'app-enseignants',
+  selector:'app-enseignants',
 
-  standalone: true,
+  standalone:true,
 
-  imports: [
+  imports:[
 
     CommonModule,
 
@@ -23,20 +23,23 @@ import { EnseignantService } from '../../services/enseignant';
 
   ],
 
-  templateUrl: './enseignants.html',
+  templateUrl:'./enseignants.html',
 
-  styleUrl: './enseignants.css'
+  styleUrl:'./enseignants.css'
 
 })
 
 
+
 export class Enseignants implements OnInit {
+
 
 
   enseignants:any[] = [];
 
 
   message:string = '';
+
 
 
   recherche:string = '';
@@ -46,7 +49,25 @@ export class Enseignants implements OnInit {
   modification:boolean = false;
 
 
+
   idModification:number|null = null;
+
+
+
+
+
+  // =========================
+  // PAGINATION
+  // =========================
+
+
+  page:number = 1;
+
+
+  elementsParPage:number = 10;
+
+
+
 
 
 
@@ -72,15 +93,18 @@ export class Enseignants implements OnInit {
 
 
 
+
+
   constructor(
+
 
     private enseignantService:EnseignantService,
 
+
     private cd:ChangeDetectorRef
 
-  ) {}
 
-
+  ){}
 
 
 
@@ -102,9 +126,13 @@ export class Enseignants implements OnInit {
 
 
 
-  // Charger les enseignants
+  // =========================
+  // CHARGER ENSEIGNANTS
+  // =========================
+
 
   chargerEnseignants(){
+
 
 
     this.enseignantService
@@ -118,6 +146,7 @@ export class Enseignants implements OnInit {
       next:(data:any)=>{
 
 
+
         console.log(
 
           "Enseignants reçus :",
@@ -128,11 +157,14 @@ export class Enseignants implements OnInit {
 
 
 
+
         this.enseignants = [...data];
 
 
 
-        // Rafraîchir l'affichage Angular
+        this.page = 1;
+
+
 
         this.cd.detectChanges();
 
@@ -142,15 +174,19 @@ export class Enseignants implements OnInit {
 
 
 
+
+
       error:(error:any)=>{
+
 
 
         console.log(error);
 
 
-        this.message =
 
+        this.message =
         "Erreur chargement enseignants";
+
 
 
       }
@@ -158,6 +194,7 @@ export class Enseignants implements OnInit {
 
 
     });
+
 
 
   }
@@ -170,9 +207,13 @@ export class Enseignants implements OnInit {
 
 
 
-  // Recherche
+  // =========================
+  // RECHERCHE + PAGINATION
+  // =========================
+
 
   get enseignantsFiltres(){
+
 
 
     const texte =
@@ -186,11 +227,55 @@ export class Enseignants implements OnInit {
 
 
 
+    let resultat = this.enseignants;
 
-    if(!texte){
 
 
-      return this.enseignants;
+
+
+
+    if(texte){
+
+
+
+      resultat = this.enseignants.filter((e:any)=>
+
+
+
+        e.nom
+
+        .toLowerCase()
+
+        .includes(texte)
+
+
+
+        ||
+
+
+
+        e.prenom
+
+        .toLowerCase()
+
+        .includes(texte)
+
+
+
+        ||
+
+
+
+        e.email
+
+        .toLowerCase()
+
+        .includes(texte)
+
+
+
+      );
+
 
 
     }
@@ -200,21 +285,30 @@ export class Enseignants implements OnInit {
 
 
 
-    return this.enseignants.filter((e:any)=>
+    const debut =
+
+    (this.page - 1)
+
+    *
+
+    this.elementsParPage;
 
 
-      e.nom.toLowerCase().includes(texte)
 
-      ||
 
-      e.prenom.toLowerCase().includes(texte)
 
-      ||
 
-      e.email.toLowerCase().includes(texte)
+    return resultat.slice(
+
+
+      debut,
+
+
+      debut + this.elementsParPage
 
 
     );
+
 
 
   }
@@ -227,7 +321,84 @@ export class Enseignants implements OnInit {
 
 
 
-  // Ajouter un enseignant
+  get totalPages(){
+
+
+
+    return Math.ceil(
+
+
+      this.enseignants.length /
+
+      this.elementsParPage
+
+
+    );
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  pageSuivante(){
+
+
+
+    if(this.page < this.totalPages){
+
+
+      this.page++;
+
+
+    }
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  pagePrecedente(){
+
+
+
+    if(this.page > 1){
+
+
+      this.page--;
+
+
+    }
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // =========================
+  // AJOUT
+  // =========================
+
 
   ajouterEnseignant(){
 
@@ -235,18 +406,24 @@ export class Enseignants implements OnInit {
 
     if(
 
+
       !this.enseignant.nom ||
+
 
       !this.enseignant.prenom ||
 
+
       !this.enseignant.email
 
+
     ){
+
 
 
       this.message =
 
       "Veuillez remplir les champs obligatoires";
+
 
 
       return;
@@ -275,13 +452,8 @@ export class Enseignants implements OnInit {
       next:(response:any)=>{
 
 
-        console.log(
 
-          "Réponse ajout :",
-
-          response
-
-        );
+        console.log(response);
 
 
 
@@ -303,7 +475,10 @@ export class Enseignants implements OnInit {
 
 
 
+
+
       error:(error:any)=>{
+
 
 
         console.log(error);
@@ -313,6 +488,7 @@ export class Enseignants implements OnInit {
         this.message =
 
         "Erreur ajout enseignant";
+
 
 
       }
@@ -333,7 +509,10 @@ export class Enseignants implements OnInit {
 
 
 
-  // Modifier
+  // =========================
+  // MODIFIER
+  // =========================
+
 
   modifier(e:any){
 
@@ -342,16 +521,22 @@ export class Enseignants implements OnInit {
     this.enseignant = {
 
 
+
       nom:e.nom,
+
 
       prenom:e.prenom,
 
+
       email:e.email,
+
 
       telephone:e.telephone
 
 
+
     };
+
 
 
 
@@ -373,8 +558,6 @@ export class Enseignants implements OnInit {
 
 
 
-  // Enregistrer modification
-
   enregistrerModification(){
 
 
@@ -387,9 +570,12 @@ export class Enseignants implements OnInit {
 
       .modifierEnseignant(
 
+
         this.idModification,
 
+
         this.enseignant
+
 
       )
 
@@ -398,6 +584,7 @@ export class Enseignants implements OnInit {
 
 
         next:()=>{
+
 
 
           this.message =
@@ -418,7 +605,10 @@ export class Enseignants implements OnInit {
 
 
 
+
+
         error:(error:any)=>{
+
 
 
           console.log(error);
@@ -428,6 +618,7 @@ export class Enseignants implements OnInit {
           this.message =
 
           "Erreur modification enseignant";
+
 
 
         }
@@ -452,7 +643,10 @@ export class Enseignants implements OnInit {
 
 
 
-  // Supprimer
+  // =========================
+  // SUPPRIMER
+  // =========================
+
 
   supprimer(id:number){
 
@@ -477,6 +671,7 @@ export class Enseignants implements OnInit {
         next:()=>{
 
 
+
           this.message =
 
           "Enseignant supprimé avec succès";
@@ -491,7 +686,10 @@ export class Enseignants implements OnInit {
 
 
 
+
+
         error:(error:any)=>{
+
 
 
           console.log(error);
@@ -501,6 +699,7 @@ export class Enseignants implements OnInit {
           this.message =
 
           "Erreur suppression";
+
 
 
         }
@@ -525,7 +724,10 @@ export class Enseignants implements OnInit {
 
 
 
-  // Réinitialiser formulaire
+  // =========================
+  // RESET FORMULAIRE
+  // =========================
+
 
   resetForm(){
 
@@ -534,23 +736,29 @@ export class Enseignants implements OnInit {
     this.enseignant = {
 
 
+
       nom:'',
+
 
       prenom:'',
 
+
       email:'',
 
+
       telephone:''
+
 
 
     };
 
 
 
-    this.modification = false;
+    this.modification=false;
 
 
-    this.idModification = null;
+
+    this.idModification=null;
 
 
 

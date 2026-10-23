@@ -1,477 +1,412 @@
 <div class="enseignants-container">
 
 
-  <!-- Retour Dashboard -->
+<a 
+routerLink="/dashboard"
+class="back-btn">
 
-  <a routerLink="/dashboard" class="back-btn">
+⬅ Retour Dashboard
 
-    ⬅ Retour Dashboard
+</a>
 
-  </a>
 
 
 
 
+<h1>
+👨‍🏫 Gestion des enseignants
+</h1>
 
-  <h1>
-    Gestion des enseignants
-  </h1>
 
 
 
 
+<p 
+*ngIf="message"
+class="message">
 
-  <!-- Message -->
+{{message}}
 
-  <p *ngIf="message" class="message">
+</p>
 
-    {{ message }}
 
-  </p>
 
 
 
 
 
 
+<!-- FORMULAIRE -->
 
 
-  <!-- FORMULAIRE -->
+<div class="form-card">
 
-  <div class="form-card">
 
+<h2>
 
-    <h2>
+{{ modification ? 
+'Modifier un enseignant' :
+'Ajouter un enseignant'}}
 
-      {{ modification ? 'Modifier un enseignant' : 'Ajouter un enseignant' }}
+</h2>
 
-    </h2>
 
 
 
 
+<form
+(ngSubmit)="modification ? enregistrerModification() : ajouterEnseignant()">
 
-    <form
 
-      (ngSubmit)="modification ? enregistrerModification() : ajouterEnseignant()"
+<label>
+Nom
+</label>
 
-    >
 
+<input
 
+type="text"
 
+[(ngModel)]="enseignant.nom"
 
+name="nom"
 
+required>
 
-      <label>
-        Nom
-      </label>
 
 
-      <input
+<label>
+Prénom
+</label>
 
-        type="text"
 
-        [(ngModel)]="enseignant.nom"
+<input
 
-        name="nom"
+type="text"
 
-        placeholder="Nom"
+[(ngModel)]="enseignant.prenom"
 
-        required
+name="prenom"
 
-      >
+required>
 
 
 
+<label>
+Email
+</label>
 
 
+<input
 
+type="email"
 
-      <label>
-        Prénom
-      </label>
+[(ngModel)]="enseignant.email"
 
+name="email"
 
-      <input
+required>
 
-        type="text"
 
-        [(ngModel)]="enseignant.prenom"
 
-        name="prenom"
+<label>
+Téléphone
+</label>
 
-        placeholder="Prénom"
 
-        required
+<input
 
-      >
+type="text"
 
+[(ngModel)]="enseignant.telephone"
 
+name="telephone">
 
 
 
 
 
-      <label>
-        Email
-      </label>
 
+<button 
+type="submit"
+class="btn-save">
 
-      <input
 
-        type="email"
+{{ modification ?
+'Modifier' :
+'Ajouter'}}
 
-        [(ngModel)]="enseignant.email"
 
-        name="email"
+</button>
 
-        placeholder="exemple@gmail.com"
 
-        required
 
-      >
 
 
 
+<button
 
+type="button"
 
+class="btn-cancel"
 
+*ngIf="modification"
 
-      <label>
-        Téléphone
-      </label>
+(click)="resetForm()">
 
 
-      <input
+Annuler
 
-        type="text"
 
-        [(ngModel)]="enseignant.telephone"
+</button>
 
-        name="telephone"
 
-        placeholder="77 000 00 00"
 
-      >
 
 
+</form>
 
 
+</div>
 
 
 
-      <!-- Bouton Ajouter / Modifier -->
 
 
-      <button type="submit">
 
 
-        {{ modification ? '✏️ Modifier' : '➕ Ajouter' }}
 
 
-      </button>
+<!-- RECHERCHE -->
 
 
+<div class="search-box">
 
 
+<label>
 
+🔎 Rechercher :
 
+</label>
 
 
-      <!-- Bouton Annuler -->
 
+<input
 
-      <button
+type="text"
 
-        type="button"
+[(ngModel)]="recherche"
 
-        class="cancel"
+placeholder="Nom, prénom ou email">
 
-        *ngIf="modification"
 
-        (click)="resetForm()"
+</div>
 
-      >
 
 
-        ❌ Annuler
 
 
-      </button>
 
 
 
 
+<!-- TABLEAU -->
 
 
-    </form>
+<div class="table-card">
 
 
-  </div>
+<table>
 
 
+<thead>
 
+<tr>
 
+<th>ID</th>
 
+<th>Nom</th>
 
+<th>Prénom</th>
 
+<th>Email</th>
 
+<th>Téléphone</th>
 
-  <!-- RECHERCHE -->
+<th>Actions</th>
 
 
-  <div class="search-box">
+</tr>
 
+</thead>
 
-    <label>
 
-      Rechercher un enseignant :
 
-    </label>
 
 
+<tbody>
 
-    <input
 
+<tr 
+*ngFor="let e of enseignantsFiltres">
 
-      type="text"
 
+<td>
 
-      [(ngModel)]="recherche"
+{{e.id}}
 
+</td>
 
-      placeholder="Nom, prénom ou email..."
 
-    >
 
+<td>
 
+{{e.nom}}
 
-  </div>
+</td>
 
 
 
+<td>
 
+{{e.prenom}}
 
+</td>
 
 
 
+<td>
 
-  <!-- TABLEAU -->
+{{e.email}}
 
+</td>
 
-  <div class="table-card">
 
 
-    <table>
+<td>
 
+{{e.telephone}}
 
-      <thead>
+</td>
 
 
-        <tr>
 
 
-          <th>
-            ID
-          </th>
 
+<td>
 
-          <th>
-            Nom
-          </th>
 
+<button
 
-          <th>
-            Prénom
-          </th>
+class="edit"
 
+(click)="modifier(e)">
 
-          <th>
-            Email
-          </th>
+✏️ Modifier
 
+</button>
 
-          <th>
-            Téléphone
-          </th>
 
 
-          <th>
-            Actions
-          </th>
 
 
-        </tr>
+<button
 
+class="delete"
 
-      </thead>
+(click)="supprimer(e.id)">
 
+🗑 Supprimer
 
+</button>
 
 
+</td>
 
 
+</tr>
 
 
-      <tbody>
 
 
-        <tr *ngFor="let e of enseignantsFiltres">
 
 
 
+<tr 
+*ngIf="enseignantsFiltres.length===0">
 
 
-          <td>
+<td colspan="6">
 
-            {{ e.id }}
+Aucun enseignant trouvé
 
-          </td>
+</td>
 
 
+</tr>
 
 
 
-          <td>
+</tbody>
 
-            {{ e.nom }}
 
-          </td>
 
+</table>
 
 
+</div>
 
 
-          <td>
 
-            {{ e.prenom }}
 
-          </td>
 
 
 
 
 
-          <td>
+<!-- PAGINATION -->
 
-            {{ e.email }}
 
-          </td>
+<div class="pagination">
 
 
+<button
 
+(click)="pagePrecedente()"
 
+[disabled]="page===1">
 
-          <td>
+⬅ Précédent
 
-            {{ e.telephone || '-' }}
+</button>
 
-          </td>
 
 
 
 
+<span>
 
+Page {{page}} / {{totalPages}}
 
+</span>
 
-          <td>
 
 
 
 
-            <!-- Modifier -->
+<button
 
+(click)="pageSuivante()"
 
-            <button
+[disabled]="page===totalPages">
 
-              class="edit"
+Suivant ➡
 
-              (click)="modifier(e)"
+</button>
 
-            >
 
 
-              ✏️ Modifier
-
-
-            </button>
-
-
-
-
-
-
-
-
-            <!-- Supprimer -->
-
-
-            <button
-
-              class="delete"
-
-              (click)="supprimer(e.id)"
-
-            >
-
-
-              🗑 Supprimer
-
-
-            </button>
-
-
-
-
-
-          </td>
-
-
-
-
-        </tr>
-
-
-
-
-
-
-
-
-        <!-- Aucun résultat -->
-
-
-        <tr *ngIf="enseignantsFiltres.length === 0">
-
-
-          <td colspan="6">
-
-
-            Aucun enseignant trouvé
-
-
-          </td>
-
-
-        </tr>
-
-
-
-
-
-
-      </tbody>
-
-
-
-
-    </table>
-
-
-
-
-  </div>
-
+</div>
 
 
 

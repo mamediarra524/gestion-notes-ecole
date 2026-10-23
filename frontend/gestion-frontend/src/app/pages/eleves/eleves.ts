@@ -7,43 +7,80 @@ import { EleveService } from '../../services/eleve';
 import { ClasseService } from '../../services/classe';
 
 
+
 @Component({
-  selector: 'app-eleves',
-  standalone: true,
-  imports: [
+
+  selector:'app-eleves',
+
+  standalone:true,
+
+  imports:[
+
     CommonModule,
+
     FormsModule,
+
     DatePipe
+
   ],
-  templateUrl: './eleves.html',
-  styleUrl: './eleves.css'
+
+  templateUrl:'./eleves.html',
+
+  styleUrl:'./eleves.css'
+
 })
+
+
 export class Eleves implements OnInit {
 
 
-  eleves:any[] = [];
 
-  classes:any[] = [];
-
-  message = '';
-
-  recherche = '';
-
-  modification = false;
-
-  idModification:any = null;
+  eleves:any[]=[];
 
 
+  classes:any[]=[];
 
-  eleve = {
 
-    nom: '',
+  message:string='';
 
-    prenom: '',
 
-    date_naissance: '',
+  recherche:string='';
 
-    classe_id: null
+
+
+  modification:boolean=false;
+
+
+  idModification:number|null=null;
+
+
+
+
+
+  // Pagination
+
+  page:number=1;
+
+  elementsParPage:number=10;
+
+
+
+
+
+
+
+
+  eleve:any={
+
+
+    nom:'',
+
+    prenom:'',
+
+    date_naissance:'',
+
+    classe_id:null
+
 
   };
 
@@ -51,15 +88,24 @@ export class Eleves implements OnInit {
 
 
 
+
+
+
+
   constructor(
 
-    private eleveService: EleveService,
 
-    private classeService: ClasseService,
+    private eleveService:EleveService,
 
-    private cd: ChangeDetectorRef,
 
-    private router: Router
+    private classeService:ClasseService,
+
+
+    private cd:ChangeDetectorRef,
+
+
+    private router:Router
+
 
   ){}
 
@@ -72,6 +118,7 @@ export class Eleves implements OnInit {
 
     this.chargerEleves();
 
+
     this.chargerClasses();
 
 
@@ -83,14 +130,20 @@ export class Eleves implements OnInit {
 
 
 
+
+
   chargerEleves(){
+
 
 
     this.eleveService.getEleves()
 
     .subscribe({
 
+
+
       next:(data:any)=>{
+
 
 
         console.log(
@@ -99,18 +152,16 @@ export class Eleves implements OnInit {
         );
 
 
+
         this.eleves = Array.isArray(data)
 
-          ? [...data]
+        ? [...data]
 
-          : [];
+        : [];
 
 
 
-        console.log(
-          "Nombre élèves :",
-          this.eleves.length
-        );
+        this.page=1;
 
 
 
@@ -121,26 +172,30 @@ export class Eleves implements OnInit {
       },
 
 
+
       error:(error:any)=>{
 
 
-        console.log(
-          "Erreur chargement élèves :",
-          error
-        );
+        console.log(error);
 
 
-        this.message =
+
+        this.message=
+
         "Erreur chargement élèves";
+
 
 
       }
 
 
+
     });
 
 
+
   }
+
 
 
 
@@ -152,25 +207,21 @@ export class Eleves implements OnInit {
   chargerClasses(){
 
 
+
     this.classeService.getClasses()
 
     .subscribe({
 
+
+
       next:(data:any)=>{
-
-
-        console.log(
-          "Classes :",
-          data
-        );
-
 
 
         this.classes = Array.isArray(data)
 
-          ? data
+        ? data
 
-          : [];
+        : [];
 
 
 
@@ -181,19 +232,19 @@ export class Eleves implements OnInit {
       },
 
 
+
       error:(error:any)=>{
 
 
-        console.log(
-          "Erreur classes :",
-          error
-        );
+        console.log(error);
 
 
       }
 
 
+
     });
+
 
 
   }
@@ -204,48 +255,189 @@ export class Eleves implements OnInit {
 
 
 
+
+
+  // Recherche + pagination
+
+
   get elevesFiltres(){
 
 
-    const texte = this.recherche
+
+    let resultat=this.eleves;
+
+
+
+    const texte=this.recherche
+
     .toLowerCase()
+
     .trim();
 
 
 
-    if(!texte){
 
 
-      return this.eleves;
+    if(texte){
+
+
+
+      resultat=this.eleves.filter((e:any)=>
+
+
+
+        e.nom.toLowerCase().includes(texte)
+
+        ||
+
+        e.prenom.toLowerCase().includes(texte)
+
+
+
+      );
+
 
 
     }
 
 
 
-    return this.eleves.filter(eleve => {
 
 
-      return (
 
-        eleve.nom
-        .toLowerCase()
-        .includes(texte)
+    const debut=(this.page-1)
 
+    *
+
+    this.elementsParPage;
+
+
+
+
+
+    return resultat.slice(
+
+      debut,
+
+      debut + this.elementsParPage
+
+    );
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  get totalPages(){
+
+
+
+    let resultat=this.eleves;
+
+
+
+    const texte=this.recherche
+
+    .toLowerCase()
+
+    .trim();
+
+
+
+
+
+    if(texte){
+
+
+
+      resultat=this.eleves.filter((e:any)=>
+
+
+        e.nom.toLowerCase().includes(texte)
 
         ||
 
-        eleve.prenom
-        .toLowerCase()
-        .includes(texte)
+        e.prenom.toLowerCase().includes(texte)
+
+
 
       );
 
 
-    });
+
+    }
+
+
+
+
+
+    return Math.ceil(
+
+      resultat.length /
+
+      this.elementsParPage
+
+    );
+
 
 
   }
+
+
+
+
+
+
+
+
+
+  pageSuivante(){
+
+
+
+    if(this.page < this.totalPages){
+
+
+      this.page++;
+
+
+    }
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  pagePrecedente(){
+
+
+
+    if(this.page>1){
+
+
+      this.page--;
+
+
+    }
+
+
+
+  }
+
 
 
 
@@ -257,14 +449,9 @@ export class Eleves implements OnInit {
   ajouterEleve(){
 
 
-    console.log(
-      "Données envoyées :",
-      this.eleve
-    );
-
-
 
     if(
+
 
       !this.eleve.nom ||
 
@@ -274,11 +461,16 @@ export class Eleves implements OnInit {
 
       !this.eleve.classe_id
 
+
+
     ){
 
 
-      this.message =
+
+      this.message=
+
       "Veuillez remplir tous les champs";
+
 
 
       return;
@@ -290,10 +482,15 @@ export class Eleves implements OnInit {
 
 
 
+
+
+
     this.eleveService
+
     .ajouterEleve(this.eleve)
 
     .subscribe({
+
 
 
       next:(response:any)=>{
@@ -303,7 +500,8 @@ export class Eleves implements OnInit {
 
 
 
-        this.message =
+        this.message=
+
         "Élève ajouté avec succès";
 
 
@@ -323,24 +521,26 @@ export class Eleves implements OnInit {
       error:(error:any)=>{
 
 
-        console.log(
-          "Erreur Laravel :",
-          error.error
-        );
+        console.log(error);
 
 
 
-        this.message =
+        this.message=
+
         "Erreur ajout élève";
+
 
 
       }
 
 
+
     });
 
 
+
   }
+
 
 
 
@@ -352,31 +552,36 @@ export class Eleves implements OnInit {
   modifier(eleve:any){
 
 
-    this.eleve = {
+
+    this.eleve={
 
 
-      nom: eleve.nom,
+      nom:eleve.nom,
 
 
-      prenom: eleve.prenom,
+      prenom:eleve.prenom,
 
 
       date_naissance:
+
       eleve.date_naissance.substring(0,10),
 
 
-      classe_id:
-      eleve.classe_id
+      classe_id:eleve.classe_id
+
 
 
     };
 
 
 
-    this.idModification = eleve.id;
 
 
-    this.modification = true;
+    this.idModification=eleve.id;
+
+
+
+    this.modification=true;
 
 
 
@@ -389,10 +594,33 @@ export class Eleves implements OnInit {
 
 
 
+
   enregistrerModification(){
 
 
+
+    if(this.idModification===null){
+
+
+      this.message=
+
+      "Aucun élève sélectionné";
+
+
+      return;
+
+
+    }
+
+
+
+
+
+
+
+
     this.eleveService
+
     .modifierEleve(
 
       this.idModification,
@@ -404,14 +632,17 @@ export class Eleves implements OnInit {
     .subscribe({
 
 
+
       next:(response:any)=>{
+
 
 
         console.log(response);
 
 
 
-        this.message =
+        this.message=
+
         "Élève modifié avec succès";
 
 
@@ -431,24 +662,26 @@ export class Eleves implements OnInit {
       error:(error:any)=>{
 
 
-        console.log(
-          "Erreur Laravel :",
-          error.error
-        );
+        console.log(error);
 
 
 
-        this.message =
-        "Erreur modification";
+        this.message=
+
+        "Erreur modification élève";
+
 
 
       }
 
 
+
     });
 
 
+
   }
+
 
 
 
@@ -460,25 +693,28 @@ export class Eleves implements OnInit {
   supprimer(id:number){
 
 
+
     if(confirm(
+
       "Voulez-vous supprimer cet élève ?"
+
     )){
 
 
+
       this.eleveService
+
       .supprimerEleve(id)
 
       .subscribe({
 
 
-        next:(response:any)=>{
+
+        next:()=>{
 
 
-          console.log(response);
+          this.message=
 
-
-
-          this.message =
           "Élève supprimé avec succès";
 
 
@@ -490,6 +726,7 @@ export class Eleves implements OnInit {
         },
 
 
+
         error:(error:any)=>{
 
 
@@ -497,19 +734,24 @@ export class Eleves implements OnInit {
 
 
 
-          this.message =
+          this.message=
+
           "Erreur suppression";
+
 
 
         }
 
 
+
       });
+
 
 
     }
 
 
+
   }
 
 
@@ -519,15 +761,19 @@ export class Eleves implements OnInit {
 
 
 
-  // Retour vers le Dashboard
 
   retourDashboard(){
 
 
-    this.router.navigate(['/dashboard']);
+    this.router.navigate([
+
+      '/dashboard'
+
+    ]);
 
 
   }
+
 
 
 
@@ -539,7 +785,8 @@ export class Eleves implements OnInit {
   resetForm(){
 
 
-    this.eleve = {
+
+    this.eleve={
 
 
       nom:'',
@@ -554,14 +801,16 @@ export class Eleves implements OnInit {
       classe_id:null
 
 
+
     };
 
 
 
-    this.modification = false;
+    this.modification=false;
 
 
-    this.idModification = null;
+
+    this.idModification=null;
 
 
 

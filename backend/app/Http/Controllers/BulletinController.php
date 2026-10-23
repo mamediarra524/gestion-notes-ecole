@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Eleve;
-use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+
 
 
 class BulletinController extends Controller
@@ -12,7 +13,7 @@ class BulletinController extends Controller
 
 
     /**
-     * Afficher le bulletin d'un élève en JSON
+     * Afficher bulletin JSON
      */
     public function show($id)
     {
@@ -29,11 +30,13 @@ class BulletinController extends Controller
 
 
 
+
     /**
-     * Générer le bulletin en PDF
+     * Générer bulletin PDF
      */
     public function pdf($id)
     {
+
 
         $bulletin = $this->calculerBulletin($id);
 
@@ -55,6 +58,7 @@ class BulletinController extends Controller
 
         );
 
+
     }
 
 
@@ -64,8 +68,9 @@ class BulletinController extends Controller
 
 
 
+
     /**
-     * Calcul commun du bulletin
+     * Calcul complet bulletin
      */
     private function calculerBulletin($id)
     {
@@ -73,7 +78,7 @@ class BulletinController extends Controller
 
         $eleve = Eleve::with([
 
-            'classe',
+            'classe.matieres.enseignant',
 
             'notes.matiere'
 
@@ -91,7 +96,8 @@ class BulletinController extends Controller
         $totalCoefficients = 0;
 
 
-        $bulletinMatieres = [];
+        $matieres = [];
+
 
 
 
@@ -99,13 +105,15 @@ class BulletinController extends Controller
 
 
         /*
-        ==================================
-        Regroupement des notes par matière
-        ==================================
+        ===================================
+        Calcul moyenne par matière
+        ===================================
         */
 
 
-        $groupes = $eleve->notes->groupBy('matiere_id');
+        $groupes = $eleve->notes
+
+            ->groupBy('matiere_id');
 
 
 
@@ -116,29 +124,52 @@ class BulletinController extends Controller
         {
 
 
+
             $matiere = $notes->first()->matiere;
 
 
 
-            $coefficient = $matiere->coefficient;
+
+
+
+            // récupération coefficient
+            // depuis classe_matiere
+
+
+            $classeMatiere = $eleve
+                ->classe
+                ->matieres
+                ->where('id',$matiere->id)
+                ->first();
 
 
 
 
-            $moyenneMatiere = $notes->avg('note');
+
+            $coefficient = $classeMatiere
+
+                ? $classeMatiere->pivot->coefficient
+
+                : 1;
 
 
 
 
 
-            $points = $moyenneMatiere * $coefficient;
+
+
+            $moyenne = $notes->avg('note');
+
+
+
+            $points = $moyenne * $coefficient;
+
 
 
 
 
 
             $totalPoints += $points;
-
 
 
             $totalCoefficients += $coefficient;
@@ -148,19 +179,20 @@ class BulletinController extends Controller
 
 
 
-            $bulletinMatieres[] = [
+
+            $matieres[] = [
 
 
-                'matiere' => $matiere->nom,
+                "nom" => $matiere->nom,
 
 
-                'coefficient' => $coefficient,
+                "coefficient" => $coefficient,
 
 
-                'moyenne' => round($moyenneMatiere,2),
+                "moyenne" => round($moyenne,2),
 
 
-                'points' => round($points,2)
+                "points" => round($points,2)
 
 
             ];
@@ -177,9 +209,9 @@ class BulletinController extends Controller
 
 
         /*
-        ==============================
+        ===================================
         Moyenne générale
-        ==============================
+        ===================================
         */
 
 
@@ -190,11 +222,37 @@ class BulletinController extends Controller
         if($totalCoefficients > 0)
         {
 
+
             $moyenneGenerale =
 
-                $totalPoints / $totalCoefficients;
+                $totalPoints /
+
+                $totalCoefficients;
+
 
         }
+
+
+
+
+
+
+
+
+        /*
+        ===================================
+        Rang
+        ===================================
+        */
+
+
+        $rang = $this->calculerRang(
+
+            $eleve,
+
+            $moyenneGenerale
+
+        );
 
 
 
@@ -207,19 +265,20 @@ class BulletinController extends Controller
         return [
 
 
-            'eleve' => [
+
+            "eleve" => [
 
 
-                'id'=>$eleve->id,
+                "id" => $eleve->id,
 
 
-                'nom'=>$eleve->nom,
+                "nom" => $eleve->nom,
 
 
-                'prenom'=>$eleve->prenom,
+                "prenom" => $eleve->prenom,
 
 
-                'classe'=>$eleve->classe->nom ?? null
+                "classe" => $eleve->classe->nom ?? null
 
 
             ],
@@ -227,12 +286,16 @@ class BulletinController extends Controller
 
 
 
-            'matieres'=>$bulletinMatieres,
+
+
+            "matieres" => $matieres,
 
 
 
 
-            'moyenneGenerale'=>round(
+
+
+            "moyenneGenerale" => round(
 
                 $moyenneGenerale,
 
@@ -243,7 +306,16 @@ class BulletinController extends Controller
 
 
 
-            'mention'=>$this->mention(
+
+
+            "rang" => $rang,
+
+
+
+
+
+
+            "appreciation" => $this->appreciation(
 
                 $moyenneGenerale
 
@@ -252,6 +324,8 @@ class BulletinController extends Controller
 
 
         ];
+
+
 
     }
 
@@ -263,55 +337,261 @@ class BulletinController extends Controller
 
 
 
+
+
+
     /**
-     * Déterminer la mention
+     * Calcul classement classe
      */
-    private function mention($moyenne)
+    private function calculerRang($eleve,$moyenne)
+    {
+
+
+
+        $eleves = Eleve::where(
+
+            'classe_id',
+
+            $eleve->classe_id
+
+        )
+
+        ->with([
+
+            'classe.matieres',
+
+            'notes.matiere'
+
+        ])
+
+        ->get();
+
+
+
+
+
+
+
+        $resultats=[];
+
+
+
+
+
+
+
+
+        foreach($eleves as $e)
+        {
+
+
+            $points = 0;
+
+
+            $coefficients = 0;
+
+
+
+
+
+
+            foreach($e->notes->groupBy('matiere_id') as $notes)
+            {
+
+
+
+                $matiere = $notes->first()->matiere;
+
+
+
+
+
+
+                $classeMatiere = $e
+                    ->classe
+                    ->matieres
+                    ->where('id',$matiere->id)
+                    ->first();
+
+
+
+
+
+
+                $coefficient = $classeMatiere
+
+                    ? $classeMatiere->pivot->coefficient
+
+                    : 1;
+
+
+
+
+
+
+
+                $moyenneMatiere = $notes->avg('note');
+
+
+
+
+
+
+                $points +=
+
+                    $moyenneMatiere *
+
+                    $coefficient;
+
+
+
+
+
+
+
+                $coefficients += $coefficient;
+
+
+
+            }
+
+
+
+
+
+
+            $resultats[] = $coefficients > 0
+
+                ? $points / $coefficients
+
+                : 0;
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+        rsort($resultats);
+
+
+
+
+
+
+        $rang = 1;
+
+
+
+
+
+        foreach($resultats as $moyenneEleve)
+        {
+
+
+            if(
+
+                round($moyenneEleve,2)
+
+                ==
+
+                round($moyenne,2)
+
+            )
+            {
+
+                return $rang;
+
+            }
+
+
+
+            $rang++;
+
+
+        }
+
+
+
+
+
+        return $rang;
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Appréciation automatique
+     */
+    private function appreciation($moyenne)
     {
 
 
         if($moyenne >= 16)
+
         {
 
-            return "Très bien";
+            return "Excellent travail";
 
         }
 
 
 
-        elseif($moyenne >= 14)
+
+        if($moyenne >= 14)
+
         {
 
-            return "Bien";
+            return "Très bon travail";
 
         }
 
 
 
-        elseif($moyenne >= 12)
+
+
+        if($moyenne >= 12)
+
         {
 
-            return "Assez bien";
+            return "Bon travail";
 
         }
 
 
 
-        elseif($moyenne >= 10)
+
+
+        if($moyenne >= 10)
+
         {
 
-            return "Passable";
+            return "Travail satisfaisant";
 
         }
 
 
 
-        else
-        {
 
-            return "Insuffisant";
 
-        }
+        return "Des efforts sont nécessaires";
 
 
     }

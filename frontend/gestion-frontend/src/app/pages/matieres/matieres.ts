@@ -11,9 +11,9 @@ import { MatiereService } from '../../services/matiere';
 
   selector: 'app-matieres',
 
-  standalone: true,
+  standalone:true,
 
-  imports: [
+  imports:[
 
     CommonModule,
 
@@ -23,9 +23,9 @@ import { MatiereService } from '../../services/matiere';
 
   ],
 
-  templateUrl: './matieres.html',
+  templateUrl:'./matieres.html',
 
-  styleUrl: './matieres.css'
+  styleUrl:'./matieres.css'
 
 })
 
@@ -33,10 +33,12 @@ import { MatiereService } from '../../services/matiere';
 export class Matieres implements OnInit {
 
 
+
   matieres:any[] = [];
 
 
   message:string = '';
+
 
 
   recherche:string = '';
@@ -65,12 +67,35 @@ export class Matieres implements OnInit {
 
 
 
+  // =========================
+  // PAGINATION
+  // =========================
+
+
+  page:number = 1;
+
+
+  taillePage:number = 10;
+
+
+  totalPages:number = 1;
+
+
+
+
+
+
+
+
 
   constructor(
 
+
     private matiereService:MatiereService,
 
+
     private cd:ChangeDetectorRef
+
 
   ){}
 
@@ -94,6 +119,11 @@ export class Matieres implements OnInit {
 
 
 
+  // =========================
+  // CHARGER MATIERES
+  // =========================
+
+
   chargerMatieres(){
 
 
@@ -109,11 +139,8 @@ export class Matieres implements OnInit {
 
 
         console.log(
-
           "Matières reçues :",
-
           data
-
         );
 
 
@@ -121,7 +148,10 @@ export class Matieres implements OnInit {
         this.matieres = [...data];
 
 
-        // Force l'affichage après rechargement
+
+        this.calculerPages();
+
+
 
         this.cd.detectChanges();
 
@@ -137,8 +167,8 @@ export class Matieres implements OnInit {
         console.log(error);
 
 
-        this.message =
 
+        this.message =
         "Erreur chargement matières";
 
 
@@ -149,6 +179,7 @@ export class Matieres implements OnInit {
     });
 
 
+
   }
 
 
@@ -157,6 +188,11 @@ export class Matieres implements OnInit {
 
 
 
+
+
+  // =========================
+  // RECHERCHE + PAGINATION
+  // =========================
 
 
   get matieresFiltrees(){
@@ -175,10 +211,28 @@ export class Matieres implements OnInit {
 
 
 
-    if(!texte){
+    let resultat = this.matieres;
 
 
-      return this.matieres;
+
+
+
+    if(texte){
+
+
+      resultat = this.matieres.filter(
+
+        (matiere:any)=>
+
+
+        matiere.nom
+
+        .toLowerCase()
+
+        .includes(texte)
+
+
+      );
 
 
     }
@@ -188,17 +242,48 @@ export class Matieres implements OnInit {
 
 
 
-    return this.matieres.filter((matiere:any)=>
+    this.totalPages = Math.ceil(
+
+      resultat.length /
+
+      this.taillePage
+
+    );
 
 
 
-      matiere.nom
-
-      .toLowerCase()
-
-      .includes(texte)
+    if(this.totalPages === 0){
 
 
+      this.totalPages = 1;
+
+
+    }
+
+
+
+
+
+
+
+    const debut =
+
+    (this.page - 1)
+
+    *
+
+    this.taillePage;
+
+
+
+
+
+
+    return resultat.slice(
+
+      debut,
+
+      debut + this.taillePage
 
     );
 
@@ -214,11 +299,108 @@ export class Matieres implements OnInit {
 
 
 
+  rechercher(){
+
+
+    this.page = 1;
+
+
+  }
+
+
+
+
+
+
+
+
+
+  calculerPages(){
+
+
+    this.totalPages = Math.ceil(
+
+      this.matieres.length /
+
+      this.taillePage
+
+    );
+
+
+
+    if(this.totalPages === 0){
+
+
+      this.totalPages = 1;
+
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+  pageSuivante(){
+
+
+    if(this.page < this.totalPages){
+
+
+      this.page++;
+
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+  pagePrecedente(){
+
+
+    if(this.page > 1){
+
+
+      this.page--;
+
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // =========================
+  // AJOUT
+  // =========================
+
+
   ajouterMatiere(){
 
 
 
-    if(!this.matiere.nom){
+    if(!this.matiere.nom || this.matiere.nom.trim()===''){
 
 
 
@@ -239,6 +421,46 @@ export class Matieres implements OnInit {
 
 
 
+
+    const existe = this.matieres.some(
+
+      (m:any)=>
+
+      m.nom.toLowerCase()
+
+      ===
+
+      this.matiere.nom.toLowerCase()
+
+
+    );
+
+
+
+
+
+
+    if(existe){
+
+
+      this.message =
+
+      "Cette matière existe déjà";
+
+
+      return;
+
+
+    }
+
+
+
+
+
+
+
+
+
     this.matiereService
 
     .ajouterMatiere(this.matiere)
@@ -247,17 +469,7 @@ export class Matieres implements OnInit {
 
 
 
-      next:(response:any)=>{
-
-
-        console.log(
-
-          "Réponse ajout :",
-
-          response
-
-        );
-
+      next:()=>{
 
 
         this.message =
@@ -269,8 +481,6 @@ export class Matieres implements OnInit {
         this.resetForm();
 
 
-
-        // Recharge la liste après ajout
 
         this.chargerMatieres();
 
@@ -284,6 +494,7 @@ export class Matieres implements OnInit {
 
 
         console.log(error);
+
 
 
         this.message =
@@ -307,6 +518,11 @@ export class Matieres implements OnInit {
 
 
 
+
+
+  // =========================
+  // MODIFIER
+  // =========================
 
 
   modifier(matiere:any){
@@ -365,7 +581,6 @@ export class Matieres implements OnInit {
         next:()=>{
 
 
-
           this.message =
 
           "Matière modifiée avec succès";
@@ -390,6 +605,7 @@ export class Matieres implements OnInit {
           console.log(error);
 
 
+
           this.message =
 
           "Erreur modification matière";
@@ -406,7 +622,6 @@ export class Matieres implements OnInit {
     }
 
 
-
   }
 
 
@@ -415,6 +630,11 @@ export class Matieres implements OnInit {
 
 
 
+
+
+  // =========================
+  // SUPPRIMER
+  // =========================
 
 
   supprimer(id:number){
@@ -440,10 +660,13 @@ export class Matieres implements OnInit {
         next:()=>{
 
 
-
           this.message =
 
           "Matière supprimée avec succès";
+
+
+
+          this.page = 1;
 
 
 
@@ -459,6 +682,7 @@ export class Matieres implements OnInit {
 
 
           console.log(error);
+
 
 
           this.message =
@@ -486,6 +710,11 @@ export class Matieres implements OnInit {
 
 
 
+
+
+  // =========================
+  // RESET
+  // =========================
 
 
   resetForm(){

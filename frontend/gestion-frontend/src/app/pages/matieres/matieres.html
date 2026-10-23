@@ -1,21 +1,41 @@
 <div class="matieres-container">
 
 
-  <a routerLink="/dashboard" class="back-btn">
+  <!-- RETOUR DASHBOARD -->
+
+  <a 
+  routerLink="/dashboard" 
+  class="back-btn">
+
     ⬅ Retour Dashboard
+
   </a>
 
 
 
+
+
   <h1>
-    Gestion des matières
+    📚 Gestion des matières
   </h1>
 
 
 
-  <p *ngIf="message" class="message">
-    {{ message }}
+
+
+  <!-- MESSAGE -->
+
+  <p 
+  *ngIf="message"
+  class="message">
+
+    {{message}}
+
   </p>
+
+
+
+
 
 
 
@@ -27,45 +47,66 @@
 
 
     <h2>
-      {{ modification ? 'Modifier une matière' : 'Ajouter une matière' }}
+
+      {{ modification ? 
+      'Modifier une matière' : 
+      'Ajouter une matière' }}
+
     </h2>
 
 
 
 
+
     <form
-      (ngSubmit)="modification ? enregistrerModification() : ajouterMatiere()"
+    (ngSubmit)="modification ? enregistrerModification() : ajouterMatiere()"
     >
 
 
 
+
+
       <label>
+
         Nom de la matière
+
       </label>
+
+
+
 
 
       <input
 
-        type="text"
+      type="text"
 
-        [(ngModel)]="matiere.nom"
+      [(ngModel)]="matiere.nom"
 
-        name="nom"
+      name="nom"
 
-        placeholder="Exemple : Mathématiques"
+      placeholder="Exemple : Mathématiques"
 
-        required
-
-      >
+      required>
 
 
 
 
-      <button type="submit">
 
-        {{ modification ? 'Modifier' : 'Ajouter' }}
+
+
+      <button
+      type="submit"
+      class="btn-save">
+
+
+        {{ modification ? 
+        'Modifier' : 
+        'Ajouter' }}
+
 
       </button>
+
+
 
 
 
@@ -73,19 +114,20 @@
 
       <button
 
-        type="button"
+      type="button"
 
-        class="cancel"
+      class="btn-cancel"
 
-        *ngIf="modification"
+      *ngIf="modification"
 
-        (click)="resetForm()"
+      (click)="resetForm()">
 
-      >
 
         Annuler
 
+
       </button>
+
 
 
 
@@ -101,30 +143,44 @@
 
 
 
+
+
   <!-- RECHERCHE -->
+
 
 
   <div class="search-box">
 
 
     <label>
-      Rechercher une matière :
+
+      🔎 Rechercher une matière :
+
     </label>
+
+
 
 
 
     <input
 
-      type="text"
+    type="text"
 
-      [(ngModel)]="recherche"
+    [(ngModel)]="recherche"
 
-      placeholder="Mathématiques..."
+    (input)="rechercher()"
+
+    name="recherche"
+
+    placeholder="Mathématiques..."
 
     >
 
 
+
   </div>
+
+
 
 
 
@@ -138,12 +194,22 @@
   <div class="table-card">
 
 
+    <h2>
+      Liste des matières
+    </h2>
+
+
+
+
+
     <table>
 
 
       <thead>
 
+
         <tr>
+
 
           <th>
             ID
@@ -162,7 +228,10 @@
 
         </tr>
 
+
       </thead>
+
+
 
 
 
@@ -171,36 +240,55 @@
       <tbody>
 
 
-        <tr *ngFor="let matiere of matieresFiltrees">
+        <tr
+        *ngFor="let matiere of matieresFiltrees">
+
+
+
 
 
           <td>
-            {{ matiere.id }}
+
+            {{matiere.id}}
+
           </td>
 
 
 
+
+
+
+
           <td>
-            {{ matiere.nom }}
+
+            {{matiere.nom}}
+
           </td>
 
 
 
 
+
+
+
           <td>
+
 
 
             <button
 
-              class="edit"
+            class="edit"
 
-              (click)="modifier(matiere)"
+            (click)="modifier(matiere)">
 
-            >
 
               ✏️ Modifier
 
+
             </button>
+
+
+
 
 
 
@@ -208,18 +296,24 @@
 
             <button
 
-              class="delete"
+            class="delete"
 
-              (click)="supprimer(matiere.id)"
+            (click)="supprimer(matiere.id)">
 
-            >
 
               🗑 Supprimer
+
 
             </button>
 
 
+
+
+
           </td>
+
+
+
 
 
         </tr>
@@ -228,17 +322,26 @@
 
 
 
-        <tr *ngIf="matieresFiltrees.length === 0">
+
+
+
+
+        <tr
+        *ngIf="matieresFiltrees.length === 0">
 
 
           <td colspan="3">
 
+
             Aucune matière trouvée
+
 
           </td>
 
 
         </tr>
+
+
 
 
 
@@ -248,7 +351,71 @@
     </table>
 
 
+
   </div>
+
+
+
+
+
+
+
+
+
+  <!-- PAGINATION -->
+
+
+  <div class="pagination">
+
+
+    <button
+
+    (click)="pagePrecedente()"
+
+    [disabled]="page === 1">
+
+
+      ⬅ Précédent
+
+
+    </button>
+
+
+
+
+
+
+
+    <span>
+
+      Page {{page}} / {{totalPages}}
+
+    </span>
+
+
+
+
+
+
+
+    <button
+
+    (click)="pageSuivante()"
+
+    [disabled]="page === totalPages">
+
+
+      Suivant ➡
+
+
+    </button>
+
+
+
+  </div>
+
+
+
 
 
 

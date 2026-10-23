@@ -1,16 +1,24 @@
 <div class="container">
 
 
+  <!-- HEADER -->
+
   <div class="header">
+
 
     <h1>
       🔗 Affectation Classe - Matière
     </h1>
 
 
+
     <button
+
       class="back-btn"
-      routerLink="/dashboard">
+
+      type="button"
+
+      (click)="retourDashboard()">
 
       ⬅ Retour Dashboard
 
@@ -23,8 +31,14 @@
 
 
 
+
+
+  <!-- MESSAGE -->
+
   <p
+
     *ngIf="message"
+
     class="message">
 
     {{ message }}
@@ -37,7 +51,10 @@
 
 
 
+
+
   <!-- FORMULAIRE -->
+
 
   <div class="card">
 
@@ -53,6 +70,7 @@
 
 
     <form
+
       (ngSubmit)="modification ? enregistrerModification() : ajouter()">
 
 
@@ -60,6 +78,7 @@
 
 
       <!-- CLASSE -->
+
 
       <div class="form-group">
 
@@ -79,9 +98,7 @@
           required>
 
 
-
-          <option
-            [ngValue]="null">
+          <option [ngValue]="null">
 
             Sélectionner une classe
 
@@ -115,7 +132,10 @@
 
 
 
+
+
       <!-- MATIERE -->
+
 
       <div class="form-group">
 
@@ -136,12 +156,12 @@
 
 
 
-          <option
-            [ngValue]="null">
+          <option [ngValue]="null">
 
             Sélectionner une matière
 
           </option>
+
 
 
 
@@ -172,7 +192,9 @@
 
 
 
+
       <!-- ENSEIGNANT -->
+
 
       <div class="form-group">
 
@@ -193,12 +215,13 @@
 
 
 
-          <option
-            [ngValue]="null">
+
+          <option [ngValue]="null">
 
             Sélectionner un enseignant
 
           </option>
+
 
 
 
@@ -211,6 +234,7 @@
 
 
             {{ enseignant.nom }}
+
             {{ enseignant.prenom }}
 
 
@@ -233,12 +257,14 @@
 
       <!-- COEFFICIENT -->
 
+
       <div class="form-group">
 
 
         <label>
           Coefficient
         </label>
+
 
 
 
@@ -265,6 +291,9 @@
 
 
 
+
+
+      <!-- BOUTONS -->
 
 
       <button
@@ -299,7 +328,9 @@
         (click)="reset()">
 
 
+
         ❌ Annuler
+
 
 
       </button>
@@ -307,9 +338,7 @@
 
 
 
-
     </form>
-
 
 
   </div>
@@ -322,10 +351,41 @@
 
 
 
+  <!-- RECHERCHE -->
+
+
+  <div class="card">
+
+
+    <label>
+
+      🔎 Rechercher :
+
+    </label>
 
 
 
-  <!-- LISTE -->
+    <input
+
+      type="text"
+
+      [(ngModel)]="recherche"
+
+      placeholder="Classe, matière ou enseignant...">
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+  <!-- TABLEAU -->
+
 
   <div class="card">
 
@@ -333,7 +393,6 @@
     <h2>
       Liste des affectations
     </h2>
-
 
 
 
@@ -387,9 +446,11 @@
       <tbody>
 
 
+
+
         <tr
 
-          *ngFor="let item of affectations">
+          *ngFor="let item of affectationsFiltrees">
 
 
 
@@ -427,7 +488,6 @@
 
 
 
-
           <td>
 
             {{ item.coefficient ?? item.pivot?.coefficient }}
@@ -444,6 +504,8 @@
 
 
             <button
+
+              type="button"
 
               class="edit-btn"
 
@@ -462,12 +524,16 @@
 
             <button
 
+              type="button"
+
               class="delete-btn"
 
               (click)="supprimer(item.id)">
 
 
+
               🗑 Supprimer
+
 
 
             </button>
@@ -475,7 +541,6 @@
 
 
           </td>
-
 
 
 
@@ -488,12 +553,17 @@
 
 
 
-        <tr *ngIf="affectations.length === 0">
+
+
+        <tr
+
+          *ngIf="affectationsFiltrees.length === 0">
 
 
           <td colspan="5">
 
             Aucune affectation trouvée
+
 
           </td>
 
@@ -512,8 +582,78 @@
 
 
 
-  </div>
 
+
+
+
+
+
+    <!-- PAGINATION -->
+
+
+    <div class="pagination">
+
+
+      <button
+
+        type="button"
+
+        (click)="pagePrecedente()"
+
+        [disabled]="page === 1">
+
+
+        ⬅ Précédent
+
+
+      </button>
+
+
+
+
+
+
+
+      <span>
+
+
+        Page {{ page }} / {{ totalPages }}
+
+
+      </span>
+
+
+
+
+
+
+
+      <button
+
+        type="button"
+
+        (click)="pageSuivante()"
+
+        [disabled]="page === totalPages || totalPages === 0">
+
+
+
+        Suivant ➡
+
+
+
+      </button>
+
+
+
+    </div>
+
+
+
+
+
+
+  </div>
 
 
 

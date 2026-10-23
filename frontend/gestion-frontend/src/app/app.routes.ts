@@ -13,9 +13,12 @@ import { ClasseMatieres } from './pages/classe-matieres/classe-matieres';
 
 import { Statistiques } from './pages/statistiques/statistiques';
 
+import { Bulletins } from './pages/bulletins/bulletins';
+
 import { NotFound } from './pages/not-found/not-found';
 
 import { authGuard } from './guards/auth-guard';
+
 
 
 
@@ -23,21 +26,37 @@ export const routes: Routes = [
 
 
 
+  /*
+  ==========================
+  REDIRECTION
+  ==========================
+  */
+
+
   {
-    path: '',
-    redirectTo: 'login',
-    pathMatch: 'full'
+    path:'',
+    redirectTo:'login',
+    pathMatch:'full'
   },
 
 
 
 
 
-  // Connexion
+
+
+
+
+  /*
+  ==========================
+  CONNEXION
+  ==========================
+  */
+
 
   {
-    path: 'login',
-    component: Login
+    path:'login',
+    component:Login
   },
 
 
@@ -48,12 +67,16 @@ export const routes: Routes = [
 
 
 
-  // Dashboard principal
+  /*
+  ==========================
+  DASHBOARD
+  ==========================
+  */
 
 
   {
-    path: 'dashboard',
-    component: Dashboard,
+    path:'dashboard',
+    component:Dashboard,
     canActivate:[
       authGuard
     ]
@@ -67,7 +90,11 @@ export const routes: Routes = [
 
 
 
-  // Élèves
+  /*
+  ==========================
+  ELEVES
+  ==========================
+  */
 
 
   {
@@ -86,7 +113,11 @@ export const routes: Routes = [
 
 
 
-  // Classes
+  /*
+  ==========================
+  CLASSES
+  ==========================
+  */
 
 
   {
@@ -105,7 +136,11 @@ export const routes: Routes = [
 
 
 
-  // Matières
+  /*
+  ==========================
+  MATIERES
+  ==========================
+  */
 
 
   {
@@ -124,7 +159,11 @@ export const routes: Routes = [
 
 
 
-  // Enseignants
+  /*
+  ==========================
+  ENSEIGNANTS
+  ==========================
+  */
 
 
   {
@@ -143,7 +182,11 @@ export const routes: Routes = [
 
 
 
-  // Affectations
+  /*
+  ==========================
+  AFFECTATIONS
+  ==========================
+  */
 
 
   {
@@ -162,7 +205,11 @@ export const routes: Routes = [
 
 
 
-  // Notes
+  /*
+  ==========================
+  NOTES
+  ==========================
+  */
 
 
   {
@@ -181,7 +228,34 @@ export const routes: Routes = [
 
 
 
-  // Statistiques
+  /*
+  ==========================
+  BULLETINS
+  ==========================
+  */
+
+
+  {
+    path:'bulletins',
+    component:Bulletins,
+    canActivate:[
+      authGuard
+    ]
+  },
+
+
+
+
+
+
+
+
+
+  /*
+  ==========================
+  STATISTIQUES
+  ==========================
+  */
 
 
   {
@@ -200,7 +274,11 @@ export const routes: Routes = [
 
 
 
-  // Page inexistante
+  /*
+  ==========================
+  PAGE NON TROUVEE
+  ==========================
+  */
 
 
   {

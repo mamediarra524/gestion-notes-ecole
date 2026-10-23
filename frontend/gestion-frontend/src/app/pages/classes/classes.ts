@@ -6,6 +6,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ClasseService } from '../../services/classe';
 
 
+
 @Component({
 
   selector: 'app-classes',
@@ -36,27 +37,27 @@ export class Classes implements OnInit {
   classes:any[] = [];
 
 
-  recherche = '';
+  recherche:string = '';
 
 
-  message = '';
-
-
-
-  modification = false;
-
-
-  idModification:any = null;
+  message:string = '';
 
 
 
+  modification:boolean = false;
 
 
-  classe = {
+  idModification:number|null = null;
+
+
+
+
+
+
+  classe:any = {
 
 
     nom:'',
-
 
     niveau:''
 
@@ -67,16 +68,38 @@ export class Classes implements OnInit {
 
 
 
+  // ===========================
+  // PAGINATION
+  // ===========================
+
+
+  page:number = 1;
+
+
+  elementsParPage:number = 10;
+
+
+  totalPages:number = 0;
+
+
+
+
+
+
 
 
 
   constructor(
 
+
     private classeService:ClasseService,
+
 
     private cd:ChangeDetectorRef,
 
+
     private router:Router
+
 
   ){}
 
@@ -100,10 +123,17 @@ export class Classes implements OnInit {
 
 
 
+  // ===========================
+  // CHARGEMENT DES CLASSES
+  // ===========================
+
+
   chargerClasses(){
 
 
+
     this.classeService.getClasses()
+
 
     .subscribe({
 
@@ -113,34 +143,21 @@ export class Classes implements OnInit {
 
 
         console.log(
-
           "Classes reçues :",
-
           data
-
         );
 
 
 
         this.classes = Array.isArray(data)
 
+        ? [...data]
 
-          ? [...data]
-
-
-          : [];
+        : [];
 
 
 
-
-        console.log(
-
-          "Nombre classes :",
-
-          this.classes.length
-
-        );
-
+        this.calculerPages();
 
 
 
@@ -152,18 +169,10 @@ export class Classes implements OnInit {
 
 
 
-
-
       error:(error:any)=>{
 
 
-        console.log(
-
-          "Erreur chargement classes :",
-
-          error
-
-        );
+        console.log(error);
 
 
 
@@ -190,6 +199,11 @@ export class Classes implements OnInit {
 
 
 
+  // ===========================
+  // RECHERCHE
+  // ===========================
+
+
   get classesFiltrees(){
 
 
@@ -204,50 +218,135 @@ export class Classes implements OnInit {
 
 
 
-    if(!texte){
+    let resultat = this.classes;
 
 
-      return this.classes;
+
+    if(texte){
+
+
+      resultat = this.classes.filter((classe:any)=>{
+
+
+        return (
+
+
+          classe.nom
+
+          .toLowerCase()
+
+          .includes(texte)
+
+
+
+          ||
+
+
+
+          classe.niveau
+
+          .toLowerCase()
+
+          .includes(texte)
+
+
+
+        );
+
+
+      });
 
 
     }
 
 
 
+    return resultat;
+
+
+  }
 
 
 
-    return this.classes.filter(classe=>{
-
-
-      return (
-
-
-        classe.nom
-
-        .toLowerCase()
-
-        .includes(texte)
 
 
 
-        ||
 
 
 
-        classe.niveau
-
-        .toLowerCase()
-
-        .includes(texte)
+  // ===========================
+  // PAGINATION RESULTAT
+  // ===========================
 
 
-
-      );
+  get classesPaginees(){
 
 
 
-    });
+    const debut =
+
+    (this.page - 1) *
+
+    this.elementsParPage;
+
+
+
+    return this.classesFiltrees.slice(
+
+
+      debut,
+
+
+      debut + this.elementsParPage
+
+
+    );
+
+
+  }
+
+
+
+
+
+
+
+
+
+  calculerPages(){
+
+
+
+    this.totalPages = Math.ceil(
+
+
+      this.classesFiltrees.length /
+
+
+      this.elementsParPage
+
+
+    );
+
+
+
+    if(this.totalPages === 0){
+
+
+      this.totalPages = 1;
+
+
+    }
+
+
+
+    if(this.page > this.totalPages){
+
+
+      this.page = this.totalPages;
+
+
+    }
 
 
 
@@ -261,19 +360,55 @@ export class Classes implements OnInit {
 
 
 
+  pageSuivante(){
+
+
+    if(this.page < this.totalPages){
+
+
+      this.page++;
+
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+  pagePrecedente(){
+
+
+    if(this.page > 1){
+
+
+      this.page--;
+
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // ===========================
+  // AJOUT
+  // ===========================
+
+
   ajouterClasse(){
-
-
-
-    console.log(
-
-      "Données envoyées :",
-
-      this.classe
-
-    );
-
-
 
 
 
@@ -286,15 +421,12 @@ export class Classes implements OnInit {
       !this.classe.niveau
 
 
-
     ){
-
 
 
       this.message =
 
       "Veuillez remplir tous les champs";
-
 
 
       return;
@@ -307,24 +439,16 @@ export class Classes implements OnInit {
 
 
 
-
-
     this.classeService
 
     .ajouterClasse(this.classe)
-
 
 
     .subscribe({
 
 
 
-
-      next:(response:any)=>{
-
-
-        console.log(response);
-
+      next:()=>{
 
 
         this.message =
@@ -341,23 +465,14 @@ export class Classes implements OnInit {
 
 
 
-
       },
-
-
 
 
 
       error:(error:any)=>{
 
 
-        console.log(
-
-          "Erreur Laravel :",
-
-          error.error
-
-        );
+        console.log(error);
 
 
 
@@ -366,16 +481,11 @@ export class Classes implements OnInit {
         "Erreur ajout classe";
 
 
-
       }
 
 
 
-
-
     });
-
-
 
 
 
@@ -387,6 +497,11 @@ export class Classes implements OnInit {
 
 
 
+
+
+  // ===========================
+  // MODIFIER
+  // ===========================
 
 
   modifier(classe:any){
@@ -403,7 +518,6 @@ export class Classes implements OnInit {
 
 
     };
-
 
 
 
@@ -429,122 +543,38 @@ export class Classes implements OnInit {
 
 
 
-    this.classeService
-
-    .modifierClasse(
-
-
-      this.idModification,
-
-
-      this.classe
-
-
-    )
-
-
-
-    .subscribe({
-
-
-
-      next:(response:any)=>{
-
-
-        console.log(response);
-
-
-
-        this.message =
-
-        "Classe modifiée avec succès";
-
-
-
-        this.resetForm();
-
-
-
-        this.chargerClasses();
-
-
-
-      },
-
-
-
-
-
-      error:(error:any)=>{
-
-
-        console.log(
-
-          "Erreur Laravel :",
-
-          error.error
-
-        );
-
-
-
-        this.message =
-
-        "Erreur modification";
-
-
-      }
-
-
-
-
-
-    });
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-  supprimer(id:number){
-
-
-
-    if(confirm(
-
-      "Voulez-vous supprimer cette classe ?"
-
-    )){
+    if(this.idModification){
 
 
 
       this.classeService
 
-      .supprimerClasse(id)
+      .modifierClasse(
 
+
+        this.idModification,
+
+
+        this.classe
+
+
+      )
 
 
       .subscribe({
 
 
 
-        next:(response:any)=>{
-
-
-          console.log(response);
-
+        next:()=>{
 
 
           this.message =
 
-          "Classe supprimée avec succès";
+          "Classe modifiée avec succès";
+
+
+
+          this.resetForm();
 
 
 
@@ -553,8 +583,6 @@ export class Classes implements OnInit {
 
 
         },
-
-
 
 
 
@@ -567,13 +595,10 @@ export class Classes implements OnInit {
 
           this.message =
 
-          "Erreur suppression";
-
+          "Erreur modification";
 
 
         }
-
-
 
 
 
@@ -595,11 +620,70 @@ export class Classes implements OnInit {
 
 
 
-  retourDashboard(){
+  // ===========================
+  // SUPPRESSION
+  // ===========================
+
+
+  supprimer(id:number){
 
 
 
-    this.router.navigate(['/dashboard']);
+    if(confirm(
+
+      "Voulez-vous supprimer cette classe ?"
+
+    )){
+
+
+
+      this.classeService
+
+      .supprimerClasse(id)
+
+
+      .subscribe({
+
+
+
+        next:()=>{
+
+
+          this.message =
+
+          "Classe supprimée avec succès";
+
+
+
+          this.chargerClasses();
+
+
+
+        },
+
+
+
+        error:(error:any)=>{
+
+
+          console.log(error);
+
+
+
+          this.message =
+
+          "Erreur suppression";
+
+
+        }
+
+
+
+      });
+
+
+
+    }
 
 
 
@@ -611,6 +695,32 @@ export class Classes implements OnInit {
 
 
 
+
+
+  // ===========================
+  // RETOUR DASHBOARD
+  // ===========================
+
+
+  retourDashboard(){
+
+
+    this.router.navigate(['/dashboard']);
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // ===========================
+  // RESET
+  // ===========================
 
 
   resetForm(){
@@ -630,11 +740,10 @@ export class Classes implements OnInit {
 
 
 
-    this.modification=false;
+    this.modification = false;
 
 
-
-    this.idModification=null;
+    this.idModification = null;
 
 
 

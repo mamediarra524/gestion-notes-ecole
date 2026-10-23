@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 import { DashboardService } from '../../services/dashboard';
 
@@ -12,7 +13,9 @@ import { DashboardService } from '../../services/dashboard';
   standalone: true,
 
   imports: [
+
     CommonModule
+
   ],
 
   templateUrl: './statistiques.html',
@@ -28,13 +31,19 @@ export class Statistiques implements OnInit {
 
   data:any = null;
 
+  message:string = '';
+
+
+
 
 
   constructor(
 
     private dashboardService: DashboardService,
 
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+
+    private router: Router
 
   ){}
 
@@ -45,12 +54,11 @@ export class Statistiques implements OnInit {
   ngOnInit(): void {
 
 
-
     this.chargerStatistiques();
 
 
-
   }
+
 
 
 
@@ -61,7 +69,9 @@ export class Statistiques implements OnInit {
 
 
 
-    this.dashboardService.getDashboard()
+    this.dashboardService
+
+    .getDashboard()
 
     .subscribe({
 
@@ -72,8 +82,11 @@ export class Statistiques implements OnInit {
 
 
         console.log(
-          "Statistiques reçues :",
+
+          "Données statistiques :",
+
           result
+
         );
 
 
@@ -81,8 +94,6 @@ export class Statistiques implements OnInit {
         this.data = result;
 
 
-
-        // Force Angular à rafraîchir l'affichage
 
         this.cd.detectChanges();
 
@@ -96,10 +107,13 @@ export class Statistiques implements OnInit {
 
 
 
-        console.log(
-          "Erreur statistiques :",
-          err
-        );
+        console.log(err);
+
+
+
+        this.message =
+
+        "Erreur chargement statistiques";
 
 
 
@@ -112,6 +126,28 @@ export class Statistiques implements OnInit {
 
 
   }
+
+
+
+
+
+
+
+  retourDashboard(){
+
+
+
+    console.log("Retour dashboard");
+
+
+
+    this.router.navigate(['/dashboard']);
+
+
+
+  }
+
+
 
 
 

@@ -225,7 +225,81 @@
 
 
 
+    <!-- RECHERCHE + FILTRE -->
+
+    <div class="filter-card">
+
+
+        <h2>
+            🔎 Recherche
+        </h2>
+
+
+
+        <input
+
+        type="text"
+
+        placeholder="Rechercher un élève..."
+
+        [(ngModel)]="recherche"
+
+        name="recherche"
+
+        (input)="appliquerFiltre()"
+
+        />
+
+
+
+
+
+
+        <select
+
+        [(ngModel)]="matiereFiltre"
+
+        name="matiereFiltre"
+
+        (change)="appliquerFiltre()">
+
+
+            <option [ngValue]="null">
+
+                Toutes les matières
+
+            </option>
+
+
+
+            <option
+
+            *ngFor="let matiere of matieres"
+
+            [ngValue]="matiere.id">
+
+
+                {{matiere.nom}}
+
+
+            </option>
+
+
+        </select>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
     <!-- LISTE DES NOTES -->
+
 
     <div class="table-card">
 
@@ -288,7 +362,7 @@
 
 
                 <tr 
-                *ngFor="let n of notes">
+                *ngFor="let n of notesPage">
 
 
 
@@ -339,7 +413,24 @@
                     <td>
 
 
-                        ⭐ {{n.note}} /20
+                        <span
+                        [ngClass]="{
+
+                        'rouge': n.note < 10,
+
+                        'jaune': n.note >=10 && n.note <12,
+
+                        'bleu': n.note >=12 && n.note <16,
+
+                        'vert': n.note >=16
+
+                        }">
+
+
+                            ⭐ {{n.note}} /20
+
+
+                        </span>
 
 
                     </td>
@@ -399,13 +490,13 @@
 
 
                 <tr 
-                *ngIf="notes.length === 0">
+                *ngIf="notesPage.length === 0">
 
 
                     <td colspan="5">
 
 
-                        Aucune note enregistrée
+                        Aucune note trouvée
 
 
                     </td>
@@ -421,6 +512,64 @@
 
 
         </table>
+
+
+
+
+
+
+        <!-- PAGINATION -->
+
+
+        <div class="pagination">
+
+
+            <button
+
+            (click)="pagePrecedente()"
+
+            [disabled]="page===1">
+
+
+                ◀ Précédent
+
+
+            </button>
+
+
+
+
+
+            <span>
+
+
+                Page {{page}} / {{totalPages}}
+
+
+            </span>
+
+
+
+
+
+            <button
+
+            (click)="pageSuivante()"
+
+            [disabled]="page===totalPages">
+
+
+                Suivant ▶
+
+
+            </button>
+
+
+
+        </div>
+
+
+
 
 
     </div>

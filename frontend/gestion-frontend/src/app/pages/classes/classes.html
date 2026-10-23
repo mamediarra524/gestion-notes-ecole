@@ -1,13 +1,22 @@
 <div class="classes-container">
 
 
-  <!-- Retour Dashboard -->
+  <!-- RETOUR DASHBOARD -->
 
-  <a routerLink="/dashboard" class="back-btn">
+  <button
+
+    type="button"
+
+    class="back-btn"
+
+    (click)="retourDashboard()">
+
 
     ⬅ Retour Dashboard
 
-  </a>
+
+  </button>
+
 
 
 
@@ -18,9 +27,19 @@
 
 
 
-  <p *ngIf="message" class="message">
+
+
+  <!-- MESSAGE -->
+
+  <p
+
+    *ngIf="message"
+
+    class="message">
+
 
     {{ message }}
+
 
   </p>
 
@@ -28,7 +47,11 @@
 
 
 
-  <!-- Formulaire -->
+
+
+
+
+  <!-- FORMULAIRE -->
 
 
   <div class="form-card">
@@ -36,81 +59,94 @@
 
     <h2>
 
+
       {{ modification ? 'Modifier une classe' : 'Ajouter une classe' }}
+
 
     </h2>
 
 
 
+
+
     <form
-      (ngSubmit)="modification ? enregistrerModification() : ajouterClasse()"
-    >
 
-
-
-      <div class="form-group">
-
-
-        <label>
-          Nom de la classe
-        </label>
-
-
-        <input
-
-          type="text"
-
-          [(ngModel)]="classe.nom"
-
-          name="nom"
-
-          placeholder="Exemple : 6ème A"
-
-          required
-
-        >
-
-
-      </div>
+      (ngSubmit)="modification ? enregistrerModification() : ajouterClasse()">
 
 
 
 
 
 
+      <label>
 
-      <div class="form-group">
+        Nom de la classe
 
-
-        <label>
-          Niveau
-        </label>
+      </label>
 
 
 
-        <input
-
-          type="text"
-
-          [(ngModel)]="classe.niveau"
-
-          name="niveau"
-
-          placeholder="Exemple : 6ème"
-
-          required
-
-        >
+      <input
 
 
-      </div>
+        type="text"
+
+
+        [(ngModel)]="classe.nom"
+
+
+        name="nom"
+
+
+        placeholder="Exemple : 6ème A"
+
+
+        required>
+
+
+    
+
+
+
+
+
+      <label>
+
+        Niveau
+
+      </label>
+
+
+
+      <input
+
+
+        type="text"
+
+
+        [(ngModel)]="classe.niveau"
+
+
+        name="niveau"
+
+
+        placeholder="Exemple : 6ème"
+
+
+        required>
 
 
 
 
 
 
-      <button type="submit">
+
+
+      <button
+
+        type="submit"
+
+        class="save-btn">
 
 
         {{ modification ? 'Modifier' : 'Ajouter' }}
@@ -122,21 +158,31 @@
 
 
 
+
+
+
       <button
+
 
         type="button"
 
+
+        class="cancel-btn"
+
+
         *ngIf="modification"
 
-        class="cancel"
 
-        (click)="resetForm()"
+        (click)="resetForm()">
 
-      >
+
 
         Annuler
 
+
+
       </button>
+
 
 
 
@@ -152,26 +198,36 @@
 
 
 
-  <!-- Recherche -->
+
+
+  <!-- RECHERCHE -->
 
 
   <div class="search-box">
 
 
     <label>
-      Rechercher :
+
+      🔎 Rechercher une classe :
+
     </label>
+
+
 
 
     <input
 
+
       type="text"
+
 
       [(ngModel)]="recherche"
 
-      placeholder="Nom ou niveau..."
 
-    >
+      (ngModelChange)="page=1; calculerPages()"
+
+
+      placeholder="Nom ou niveau...">
 
 
   </div>
@@ -181,10 +237,15 @@
 
 
 
+
+
   <p class="count">
 
+
     Nombre de classes :
+
     {{ classesFiltrees.length }}
+
 
   </p>
 
@@ -196,7 +257,7 @@
 
 
 
-  <!-- Tableau -->
+  <!-- TABLEAU -->
 
 
   <div class="table-card">
@@ -240,11 +301,16 @@
 
 
 
+
+
       <tbody>
 
 
 
-        <tr *ngFor="let classe of classesFiltrees">
+        <tr
+
+          *ngFor="let classe of classesPaginees">
+
 
 
           <td>
@@ -256,11 +322,13 @@
 
 
 
+
           <td>
 
             {{ classe.nom }}
 
           </td>
+
 
 
 
@@ -275,20 +343,29 @@
 
 
 
+
           <td>
 
 
+
             <button
+
 
               class="edit"
 
-              (click)="modifier(classe)"
 
-            >
+              (click)="modifier(classe)">
+
+
 
               ✏️ Modifier
 
+
+
             </button>
+
+
+
 
 
 
@@ -296,15 +373,21 @@
 
             <button
 
+
               class="delete"
 
-              (click)="supprimer(classe.id)"
 
-            >
+              (click)="supprimer(classe.id)">
+
+
 
               🗑 Supprimer
 
+
+
             </button>
+
+
 
 
 
@@ -319,17 +402,26 @@
 
 
 
-        <tr *ngIf="classesFiltrees.length === 0">
+
+
+
+        <tr
+
+          *ngIf="classesPaginees.length === 0">
 
 
           <td colspan="4">
 
+
             Aucune classe trouvée
+
 
           </td>
 
 
         </tr>
+
+
 
 
 
@@ -340,6 +432,93 @@
 
 
   </div>
+
+
+
+
+
+
+
+
+
+  <!-- PAGINATION -->
+
+
+  <div class="pagination">
+
+
+
+
+
+    <button
+
+
+      type="button"
+
+
+      (click)="pagePrecedente()"
+
+
+      [disabled]="page === 1">
+
+
+
+      ⬅ Précédent
+
+
+
+    </button>
+
+
+
+
+
+
+
+
+    <span>
+
+
+      Page {{ page }} / {{ totalPages }}
+
+
+    </span>
+
+
+
+
+
+
+
+
+    <button
+
+
+      type="button"
+
+
+      (click)="pageSuivante()"
+
+
+      [disabled]="page === totalPages">
+
+
+
+      Suivant ➡
+
+
+
+    </button>
+
+
+
+
+
+  </div>
+
+
+
+
 
 
 

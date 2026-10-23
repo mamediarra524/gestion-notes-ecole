@@ -250,11 +250,23 @@
 
 
 
+/* Bulletins */
+
+.yellow {
+
+  background: linear-gradient(135deg,#facc15,#f59e0b);
+
+}
+
+
+
 .cyan {
 
   background: linear-gradient(135deg,#22d3ee,#0891b2);
 
 }
+
+
 
 
 

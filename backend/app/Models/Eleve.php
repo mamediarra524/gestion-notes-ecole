@@ -50,7 +50,9 @@ class Eleve extends Model
     {
 
         return $this->belongsTo(
+
             Classe::class
+
         );
 
     }
@@ -68,8 +70,54 @@ class Eleve extends Model
     {
 
         return $this->hasMany(
+
             Note::class
+
         );
+
+    }
+
+
+
+
+
+
+
+    /**
+     * Un élève possède plusieurs bulletins.
+     */
+    public function bulletins()
+    {
+
+        return $this->hasMany(
+
+            Bulletin::class
+
+        );
+
+    }
+
+
+
+
+
+
+
+    /**
+     * Matières suivies par l'élève
+     * via sa classe
+     * avec coefficient et enseignant
+     */
+    public function matieres()
+    {
+
+        return $this->classe()
+
+            ->with([
+
+                'matieres'
+
+            ]);
 
     }
 

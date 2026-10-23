@@ -10,19 +10,16 @@ import { MatiereService } from '../../services/matiere';
 
 
 
-
 @Component({
 
-  selector: 'app-notes',
+  selector:'app-notes',
 
   standalone:true,
 
   imports:[
 
     CommonModule,
-
     FormsModule,
-
     RouterModule
 
   ],
@@ -34,34 +31,64 @@ import { MatiereService } from '../../services/matiere';
 })
 
 
-
 export class Notes implements OnInit {
 
 
 
-  notes:any[] = [];
+  notes:any[]=[];
 
-  eleves:any[] = [];
-
-  matieres:any[] = [];
+  notesFiltrees:any[]=[];
 
 
+  eleves:any[]=[];
 
-  message:string = '';
-
-
-
-  modification:boolean = false;
-
-
-  noteId:number|null = null;
+  matieres:any[]=[];
 
 
 
+  message:string='';
 
 
 
-  note:any = {
+  modification:boolean=false;
+
+
+  noteId:number|null=null;
+
+
+
+
+
+  // Recherche et filtre
+
+  recherche:string='';
+
+
+  matiereFiltre:any=null;
+
+
+
+
+
+  // Pagination
+
+  page:number=1;
+
+
+  taillePage:number=20;
+
+
+  totalPages:number=1;
+
+
+
+
+
+
+
+
+
+  note:any={
 
 
     eleve_id:null,
@@ -138,9 +165,7 @@ export class Notes implements OnInit {
     .subscribe({
 
 
-
       next:(data:any)=>{
-
 
 
         console.log(
@@ -150,34 +175,198 @@ export class Notes implements OnInit {
 
 
 
-        this.notes = data;
+        this.notes=data;
 
+
+        this.appliquerFiltre();
 
 
         this.cd.detectChanges();
 
 
-
       },
-
-
 
 
       error:(err:any)=>{
 
 
-        console.log(
-          "Erreur chargement notes :",
-          err
-        );
+        console.log(err);
 
 
       }
 
 
-
     });
 
+
+  }
+
+
+
+
+
+
+
+
+
+  // =========================
+  // FILTRE + RECHERCHE
+  // =========================
+
+
+  appliquerFiltre(){
+
+
+    let resultat=this.notes;
+
+
+
+    if(this.recherche){
+
+
+      const texte=this.recherche.toLowerCase();
+
+
+
+      resultat=resultat.filter((n:any)=>{
+
+
+        const nom =
+        n.eleve?.nom?.toLowerCase() || '';
+
+
+
+        const prenom =
+        n.eleve?.prenom?.toLowerCase() || '';
+
+
+
+        return (
+
+          nom.includes(texte)
+
+          ||
+
+          prenom.includes(texte)
+
+        );
+
+
+      });
+
+
+    }
+
+
+
+
+
+
+
+    if(this.matiereFiltre){
+
+
+      resultat=resultat.filter((n:any)=>
+
+
+        n.matiere_id ==
+        this.matiereFiltre
+
+
+      );
+
+
+    }
+
+
+
+
+
+    this.notesFiltrees=resultat;
+
+
+
+    this.totalPages=Math.ceil(
+
+      this.notesFiltrees.length /
+      this.taillePage
+
+    );
+
+
+
+    this.page=1;
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // =========================
+  // PAGINATION
+  // =========================
+
+
+  get notesPage(){
+
+
+    const debut =
+
+    (this.page-1)
+    *
+    this.taillePage;
+
+
+
+    return this.notesFiltrees.slice(
+
+      debut,
+
+      debut + this.taillePage
+
+    );
+
+
+  }
+
+
+
+
+
+
+  pageSuivante(){
+
+
+    if(this.page < this.totalPages){
+
+      this.page++;
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+  pagePrecedente(){
+
+
+    if(this.page>1){
+
+      this.page--;
+
+    }
 
 
   }
@@ -204,22 +393,16 @@ export class Notes implements OnInit {
     .subscribe({
 
 
-
       next:(data:any)=>{
 
 
-
-        this.eleves = data;
-
+        this.eleves=data;
 
 
         this.cd.detectChanges();
 
 
-
       },
-
-
 
 
       error:(err:any)=>{
@@ -231,9 +414,7 @@ export class Notes implements OnInit {
       }
 
 
-
     });
-
 
 
   }
@@ -260,22 +441,16 @@ export class Notes implements OnInit {
     .subscribe({
 
 
-
       next:(data:any)=>{
 
 
-
-        this.matieres = data;
-
+        this.matieres=data;
 
 
         this.cd.detectChanges();
 
 
-
       },
-
-
 
 
       error:(err:any)=>{
@@ -287,9 +462,7 @@ export class Notes implements OnInit {
       }
 
 
-
     });
-
 
 
   }
@@ -310,7 +483,6 @@ export class Notes implements OnInit {
   enregistrerNote(){
 
 
-
     if(this.modification && this.noteId){
 
 
@@ -323,48 +495,33 @@ export class Notes implements OnInit {
 
       )
 
-
       .subscribe({
 
 
-
-        next:(res:any)=>{
-
+        next:()=>{
 
 
-          this.message =
+          this.message=
           "Note modifiée avec succès";
-
 
 
           this.chargerNotes();
 
 
-
           this.resetForm();
-
-
-
-          this.cd.detectChanges();
-
 
 
         },
 
 
-
-
         error:(err:any)=>{
 
 
-
-          this.message =
+          this.message=
           err.error.message;
 
 
-
         }
-
 
 
       });
@@ -372,8 +529,6 @@ export class Notes implements OnInit {
 
 
     }
-
-
 
     else {
 
@@ -389,52 +544,36 @@ export class Notes implements OnInit {
       .subscribe({
 
 
-
-        next:(res:any)=>{
-
+        next:()=>{
 
 
-          this.message =
+          this.message=
           "Note ajoutée avec succès";
-
 
 
           this.chargerNotes();
 
 
-
           this.resetForm();
-
-
-
-          this.cd.detectChanges();
-
 
 
         },
 
 
-
-
         error:(err:any)=>{
 
 
-
-          this.message =
+          this.message=
           err.error.message;
-
 
 
         }
 
 
-
       });
 
 
-
     }
-
 
 
   }
@@ -447,24 +586,18 @@ export class Notes implements OnInit {
 
 
 
-  // =========================
-  // MODIFIER
-  // =========================
-
-
   modifierNote(n:any){
 
 
 
-    this.modification = true;
+    this.modification=true;
+
+
+    this.noteId=n.id;
 
 
 
-    this.noteId = n.id;
-
-
-
-    this.note = {
+    this.note={
 
 
       eleve_id:n.eleve_id,
@@ -479,9 +612,7 @@ export class Notes implements OnInit {
       note:n.note
 
 
-
     };
-
 
 
   }
@@ -494,19 +625,12 @@ export class Notes implements OnInit {
 
 
 
-  // =========================
-  // SUPPRIMER
-  // =========================
-
-
   supprimerNote(id:number){
-
 
 
     if(confirm(
       "Supprimer cette note ?"
     )){
-
 
 
       this.noteService.supprimerNote(id)
@@ -515,27 +639,17 @@ export class Notes implements OnInit {
       .subscribe({
 
 
-
         next:()=>{
 
 
-
-          this.message =
+          this.message=
           "Note supprimée avec succès";
-
 
 
           this.chargerNotes();
 
 
-
-          this.cd.detectChanges();
-
-
-
         },
-
-
 
 
         error:(err:any)=>{
@@ -547,13 +661,10 @@ export class Notes implements OnInit {
         }
 
 
-
       });
 
 
-
     }
-
 
 
   }
@@ -566,17 +677,10 @@ export class Notes implements OnInit {
 
 
 
-  // =========================
-  // RESET
-  // =========================
-
-
   resetForm(){
 
 
-
     this.modification=false;
-
 
 
     this.noteId=null;
@@ -584,7 +688,6 @@ export class Notes implements OnInit {
 
 
     this.note={
-
 
 
       eleve_id:null,
@@ -599,9 +702,7 @@ export class Notes implements OnInit {
       note:null
 
 
-
     };
-
 
 
   }

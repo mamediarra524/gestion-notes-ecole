@@ -1,0 +1,360 @@
+<div class="bulletin-container">
+
+
+    <!-- TITRE -->
+
+    <h1>
+        📄 Gestion des bulletins scolaires
+    </h1>
+
+
+
+
+
+    <!-- SELECTION ELEVE -->
+
+    <div class="selection-card">
+
+
+        <label>
+            Choisir un élève :
+        </label>
+
+
+
+        <select [(ngModel)]="eleveId">
+
+
+            <option [ngValue]="null">
+                -- Sélectionner un élève --
+            </option>
+
+
+
+            <option
+                *ngFor="let eleve of eleves"
+                [ngValue]="eleve.id">
+
+
+                {{ eleve.prenom }}
+                {{ eleve.nom }}
+
+
+            </option>
+
+
+
+        </select>
+
+
+
+
+
+        <button
+            (click)="afficherBulletin()"
+            class="btn-primary">
+
+
+            🔎 Afficher le bulletin
+
+
+        </button>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- MESSAGE -->
+
+    <p
+    *ngIf="message"
+    class="message">
+
+
+        {{ message }}
+
+
+    </p>
+
+
+
+
+
+
+
+
+
+    <!-- BULLETIN -->
+
+    <div
+    class="bulletin-card"
+    *ngIf="bulletin">
+
+
+
+
+
+        <div class="entete">
+
+
+            <h2>
+                🏫 Bulletin scolaire
+            </h2>
+
+
+            <p>
+
+                Élève :
+
+                <strong>
+
+                    {{ bulletin.eleve.prenom }}
+                    {{ bulletin.eleve.nom }}
+
+                </strong>
+
+            </p>
+
+
+
+            <p>
+
+                Classe :
+
+                <strong>
+
+                    {{ bulletin.eleve.classe }}
+
+                </strong>
+
+
+            </p>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- TABLEAU NOTES -->
+
+        <h3>
+            📚 Résultats par matière
+        </h3>
+
+
+
+
+
+        <table>
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Matière
+                    </th>
+
+
+                    <th>
+                        Coefficient
+                    </th>
+
+
+                    <th>
+                        Moyenne
+                    </th>
+
+
+                    <th>
+                        Points
+                    </th>
+
+
+                </tr>
+
+
+            </thead>
+
+
+
+
+
+
+
+            <tbody>
+
+
+                <tr
+                *ngFor="let matiere of bulletin.matieres">
+
+
+                    <td>
+
+                        {{ matiere.nom }}
+
+                    </td>
+
+
+
+
+                    <td>
+
+                        {{ matiere.coefficient }}
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        ⭐ {{ matiere.moyenne }}
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        {{ matiere.points }}
+
+                    </td>
+
+
+
+                </tr>
+
+
+
+            </tbody>
+
+
+        </table>
+
+
+
+
+
+
+
+
+
+        <!-- RESULTAT FINAL -->
+
+
+        <div class="resultat">
+
+
+            <h2>
+
+                📊 Résultat final
+
+            </h2>
+
+
+
+            <p>
+
+                Moyenne générale :
+
+                <strong>
+
+                    {{ bulletin.moyenneGenerale }}
+
+                    /20
+
+                </strong>
+
+
+            </p>
+
+
+
+
+
+            <p>
+
+                Rang :
+
+                <strong>
+
+                    {{ bulletin.rang }}
+
+                    ème
+
+                </strong>
+
+
+            </p>
+
+
+
+
+
+
+            <p>
+
+                Appréciation :
+
+                <strong>
+
+                    {{ bulletin.appreciation }}
+
+                </strong>
+
+
+            </p>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <!-- PDF -->
+
+
+        <button
+
+            class="btn-pdf"
+
+            (click)="telechargerPDF()">
+
+
+            📥 Télécharger le bulletin PDF
+
+
+        </button>
+
+
+
+
+
+    </div>
+
+
+
+</div>

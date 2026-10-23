@@ -1,0 +1,559 @@
+.notes-container {
+
+    padding: 25px;
+
+    min-height: 100vh;
+
+    background: #f5f7fb;
+
+    font-family: Arial, sans-serif;
+
+}
+
+
+
+
+
+
+/* ========================= */
+/* BOUTON RETOUR */
+/* ========================= */
+
+
+.retour-btn {
+
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 20px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    margin-bottom:20px;
+
+
+}
+
+
+
+.retour-btn:hover {
+
+
+    background:#1d4ed8;
+
+
+}
+
+
+
+
+
+
+
+
+h1 {
+
+
+    text-align:center;
+
+    color:#1f2937;
+
+    margin-bottom:25px;
+
+    font-size:32px;
+
+
+}
+
+
+
+
+
+
+
+
+/* ========================= */
+/* MESSAGE */
+/* ========================= */
+
+
+.message {
+
+
+    background:#dcfce7;
+
+    color:#166534;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+    font-weight:bold;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ========================= */
+/* FORMULAIRE */
+/* ========================= */
+
+
+.form-card {
+
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    max-width:600px;
+
+    margin:auto;
+
+    margin-bottom:30px;
+
+
+    box-shadow:
+
+    0 5px 15px rgba(0,0,0,0.08);
+
+
+}
+
+
+
+
+.form-card h2 {
+
+
+    color:#2563eb;
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+
+}
+
+
+
+
+
+form {
+
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+
+}
+
+
+
+
+
+label {
+
+
+    font-weight:bold;
+
+    color:#374151;
+
+
+}
+
+
+
+
+
+select,
+input {
+
+
+    padding:12px;
+
+    border-radius:8px;
+
+    border:1px solid #d1d5db;
+
+    font-size:15px;
+
+
+}
+
+
+
+
+
+select:focus,
+input:focus {
+
+
+    outline:none;
+
+    border-color:#2563eb;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ========================= */
+/* BOUTONS */
+/* ========================= */
+
+
+.btn-save {
+
+
+    background:#16a34a;
+
+    color:white;
+
+    border:none;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    margin-top:10px;
+
+
+}
+
+
+
+.btn-save:hover {
+
+
+    background:#15803d;
+
+
+}
+
+
+
+
+
+
+
+.btn-cancel {
+
+
+    background:#6b7280;
+
+    color:white;
+
+    border:none;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+
+}
+
+
+
+.btn-cancel:hover {
+
+
+    background:#4b5563;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ========================= */
+/* TABLEAU */
+/* ========================= */
+
+
+.table-card {
+
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:15px;
+
+
+    box-shadow:
+
+    0 5px 15px rgba(0,0,0,0.08);
+
+
+}
+
+
+
+
+
+
+.table-card h2 {
+
+
+    color:#2563eb;
+
+    margin-top:0;
+
+
+}
+
+
+
+
+
+table {
+
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:15px;
+
+
+}
+
+
+
+
+
+thead {
+
+
+    background:#2563eb;
+
+    color:white;
+
+
+}
+
+
+
+
+
+th {
+
+
+    padding:12px;
+
+    text-align:center;
+
+
+}
+
+
+
+
+
+td {
+
+
+    padding:12px;
+
+    text-align:center;
+
+    border-bottom:1px solid #e5e7eb;
+
+
+}
+
+
+
+
+
+tbody tr:hover {
+
+
+    background:#f1f5f9;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ========================= */
+/* ACTIONS */
+/* ========================= */
+
+
+.btn-edit {
+
+
+    background:#f59e0b;
+
+    color:white;
+
+    border:none;
+
+    padding:8px 12px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    margin-right:5px;
+
+
+}
+
+
+
+.btn-edit:hover {
+
+
+    background:#d97706;
+
+
+}
+
+
+
+
+
+
+
+.btn-delete {
+
+
+    background:#dc2626;
+
+    color:white;
+
+    border:none;
+
+    padding:8px 12px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+
+}
+
+
+
+.btn-delete:hover {
+
+
+    background:#b91c1c;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+
+@media(max-width:900px){
+
+
+    table {
+
+
+        font-size:13px;
+
+
+    }
+
+
+
+    .table-card {
+
+
+        overflow-x:auto;
+
+
+    }
+
+
+}
+
+
+
+
+
+@media(max-width:600px){
+
+
+    .notes-container {
+
+
+        padding:15px;
+
+
+    }
+
+
+
+    h1 {
+
+
+        font-size:25px;
+
+
+    }
+
+
+}

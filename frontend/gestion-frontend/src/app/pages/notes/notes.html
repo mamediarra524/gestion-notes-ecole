@@ -1,1 +1,432 @@
-<p>notes works!</p>
+<div class="notes-container">
+
+
+    <!-- RETOUR DASHBOARD -->
+
+    <button 
+        routerLink="/dashboard"
+        class="retour-btn">
+
+        ⬅ Retour au tableau de bord
+
+    </button>
+
+
+
+
+
+    <h1>
+        📝 Gestion des notes
+    </h1>
+
+
+
+
+
+    <!-- MESSAGE -->
+
+    <p 
+    class="message"
+    *ngIf="message">
+
+        {{message}}
+
+    </p>
+
+
+
+
+
+
+
+
+    <!-- FORMULAIRE -->
+
+    <div class="form-card">
+
+
+        <h2>
+
+            {{ modification ? 'Modifier une note' : 'Ajouter une note' }}
+
+        </h2>
+
+
+
+
+
+        <form 
+        (ngSubmit)="enregistrerNote()">
+
+
+
+
+
+            <label>
+                Élève
+            </label>
+
+
+            <select 
+            [(ngModel)]="note.eleve_id"
+            name="eleve_id"
+            required>
+
+
+                <option 
+                [ngValue]="null">
+
+                    Choisir un élève
+
+                </option>
+
+
+
+                <option 
+                *ngFor="let eleve of eleves"
+                [ngValue]="eleve.id">
+
+
+                    {{eleve.prenom}} {{eleve.nom}}
+
+
+                </option>
+
+
+            </select>
+
+
+
+
+
+
+
+
+
+            <label>
+                Matière
+            </label>
+
+
+
+            <select 
+            [(ngModel)]="note.matiere_id"
+            name="matiere_id"
+            required>
+
+
+                <option 
+                [ngValue]="null">
+
+                    Choisir une matière
+
+                </option>
+
+
+
+                <option 
+                *ngFor="let matiere of matieres"
+                [ngValue]="matiere.id">
+
+
+                    {{matiere.nom}}
+
+
+                </option>
+
+
+            </select>
+
+
+
+
+
+
+
+
+
+            <label>
+                Note /20
+            </label>
+
+
+            <input
+
+                type="number"
+
+                min="0"
+
+                max="20"
+
+                step="0.01"
+
+                [(ngModel)]="note.note"
+
+                name="note"
+
+                required
+
+            />
+
+
+
+
+
+
+
+
+
+            <button 
+            type="submit"
+            class="btn-save">
+
+
+                {{ modification ? 'Modifier' : 'Ajouter' }}
+
+
+            </button>
+
+
+
+
+
+
+
+
+            <button
+
+            *ngIf="modification"
+
+            type="button"
+
+            class="btn-cancel"
+
+            (click)="resetForm()">
+
+
+                Annuler
+
+
+            </button>
+
+
+
+
+        </form>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- LISTE DES NOTES -->
+
+    <div class="table-card">
+
+
+        <h2>
+            📋 Liste des notes
+        </h2>
+
+
+
+
+
+        <table>
+
+
+            <thead>
+
+
+                <tr>
+
+
+                    <th>
+                        Élève
+                    </th>
+
+
+                    <th>
+                        Matière
+                    </th>
+
+
+                    <th>
+                        Enseignant
+                    </th>
+
+
+                    <th>
+                        Note
+                    </th>
+
+
+                    <th>
+                        Actions
+                    </th>
+
+
+                </tr>
+
+
+            </thead>
+
+
+
+
+
+
+
+
+            <tbody>
+
+
+                <tr 
+                *ngFor="let n of notes">
+
+
+
+                    <td>
+
+
+                        {{n.eleve?.prenom}}
+                        {{n.eleve?.nom}}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{n.matiere?.nom}}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{n.enseignant?.nom ?? '-'}}
+
+
+                    </td>
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        ⭐ {{n.note}} /20
+
+
+                    </td>
+
+
+
+
+
+
+
+
+                    <td>
+
+
+                        <button
+
+                        class="btn-edit"
+
+                        (click)="modifierNote(n)">
+
+
+                            ✏️ Modifier
+
+
+                        </button>
+
+
+
+
+
+
+
+                        <button
+
+                        class="btn-delete"
+
+                        (click)="supprimerNote(n.id)">
+
+
+                            🗑️ Supprimer
+
+
+                        </button>
+
+
+
+                    </td>
+
+
+
+
+
+                </tr>
+
+
+
+
+
+                <tr 
+                *ngIf="notes.length === 0">
+
+
+                    <td colspan="5">
+
+
+                        Aucune note enregistrée
+
+
+                    </td>
+
+
+                </tr>
+
+
+
+            </tbody>
+
+
+
+
+        </table>
+
+
+    </div>
+
+
+
+
+
+</div>

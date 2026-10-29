@@ -1,7 +1,18 @@
 <div class="bulletin-container">
 
 
-    <!-- TITRE -->
+    <!-- RETOUR DASHBOARD -->
+
+    <button
+        class="btn-retour"
+        routerLink="/dashboard">
+
+        ⬅ Retour Dashboard
+
+    </button>
+
+
+
 
     <h1>
         📄 Gestion des bulletins scolaires
@@ -11,33 +22,40 @@
 
 
 
-    <!-- SELECTION ELEVE -->
+    <!-- CHOIX CLASSE -->
 
     <div class="selection-card">
 
 
         <label>
-            Choisir un élève :
+            Choisir une classe :
         </label>
 
 
 
-        <select [(ngModel)]="eleveId">
+        <select
+
+            [(ngModel)]="classeId"
+
+            (change)="chargerElevesClasse()">
 
 
             <option [ngValue]="null">
-                -- Sélectionner un élève --
+
+                -- Sélectionner une classe --
+
             </option>
 
 
 
             <option
-                *ngFor="let eleve of eleves"
-                [ngValue]="eleve.id">
+
+                *ngFor="let classe of classes"
+
+                [ngValue]="classe.id">
 
 
-                {{ eleve.prenom }}
-                {{ eleve.nom }}
+                {{ classe.nom }}
 
 
             </option>
@@ -45,20 +63,6 @@
 
 
         </select>
-
-
-
-
-
-        <button
-            (click)="afficherBulletin()"
-            class="btn-primary">
-
-
-            🔎 Afficher le bulletin
-
-
-        </button>
 
 
 
@@ -70,10 +74,141 @@
 
 
 
+
+
+    <!-- LISTE DES ELEVES -->
+
+    <div
+
+    class="liste-eleves"
+
+    *ngIf="elevesClasse.length > 0">
+
+
+        <h2>
+            👨‍🎓 Élèves de la classe
+        </h2>
+
+
+
+        <table>
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Nom
+                    </th>
+
+
+                    <th>
+                        Prénom
+                    </th>
+
+
+                    <th>
+                        Actions
+                    </th>
+
+
+                </tr>
+
+
+            </thead>
+
+
+
+
+
+            <tbody>
+
+
+                <tr
+
+                *ngFor="let eleve of elevesClasse">
+
+
+                    <td>
+
+                        {{ eleve.nom }}
+
+                    </td>
+
+
+
+                    <td>
+
+                        {{ eleve.prenom }}
+
+                    </td>
+
+
+
+                    <td>
+
+
+                        <button
+
+                        class="btn-primary"
+
+                        (click)="voirBulletin(eleve.id)">
+
+
+                            📄 Voir bulletin
+
+
+                        </button>
+
+
+
+
+
+                        <button
+
+                        class="btn-pdf"
+
+                        (click)="telechargerPDF(eleve.id)">
+
+
+                            📥 PDF
+
+
+                        </button>
+
+
+
+                    </td>
+
+
+
+                </tr>
+
+
+            </tbody>
+
+
+        </table>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
     <!-- MESSAGE -->
 
     <p
+
     *ngIf="message"
+
     class="message">
 
 
@@ -93,8 +228,12 @@
     <!-- BULLETIN -->
 
     <div
+
+    id="bulletin"
+
     class="bulletin-card"
-    *ngIf="bulletin">
+
+    [hidden]="!bulletin">
 
 
 
@@ -108,18 +247,21 @@
             </h2>
 
 
+
             <p>
 
                 Élève :
 
                 <strong>
 
-                    {{ bulletin.eleve.prenom }}
-                    {{ bulletin.eleve.nom }}
+                    {{ bulletin?.eleve?.prenom }}
+
+                    {{ bulletin?.eleve?.nom }}
 
                 </strong>
 
             </p>
+
 
 
 
@@ -129,10 +271,9 @@
 
                 <strong>
 
-                    {{ bulletin.eleve.classe }}
+                    {{ bulletin?.eleve?.classe }}
 
                 </strong>
-
 
             </p>
 
@@ -148,13 +289,12 @@
 
 
 
-        <!-- TABLEAU NOTES -->
+        <!-- NOTES PAR MATIERE -->
+
 
         <h3>
             📚 Résultats par matière
         </h3>
-
-
 
 
 
@@ -164,6 +304,7 @@
             <thead>
 
                 <tr>
+
 
                     <th>
                         Matière
@@ -194,13 +335,12 @@
 
 
 
-
-
             <tbody>
 
 
                 <tr
-                *ngFor="let matiere of bulletin.matieres">
+
+                *ngFor="let matiere of bulletin?.matieres">
 
 
                     <td>
@@ -208,7 +348,6 @@
                         {{ matiere.nom }}
 
                     </td>
-
 
 
 
@@ -220,15 +359,11 @@
 
 
 
-
-
                     <td>
 
                         ⭐ {{ matiere.moyenne }}
 
                     </td>
-
-
 
 
 
@@ -241,7 +376,6 @@
 
 
                 </tr>
-
 
 
             </tbody>
@@ -264,10 +398,9 @@
 
 
             <h2>
-
                 📊 Résultat final
-
             </h2>
+
 
 
 
@@ -277,7 +410,26 @@
 
                 <strong>
 
-                    {{ bulletin.moyenneGenerale }}
+                    {{ bulletin?.moyenneGenerale }}
+
+                    /20
+
+                </strong>
+
+
+            </p>
+
+
+
+
+
+            <p>
+
+                Moyenne générale de la classe :
+
+                <strong>
+
+                    {{ bulletin?.moyenneClasse }}
 
                     /20
 
@@ -296,7 +448,7 @@
 
                 <strong>
 
-                    {{ bulletin.rang }}
+                    {{ bulletin?.rang }}
 
                     ème
 
@@ -309,14 +461,13 @@
 
 
 
-
             <p>
 
                 Appréciation :
 
                 <strong>
 
-                    {{ bulletin.appreciation }}
+                    {{ bulletin?.appreciation }}
 
                 </strong>
 
@@ -334,17 +485,20 @@
 
 
 
-        <!-- PDF -->
+
+        <!-- TELECHARGEMENT PDF -->
 
 
         <button
 
-            class="btn-pdf"
+        class="btn-pdf"
 
-            (click)="telechargerPDF()">
+        (click)="telechargerPDF(bulletin.eleve.id)">
+
 
 
             📥 Télécharger le bulletin PDF
+
 
 
         </button>
@@ -352,8 +506,9 @@
 
 
 
-
     </div>
+
+
 
 
 

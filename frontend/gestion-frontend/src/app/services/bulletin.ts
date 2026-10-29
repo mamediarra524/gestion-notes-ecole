@@ -13,27 +13,45 @@ export class BulletinService {
 
 
 
+
+
   constructor(
-    private http:HttpClient
+
+    private http: HttpClient
+
   ){}
 
 
 
 
-  private headers(){
+
+  /**
+   * Headers pour API JSON
+   */
+  private headersJson(){
+
 
     return {
 
-      headers:new HttpHeaders({
+
+      headers: new HttpHeaders({
+
 
         Authorization:
-        'Bearer '+localStorage.getItem('token'),
 
-        Accept:'application/json'
+        'Bearer ' + localStorage.getItem('token'),
+
+
+        Accept:
+
+        'application/json'
+
 
       })
 
+
     };
+
 
   }
 
@@ -43,15 +61,25 @@ export class BulletinService {
 
 
 
+
+
+  /**
+   * Récupérer le bulletin JSON
+   */
   getBulletin(id:number){
 
+
     return this.http.get(
+
 
       `${this.api}/eleves/${id}/bulletin`,
 
-      this.headers()
+
+      this.headersJson()
+
 
     );
+
 
   }
 
@@ -59,23 +87,58 @@ export class BulletinService {
 
 
 
+
+
+
+
+  /**
+   * Télécharger le bulletin PDF
+   */
   getBulletinPdf(id:number){
+
+
 
     return this.http.get(
 
+
       `${this.api}/eleves/${id}/bulletin/pdf`,
+
 
       {
 
-        ...this.headers(),
+
+        headers:new HttpHeaders({
+
+
+
+          Authorization:
+
+          'Bearer ' + localStorage.getItem('token'),
+
+
+
+          Accept:
+
+          'application/pdf'
+
+
+
+        }),
+
+
 
         responseType:'blob'
 
+
       }
+
+
 
     );
 
+
   }
+
 
 
 }

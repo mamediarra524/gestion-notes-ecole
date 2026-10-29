@@ -1,9 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+
 
 import { BulletinService } from '../../services/bulletin';
 import { EleveService } from '../../services/eleve';
+import { ClasseService } from '../../services/classe';
+
 
 
 @Component({
@@ -13,8 +17,13 @@ import { EleveService } from '../../services/eleve';
   standalone:true,
 
   imports:[
+
     CommonModule,
-    FormsModule
+
+    FormsModule,
+
+    RouterLink
+
   ],
 
   templateUrl:'./bulletins.html',
@@ -27,16 +36,42 @@ import { EleveService } from '../../services/eleve';
 export class Bulletins {
 
 
-  eleves:any[]=[];
+
+  // ==========================
+  // Classes
+  // ==========================
+
+  classes:any[]=[];
+
+  classeId:number|null=null;
 
 
-  eleveId:number|null=null;
 
+
+
+  // ==========================
+  // Élèves de la classe
+  // ==========================
+
+  elevesClasse:any[]=[];
+
+
+
+
+
+  // ==========================
+  // Bulletin affiché
+  // ==========================
 
   bulletin:any=null;
 
 
-  message='';
+
+  message:string='';
+
+
+
+
 
 
 
@@ -44,13 +79,16 @@ export class Bulletins {
 
     private bulletinService:BulletinService,
 
-    private eleveService:EleveService
+    private eleveService:EleveService,
+
+    private classeService:ClasseService,
+
+    private cdr:ChangeDetectorRef
 
   ){
 
 
-
-    this.chargerEleves();
+    this.chargerClasses();
 
 
   }
@@ -61,18 +99,68 @@ export class Bulletins {
 
 
 
-  chargerEleves(){
 
 
-    this.eleveService.getEleves()
+  // ==========================
+  // Charger les classes
+  // ==========================
+
+  chargerClasses(){
+
+
+    this.classeService
+
+    .getClasses()
 
     .subscribe({
 
       next:(data:any)=>{
 
-        this.eleves=data;
+
+        console.log(
+
+          "Classes reçues :",
+
+          data
+
+        );
+
+
+
+        this.classes = Array.isArray(data)
+
+        ? [...data]
+
+        : data.data ?? [];
+
+
+
+        this.cdr.detectChanges();
+
+
+      },
+
+
+      error:(err:any)=>{
+
+
+        console.error(
+
+          "Erreur classes :",
+
+          err
+
+        );
+
+
+
+        this.message =
+
+        "Erreur chargement classes";
+
 
       }
+
 
     });
 
@@ -87,48 +175,96 @@ export class Bulletins {
 
 
 
-  afficherBulletin(){
+  // ==========================
+  // Charger les élèves d'une classe
+  // ==========================
+
+  chargerElevesClasse(){
 
 
-    if(!this.eleveId){
 
-      this.message="Sélectionner un élève";
+    this.bulletin=null;
+
+
+
+    if(this.classeId === null){
+
+
+      this.elevesClasse=[];
+
 
       return;
+
 
     }
 
 
 
 
-    this.bulletinService
 
-    .getBulletin(this.eleveId)
+
+
+    this.eleveService
+
+    .getElevesParClasse(this.classeId)
 
     .subscribe({
 
       next:(data:any)=>{
 
 
-        this.bulletin=data;
+        console.log(
+
+          "Élèves reçus :",
+
+          data
+
+        );
+
+
+
+        this.elevesClasse = Array.isArray(data)
+
+        ? [...data]
+
+        : data.data ?? [];
+
 
 
         this.message='';
 
 
+
+        this.cdr.detectChanges();
+
+
+
       },
 
 
-      error:()=>{
+      error:(err:any)=>{
 
 
-        this.message="Erreur chargement bulletin";
+        console.error(
+
+          "Erreur élèves :",
+
+          err
+
+        );
+
+
+
+        this.message =
+
+        "Erreur chargement élèves";
 
 
       }
 
 
     });
+
 
 
   }
@@ -141,43 +277,239 @@ export class Bulletins {
 
 
 
-  telechargerPDF(){
+  // ==========================
+  // Afficher bulletin
+  // ==========================
+
+  voirBulletin(id:number){
 
 
-    if(!this.eleveId)
-      return;
+
+    console.log(
+
+      "ID élève envoyé :",
+
+      id
+
+    );
+
+
 
 
 
     this.bulletinService
 
-    .getBulletinPdf(this.eleveId)
+    .getBulletin(id)
 
-    .subscribe((data:any)=>{
+    .subscribe({
 
-
-      const url=
-
-      window.URL.createObjectURL(data);
+      next:(data:any)=>{
 
 
+        console.log(
 
-      const a=document.createElement('a');
+          "Bulletin reçu :",
 
+          data
 
-      a.href=url;
-
-
-      a.download='bulletin.pdf';
-
-
-      a.click();
+        );
 
 
-      window.URL.revokeObjectURL(url);
+
+        // vider ancien bulletin
+
+        this.bulletin=null;
+
+
+
+        setTimeout(()=>{
+
+
+          this.bulletin={...data};
+
+
+
+          console.log(
+
+            "Bulletin affiché :",
+
+            this.bulletin
+
+          );
+
+
+
+          this.message='';
+
+
+
+          this.cdr.detectChanges();
+
+
+
+          // descendre automatiquement
+
+          this.scrollVersBulletin();
+
+
+
+        },100);
+
+
+
+      },
+
+
+      error:(err:any)=>{
+
+
+        console.error(
+
+          "Erreur bulletin :",
+
+          err
+
+        );
+
+
+
+        this.message =
+
+        "Erreur chargement bulletin";
+
+
+      }
 
 
     });
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // ==========================
+  // Scroll automatique
+  // ==========================
+
+  scrollVersBulletin(){
+
+
+    setTimeout(()=>{
+
+
+      const element = document.getElementById('bulletin');
+
+
+
+      if(element){
+
+
+        element.scrollIntoView({
+
+          behavior:'smooth',
+
+          block:'start'
+
+        });
+
+
+      }
+
+
+    },200);
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // ==========================
+  // Télécharger PDF
+  // ==========================
+
+  telechargerPDF(id:number){
+
+
+
+    this.bulletinService
+
+    .getBulletinPdf(id)
+
+    .subscribe({
+
+      next:(data:Blob)=>{
+
+
+        const url =
+
+        window.URL.createObjectURL(data);
+
+
+
+        const lien =
+
+        document.createElement('a');
+
+
+
+        lien.href=url;
+
+
+
+        lien.download=
+
+        'bulletin.pdf';
+
+
+
+        lien.click();
+
+
+
+        window.URL.revokeObjectURL(url);
+
+
+
+      },
+
+
+      error:(err:any)=>{
+
+
+        console.error(
+
+          "Erreur PDF :",
+
+          err
+
+        );
+
+
+
+        this.message =
+
+        "Erreur téléchargement PDF";
+
+
+      }
+
+
+    });
+
 
 
   }

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 class EleveController extends Controller
 {
+
+
     /**
      * Afficher tous les élèves
      */
@@ -18,27 +20,48 @@ class EleveController extends Controller
     }
 
 
+
+
+
     /**
      * Créer un élève
      */
     public function store(Request $request)
     {
         $request->validate([
+
             'nom' => 'required|string',
+
             'prenom' => 'required|string',
+
             'date_naissance' => 'required|date',
+
             'classe_id' => 'required|exists:classes,id',
+
         ]);
 
 
-        $eleve = Eleve::create($request->all());
+
+        $eleve = Eleve::create(
+
+            $request->all()
+
+        );
+
 
 
         return response()->json([
+
             'message' => 'Élève créé avec succès',
+
             'eleve' => $eleve
-        ], 201);
+
+        ],201);
+
     }
+
+
+
 
 
     /**
@@ -47,9 +70,14 @@ class EleveController extends Controller
     public function show(Eleve $eleve)
     {
         return response()->json(
+
             $eleve->load('classe')
+
         );
     }
+
+
+
 
 
     /**
@@ -58,21 +86,39 @@ class EleveController extends Controller
     public function update(Request $request, Eleve $eleve)
     {
         $request->validate([
-            'nom' => 'required|string',
-            'prenom' => 'required|string',
-            'date_naissance' => 'required|date',
-            'classe_id' => 'required|exists:classes,id',
+
+            'nom'=>'required|string',
+
+            'prenom'=>'required|string',
+
+            'date_naissance'=>'required|date',
+
+            'classe_id'=>'required|exists:classes,id',
+
         ]);
 
 
-        $eleve->update($request->all());
+
+        $eleve->update(
+
+            $request->all()
+
+        );
+
 
 
         return response()->json([
-            'message' => 'Élève modifié avec succès',
-            'eleve' => $eleve
+
+            'message'=>'Élève modifié avec succès',
+
+            'eleve'=>$eleve
+
         ]);
+
     }
+
+
+
 
 
     /**
@@ -80,13 +126,55 @@ class EleveController extends Controller
      */
     public function destroy(Eleve $eleve)
     {
+
         $eleve->delete();
 
 
+
         return response()->json([
-            'message' => 'Élève supprimé avec succès'
+
+            'message'=>'Élève supprimé avec succès'
+
         ]);
+
     }
+
+
+
+
+
+    /**
+     * Liste des élèves d'une classe
+     */
+    public function parClasse($id)
+    {
+
+
+        $eleves = Eleve::where(
+
+            'classe_id',
+
+            $id
+
+        )
+
+        ->with('classe')
+
+        ->get();
+
+
+
+        return response()->json(
+
+            $eleves
+
+        );
+
+
+    }
+
+
+
 
 
     /**
@@ -94,37 +182,83 @@ class EleveController extends Controller
      */
     public function moyenne($id)
     {
-        $eleve = Eleve::with('notes.matiere')
-            ->findOrFail($id);
+
+        $eleve = Eleve::with(
+
+            'notes.matiere'
+
+        )
+
+        ->findOrFail($id);
+
+
 
 
         $totalPoints = 0;
+
         $totalCoefficients = 0;
 
 
-        foreach ($eleve->notes as $note) {
 
-            $coefficient = $note->matiere->coefficient;
 
-            $totalPoints += $note->note * $coefficient;
+        foreach($eleve->notes as $note)
+        {
 
-            $totalCoefficients += $coefficient;
+
+            $coefficient =
+
+            $note->matiere->coefficient;
+
+
+
+            $totalPoints +=
+
+            $note->note * $coefficient;
+
+
+
+            $totalCoefficients +=
+
+            $coefficient;
+
+
         }
+
+
 
 
         $moyenne = 0;
 
 
-        if ($totalCoefficients > 0) {
 
-            $moyenne = $totalPoints / $totalCoefficients;
+        if($totalCoefficients > 0)
+        {
+
+            $moyenne =
+
+            $totalPoints /
+
+            $totalCoefficients;
 
         }
 
 
+
+
+
         return response()->json([
-            'eleve' => $eleve->nom . ' ' . $eleve->prenom,
-            'moyenne' => round($moyenne, 2)
+
+            'eleve'=>
+            $eleve->nom.' '.$eleve->prenom,
+
+            'moyenne'=>
+            round($moyenne,2)
+
         ]);
+
+
     }
+
+
+
 }

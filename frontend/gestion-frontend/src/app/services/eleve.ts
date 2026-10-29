@@ -53,6 +53,27 @@ export class EleveService {
 
 
 
+  /**
+   * Récupérer les élèves d'une classe
+   */
+  getElevesParClasse(id:number){
+
+
+    return this.http.get(
+
+      `http://127.0.0.1:8000/api/classes/${id}/eleves`,
+
+      this.getOptions()
+
+    );
+
+
+  }
+
+
+
+
+
   ajouterEleve(data:any){
 
     return this.http.post(

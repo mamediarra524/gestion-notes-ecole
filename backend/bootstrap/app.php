@@ -13,7 +13,6 @@ return Application::configure(
 
 )
 
-
 ->withRouting(
 
     web: __DIR__.'/../routes/web.php',
@@ -35,7 +34,7 @@ return Application::configure(
 
     /*
     |--------------------------------------------------------------------------
-    | Middleware personnalisés
+    | Alias des middlewares personnalisés
     |--------------------------------------------------------------------------
     */
 
@@ -47,6 +46,25 @@ return Application::configure(
 
 
     ]);
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | API : ne pas rediriger les utilisateurs non connectés vers /login
+    |--------------------------------------------------------------------------
+    */
+
+
+    $middleware->redirectGuestsTo(function (Request $request) {
+
+
+        return null;
+
+
+    });
 
 
 
@@ -64,37 +82,32 @@ return Application::configure(
 
     /*
     |--------------------------------------------------------------------------
-    | Gestion API des utilisateurs non connectés
+    | Gestion des erreurs Sanctum pour API
     |--------------------------------------------------------------------------
     */
 
 
-    $exceptions->render(function(
+    $exceptions->render(function (
 
         AuthenticationException $e,
 
         Request $request
 
-    ){
+    ) {
 
 
 
-        if($request->expectsJson()){
-
+        if ($request->expectsJson()) {
 
 
             return response()->json([
 
+                'message' => 'Non authentifié'
 
-                'message'=>'Non authentifié'
-
-
-            ],401);
-
+            ], 401);
 
 
         }
-
 
 
     });

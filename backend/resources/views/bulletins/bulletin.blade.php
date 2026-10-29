@@ -5,26 +5,37 @@
 
     <meta charset="UTF-8">
 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
     <title>Bulletin scolaire</title>
 
 
     <style>
 
         body {
-            font-family: Arial, sans-serif;
+
+            font-family: DejaVu Sans, sans-serif;
+
             font-size: 14px;
+
         }
 
 
         h1 {
+
             text-align: center;
+
             margin-bottom: 30px;
+
         }
 
 
         .info {
+
             margin-bottom: 20px;
+
             line-height: 25px;
+
         }
 
 
@@ -141,13 +152,25 @@
 
         <tr>
 
-            <th>Matière</th>
+            <th>
+                Matière
+            </th>
 
-            <th>Coefficient</th>
 
-            <th>Moyenne</th>
+            <th>
+                Coefficient
+            </th>
 
-            <th>Points</th>
+
+            <th>
+                Moyenne
+            </th>
+
+
+            <th>
+                Points
+            </th>
+
 
         </tr>
 
@@ -169,7 +192,7 @@
 
             <td>
 
-                {{ $matiere['matiere'] }}
+                {{ $matiere['nom'] }}
 
             </td>
 
@@ -223,9 +246,17 @@
 <div class="resultat">
 
 
+    <h3>
+        Résultats
+    </h3>
+
+
+
     <p>
 
-        <strong>Moyenne générale :</strong>
+        <strong>
+            Moyenne générale de l'élève :
+        </strong>
 
         {{ $moyenneGenerale }}
 
@@ -239,15 +270,50 @@
 
     <p>
 
-        <strong>Mention :</strong>
+        <strong>
+            Moyenne générale de la classe :
+        </strong>
 
-        {{ $mention }}
+        {{ $moyenneClasse }}
+
+        /20
+
+    </p>
+
+
+
+
+
+    <p>
+
+        <strong>
+            Rang :
+        </strong>
+
+        {{ $rang }}
+
+        ème
+
+    </p>
+
+
+
+
+
+    <p>
+
+        <strong>
+            Appréciation :
+        </strong>
+
+        {{ $appreciation }}
 
     </p>
 
 
 
 </div>
+
 
 
 

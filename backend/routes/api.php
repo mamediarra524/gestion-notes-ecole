@@ -18,6 +18,7 @@ use App\Http\Controllers\EvaluationController;
 
 
 
+
 /*
 |--------------------------------------------------------------------------
 | AUTH
@@ -49,6 +50,7 @@ Route::post(
 
 
 
+
 /*
 |--------------------------------------------------------------------------
 | ROUTES PROTEGEES
@@ -57,6 +59,7 @@ Route::post(
 
 
 Route::middleware('auth:sanctum')->group(function(){
+
 
 
 
@@ -118,6 +121,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
     Route::middleware('role:ADMIN')->group(function(){
+
 
 
 
@@ -299,31 +303,12 @@ Route::middleware('auth:sanctum')->group(function(){
 
     /*
     |--------------------------------------------------------------------------
-    | ENSEIGNANT
+    | ADMIN + ENSEIGNANT
     |--------------------------------------------------------------------------
     */
 
 
-
-    Route::middleware('role:ENSEIGNANT')->group(function(){
-
-
-
-
-
-
-        /*
-        | Affectations de l'enseignant connecté
-        */
-
-
-        Route::get(
-            'mes-affectations',
-            [
-                ClasseMatiereController::class,
-                'mesAffectations'
-            ]
-        );
+    Route::middleware('role:ADMIN,ENSEIGNANT')->group(function(){
 
 
 
@@ -332,7 +317,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         /*
-        | Voir les classes nécessaires à la saisie
+        | Liste des classes
         */
 
 
@@ -343,7 +328,6 @@ Route::middleware('auth:sanctum')->group(function(){
                 'liste'
             ]
         );
-
 
 
 
@@ -372,7 +356,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         /*
-        | Evaluations des matières affectées
+        | Evaluations par matière
         */
 
 
@@ -390,15 +374,52 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
-
         /*
-        | SAISIE NOTES
+        | Notes
         */
 
 
         Route::apiResource(
             'notes',
             NoteController::class
+        );
+
+
+
+    });
+
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ENSEIGNANT UNIQUEMENT
+    |--------------------------------------------------------------------------
+    */
+
+
+    Route::middleware('role:ENSEIGNANT')->group(function(){
+
+
+
+
+
+        /*
+        | Affectations enseignant connecté
+        */
+
+
+        Route::get(
+            'mes-affectations',
+            [
+                ClasseMatiereController::class,
+                'mesAffectations'
+            ]
         );
 
 

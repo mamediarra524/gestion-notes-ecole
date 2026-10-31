@@ -10,7 +10,6 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 
-
 class User extends Authenticatable
 {
 
@@ -68,17 +67,23 @@ class User extends Authenticatable
 
 
 
+
     /**
-     * Un utilisateur possède un profil enseignant.
+     * Relation avec le profil enseignant.
+     *
+     * Un utilisateur possède un seul enseignant.
      */
     public function enseignant()
     {
 
         return $this->hasOne(
+
             Enseignant::class
+
         );
 
     }
+
 
 
 
@@ -104,6 +109,7 @@ class User extends Authenticatable
 
 
 
+
     /**
      * Vérifie si l'utilisateur est enseignant.
      */
@@ -121,8 +127,9 @@ class User extends Authenticatable
 
 
 
+
     /**
-     * Vérifie un rôle précis.
+     * Vérifie un rôle donné.
      */
     public function hasRole($role)
     {
@@ -130,7 +137,6 @@ class User extends Authenticatable
         return $this->role === $role;
 
     }
-
 
 
 }

@@ -37,12 +37,9 @@ export class Eleves implements OnInit {
 
   eleves:any[]=[];
 
-
   classes:any[]=[];
 
-
   message:string='';
-
 
   recherche:string='';
 
@@ -50,14 +47,9 @@ export class Eleves implements OnInit {
 
   modification:boolean=false;
 
-
   idModification:number|null=null;
 
 
-
-
-
-  // Pagination
 
   page:number=1;
 
@@ -67,11 +59,7 @@ export class Eleves implements OnInit {
 
 
 
-
-
-
   eleve:any={
-
 
     nom:'',
 
@@ -81,12 +69,7 @@ export class Eleves implements OnInit {
 
     classe_id:null
 
-
   };
-
-
-
-
 
 
 
@@ -94,18 +77,13 @@ export class Eleves implements OnInit {
 
   constructor(
 
-
     private eleveService:EleveService,
-
 
     private classeService:ClasseService,
 
-
     private cd:ChangeDetectorRef,
 
-
     private router:Router
-
 
   ){}
 
@@ -114,6 +92,35 @@ export class Eleves implements OnInit {
 
 
   ngOnInit(){
+
+
+    const user = JSON.parse(
+
+      localStorage.getItem('user') || '{}'
+
+    );
+
+
+
+
+
+    // ADMIN uniquement
+
+    if(user.role !== 'ADMIN'){
+
+
+      this.message =
+
+      "Accès réservé à l'administration";
+
+
+      return;
+
+
+    }
+
+
+
 
 
     this.chargerEleves();
@@ -132,11 +139,17 @@ export class Eleves implements OnInit {
 
 
 
+  // ===============================
+  // CHARGER LES ELEVES
+  // ===============================
+
+
   chargerEleves(){
 
 
+    this.eleveService
 
-    this.eleveService.getEleves()
+    .getEleves()
 
     .subscribe({
 
@@ -145,11 +158,15 @@ export class Eleves implements OnInit {
       next:(data:any)=>{
 
 
-
         console.log(
+
           "Élèves reçus :",
+
           data
+
         );
+
+
 
 
 
@@ -161,29 +178,27 @@ export class Eleves implements OnInit {
 
 
 
+
+
         this.page=1;
 
 
-
         this.cd.detectChanges();
-
 
 
       },
 
 
 
-      error:(error:any)=>{
+      error:(err)=>{
 
 
-        console.log(error);
-
+        console.log(err);
 
 
         this.message=
 
         "Erreur chargement élèves";
-
 
 
       }
@@ -204,11 +219,18 @@ export class Eleves implements OnInit {
 
 
 
+  // ===============================
+  // CHARGER CLASSES
+  // ===============================
+
+
   chargerClasses(){
 
 
 
-    this.classeService.getClasses()
+    this.classeService
+
+    .getClasses()
 
     .subscribe({
 
@@ -219,7 +241,7 @@ export class Eleves implements OnInit {
 
         this.classes = Array.isArray(data)
 
-        ? data
+        ? [...data]
 
         : [];
 
@@ -228,15 +250,14 @@ export class Eleves implements OnInit {
         this.cd.detectChanges();
 
 
-
       },
 
 
 
-      error:(error:any)=>{
+      error:(err)=>{
 
 
-        console.log(error);
+        console.log(err);
 
 
       }
@@ -257,18 +278,21 @@ export class Eleves implements OnInit {
 
 
 
-  // Recherche + pagination
+  // ===============================
+  // RECHERCHE + PAGINATION
+  // ===============================
 
 
   get elevesFiltres(){
 
 
-
-    let resultat=this.eleves;
-
+    let resultat=[...this.eleves];
 
 
-    const texte=this.recherche
+
+    const texte =
+
+    this.recherche
 
     .toLowerCase()
 
@@ -282,21 +306,27 @@ export class Eleves implements OnInit {
 
 
 
-      resultat=this.eleves.filter((e:any)=>
+      resultat=resultat.filter(
+
+        (e:any)=>
+
+        e.nom
+
+        .toLowerCase()
+
+        .includes(texte)
 
 
-
-        e.nom.toLowerCase().includes(texte)
 
         ||
 
-        e.prenom.toLowerCase().includes(texte)
+        e.prenom
 
+        .toLowerCase()
 
+        .includes(texte)
 
       );
-
-
 
     }
 
@@ -305,7 +335,10 @@ export class Eleves implements OnInit {
 
 
 
-    const debut=(this.page-1)
+
+    const debut =
+
+    (this.page-1)
 
     *
 
@@ -339,53 +372,13 @@ export class Eleves implements OnInit {
 
 
 
-    let resultat=this.eleves;
-
-
-
-    const texte=this.recherche
-
-    .toLowerCase()
-
-    .trim();
-
-
-
-
-
-    if(texte){
-
-
-
-      resultat=this.eleves.filter((e:any)=>
-
-
-        e.nom.toLowerCase().includes(texte)
-
-        ||
-
-        e.prenom.toLowerCase().includes(texte)
-
-
-
-      );
-
-
-
-    }
-
-
-
-
-
     return Math.ceil(
 
-      resultat.length /
+      this.eleves.length /
 
       this.elementsParPage
 
-    );
-
+    ) || 1;
 
 
   }
@@ -401,15 +394,11 @@ export class Eleves implements OnInit {
   pageSuivante(){
 
 
-
     if(this.page < this.totalPages){
-
 
       this.page++;
 
-
     }
-
 
 
   }
@@ -425,15 +414,11 @@ export class Eleves implements OnInit {
   pagePrecedente(){
 
 
-
-    if(this.page>1){
-
+    if(this.page > 1){
 
       this.page--;
 
-
     }
-
 
 
   }
@@ -446,42 +431,12 @@ export class Eleves implements OnInit {
 
 
 
+  // ===============================
+  // AJOUT
+  // ===============================
+
+
   ajouterEleve(){
-
-
-
-    if(
-
-
-      !this.eleve.nom ||
-
-      !this.eleve.prenom ||
-
-      !this.eleve.date_naissance ||
-
-      !this.eleve.classe_id
-
-
-
-    ){
-
-
-
-      this.message=
-
-      "Veuillez remplir tous les champs";
-
-
-
-      return;
-
-
-    }
-
-
-
-
-
 
 
 
@@ -493,11 +448,7 @@ export class Eleves implements OnInit {
 
 
 
-      next:(response:any)=>{
-
-
-        console.log(response);
-
+      next:()=>{
 
 
         this.message=
@@ -505,30 +456,25 @@ export class Eleves implements OnInit {
         "Élève ajouté avec succès";
 
 
-
         this.resetForm();
 
 
-
         this.chargerEleves();
-
 
 
       },
 
 
 
-      error:(error:any)=>{
+      error:(err)=>{
 
 
-        console.log(error);
-
+        console.log(err);
 
 
         this.message=
 
         "Erreur ajout élève";
-
 
 
       }
@@ -547,6 +493,11 @@ export class Eleves implements OnInit {
 
 
 
+
+
+  // ===============================
+  // MODIFICATION
+  // ===============================
 
 
   modifier(eleve:any){
@@ -570,19 +521,19 @@ export class Eleves implements OnInit {
       classe_id:eleve.classe_id
 
 
-
     };
 
 
 
 
 
-    this.idModification=eleve.id;
+    this.idModification=
+
+    eleve.id;
 
 
 
     this.modification=true;
-
 
 
   }
@@ -599,21 +550,9 @@ export class Eleves implements OnInit {
 
 
 
-    if(this.idModification===null){
+    if(this.idModification===null)
 
-
-      this.message=
-
-      "Aucun élève sélectionné";
-
-
-      return;
-
-
-    }
-
-
-
+    return;
 
 
 
@@ -633,12 +572,7 @@ export class Eleves implements OnInit {
 
 
 
-      next:(response:any)=>{
-
-
-
-        console.log(response);
-
+      next:()=>{
 
 
         this.message=
@@ -646,30 +580,25 @@ export class Eleves implements OnInit {
         "Élève modifié avec succès";
 
 
-
         this.resetForm();
 
 
-
         this.chargerEleves();
-
 
 
       },
 
 
 
-      error:(error:any)=>{
+      error:(err)=>{
 
 
-        console.log(error);
-
+        console.log(err);
 
 
         this.message=
 
-        "Erreur modification élève";
-
+        "Erreur modification";
 
 
       }
@@ -690,16 +619,20 @@ export class Eleves implements OnInit {
 
 
 
+  // ===============================
+  // SUPPRESSION
+  // ===============================
+
+
   supprimer(id:number){
 
 
 
     if(confirm(
 
-      "Voulez-vous supprimer cet élève ?"
+      "Supprimer cet élève ?"
 
     )){
-
 
 
       this.eleveService
@@ -715,29 +648,10 @@ export class Eleves implements OnInit {
 
           this.message=
 
-          "Élève supprimé avec succès";
-
+          "Élève supprimé";
 
 
           this.chargerEleves();
-
-
-
-        },
-
-
-
-        error:(error:any)=>{
-
-
-          console.log(error);
-
-
-
-          this.message=
-
-          "Erreur suppression";
-
 
 
         }
@@ -762,14 +676,30 @@ export class Eleves implements OnInit {
 
 
 
-  retourDashboard(){
+  resetForm(){
 
 
-    this.router.navigate([
 
-      '/dashboard'
+    this.eleve={
 
-    ]);
+
+      nom:'',
+
+      prenom:'',
+
+      date_naissance:'',
+
+      classe_id:null
+
+
+    };
+
+
+
+    this.modification=false;
+
+
+    this.idModification=null;
 
 
   }
@@ -782,36 +712,14 @@ export class Eleves implements OnInit {
 
 
 
-  resetForm(){
+  retourDashboard(){
 
 
+    this.router.navigate([
 
-    this.eleve={
+      '/dashboard'
 
-
-      nom:'',
-
-
-      prenom:'',
-
-
-      date_naissance:'',
-
-
-      classe_id:null
-
-
-
-    };
-
-
-
-    this.modification=false;
-
-
-
-    this.idModification=null;
-
+    ]);
 
 
   }

@@ -10,6 +10,7 @@ use App\Models\Matiere;
 use App\Models\Enseignant;
 use App\Models\Note;
 use App\Models\ClasseMatiere;
+use App\Models\Evaluation;
 
 
 use Illuminate\Database\Seeder;
@@ -27,20 +28,20 @@ class DatabaseSeeder extends Seeder
 
         /*
         |--------------------------------------------------------------------------
-        | Utilisateurs
+        | USERS
         |--------------------------------------------------------------------------
         */
 
 
         $admin = User::create([
 
-            'name' => 'Administrateur',
+            'name'=>'Administrateur',
 
-            'email' => 'admin@ecole.com',
+            'email'=>'admin@ecole.com',
 
-            'password' => Hash::make('password'),
+            'password'=>Hash::make('password'),
 
-            'role' => 'ADMIN'
+            'role'=>'ADMIN'
 
         ]);
 
@@ -50,13 +51,13 @@ class DatabaseSeeder extends Seeder
 
         $profUser = User::create([
 
-            'name' => 'Professeur Math',
+            'name'=>'Professeur Math',
 
-            'email' => 'prof.math@ecole.com',
+            'email'=>'prof.math@ecole.com',
 
-            'password' => Hash::make('password'),
+            'password'=>Hash::make('password'),
 
-            'role' => 'ENSEIGNANT'
+            'role'=>'ENSEIGNANT'
 
         ]);
 
@@ -67,25 +68,24 @@ class DatabaseSeeder extends Seeder
 
 
 
-
         /*
         |--------------------------------------------------------------------------
-        | Enseignant
+        | ENSEIGNANT
         |--------------------------------------------------------------------------
         */
 
 
         $enseignant = Enseignant::create([
 
-            'nom' => 'Diop',
+            'nom'=>'Diop',
 
-            'prenom' => 'Moussa',
+            'prenom'=>'Moussa',
 
-            'email' => 'prof.math@ecole.com',
+            'email'=>'prof.math@ecole.com',
 
-            'telephone' => '770000000',
+            'telephone'=>'770000000',
 
-            'user_id' => $profUser->id
+            'user_id'=>$profUser->id
 
         ]);
 
@@ -96,18 +96,17 @@ class DatabaseSeeder extends Seeder
 
 
 
-
         /*
         |--------------------------------------------------------------------------
-        | Classes
+        | CLASSES
         |--------------------------------------------------------------------------
         */
 
 
-        $classes = [];
+        $classes=[];
 
 
-        $niveaux = [
+        $niveaux=[
 
             ['6ème A','6ème'],
 
@@ -127,13 +126,18 @@ class DatabaseSeeder extends Seeder
         foreach($niveaux as $niveau)
         {
 
+
             $classes[] = Classe::create([
 
-                'nom' => $niveau[0],
 
-                'niveau' => $niveau[1]
+                'nom'=>$niveau[0],
+
+
+                'niveau'=>$niveau[1]
+
 
             ]);
+
 
         }
 
@@ -147,15 +151,16 @@ class DatabaseSeeder extends Seeder
 
         /*
         |--------------------------------------------------------------------------
-        | Matières
+        | MATIERES
         |--------------------------------------------------------------------------
         */
 
 
-        $matieres = [];
+        $matieres=[];
 
 
-        $listeMatieres = [
+        $listeMatieres=[
+
 
             'Mathématiques',
 
@@ -167,7 +172,9 @@ class DatabaseSeeder extends Seeder
 
             'Histoire-Géographie'
 
+
         ];
+
 
 
 
@@ -175,11 +182,15 @@ class DatabaseSeeder extends Seeder
         foreach($listeMatieres as $nom)
         {
 
+
             $matieres[] = Matiere::create([
+
 
                 'nom'=>$nom
 
+
             ]);
+
 
         }
 
@@ -193,7 +204,7 @@ class DatabaseSeeder extends Seeder
 
         /*
         |--------------------------------------------------------------------------
-        | Affectations Classe - Matière - Enseignant
+        | CLASSE MATIERE ENSEIGNANT
         |--------------------------------------------------------------------------
         */
 
@@ -201,23 +212,31 @@ class DatabaseSeeder extends Seeder
         foreach($classes as $classe)
         {
 
+
             foreach($matieres as $matiere)
             {
 
 
                 ClasseMatiere::create([
 
+
                     'classe_id'=>$classe->id,
+
 
                     'matiere_id'=>$matiere->id,
 
+
                     'enseignant_id'=>$enseignant->id,
+
 
                     'coefficient'=>rand(1,5)
 
+
                 ]);
 
+
             }
+
 
         }
 
@@ -231,35 +250,49 @@ class DatabaseSeeder extends Seeder
 
         /*
         |--------------------------------------------------------------------------
-        | Élèves : 60 élèves
+        | ELEVES
         |--------------------------------------------------------------------------
         */
 
 
-        $prenoms = [
+        $prenoms=[
 
             'Aminata',
+
             'Moussa',
+
             'Fatou',
+
             'Ali',
+
             'Mariama',
+
             'Ibrahima',
+
             'Awa',
+
             'Ousmane',
+
             'Khady',
+
             'Seynabou'
 
         ];
 
 
 
-        $noms = [
+        $noms=[
 
             'Fall',
+
             'Diop',
+
             'Ndiaye',
+
             'Sarr',
+
             'Ba',
+
             'Sy'
 
         ];
@@ -268,21 +301,29 @@ class DatabaseSeeder extends Seeder
 
 
 
-        for($i = 1; $i <= 60; $i++)
+
+
+        for($i=1;$i<=60;$i++)
         {
 
 
             Eleve::create([
 
-                'nom'=> $noms[array_rand($noms)],
 
-                'prenom'=> $prenoms[array_rand($prenoms)],
+                'nom'=>$noms[array_rand($noms)],
+
+
+                'prenom'=>$prenoms[array_rand($prenoms)],
+
 
                 'date_naissance'=>'2012-05-10',
 
+
                 'classe_id'=>$classes[array_rand($classes)]->id
 
+
             ]);
+
 
         }
 
@@ -296,7 +337,96 @@ class DatabaseSeeder extends Seeder
 
         /*
         |--------------------------------------------------------------------------
-        | Notes : 600 notes
+        | EVALUATIONS
+        |--------------------------------------------------------------------------
+        */
+
+
+        $evaluations=[];
+
+
+
+
+        foreach($matieres as $matiere)
+        {
+
+
+            $evaluations[] = Evaluation::create([
+
+
+                'libelle'=>'Devoir 1',
+
+
+                'date'=>'2026-10-01',
+
+
+                'coefficient'=>1,
+
+
+                'matiere_id'=>$matiere->id
+
+
+            ]);
+
+
+
+
+
+
+            $evaluations[] = Evaluation::create([
+
+
+                'libelle'=>'Devoir 2',
+
+
+                'date'=>'2026-10-15',
+
+
+                'coefficient'=>1,
+
+
+                'matiere_id'=>$matiere->id
+
+
+            ]);
+
+
+
+
+
+
+            $evaluations[] = Evaluation::create([
+
+
+                'libelle'=>'Examen',
+
+
+                'date'=>'2026-10-30',
+
+
+                'coefficient'=>2,
+
+
+                'matiere_id'=>$matiere->id
+
+
+            ]);
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | NOTES
         |--------------------------------------------------------------------------
         */
 
@@ -305,34 +435,29 @@ class DatabaseSeeder extends Seeder
 
 
 
+
         foreach($eleves as $eleve)
         {
 
 
-            // 2 notes par matière
-
-            foreach($matieres as $matiere)
+            foreach($evaluations as $evaluation)
             {
 
 
-                for($i=0; $i<2; $i++)
-                {
+                Note::create([
 
 
-                    Note::create([
-
-                        'eleve_id'=>$eleve->id,
-
-                        'matiere_id'=>$matiere->id,
-
-                        'enseignant_id'=>$enseignant->id,
-
-                        'note'=>rand(8,20)
-
-                    ]);
+                    'eleve_id'=>$eleve->id,
 
 
-                }
+                    'evaluation_id'=>$evaluation->id,
+
+
+                    'note'=>rand(8,20)
+
+
+                ]);
+
 
             }
 
@@ -342,5 +467,6 @@ class DatabaseSeeder extends Seeder
 
 
     }
+
 
 }

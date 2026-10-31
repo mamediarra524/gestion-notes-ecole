@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\Classe;
+use App\Models\ClasseMatiere;
+use App\Models\Note;
 
 
 class Enseignant extends Model
@@ -27,7 +30,7 @@ class Enseignant extends Model
 
 
     /**
-     * Un enseignant est lié à un compte utilisateur.
+     * Un enseignant possède un compte utilisateur.
      */
     public function user()
     {
@@ -46,9 +49,11 @@ class Enseignant extends Model
 
 
     /**
-     * Classes et matières enseignées.
+     * Classes enseignées.
      *
-     * Relation N-N via classe_matiere
+     * Relation N-N :
+     * Enseignant -> Classe
+     * via classe_matiere
      */
     public function classes()
     {
@@ -80,18 +85,16 @@ class Enseignant extends Model
 
 
     /**
-     * Affectations complètes :
-     *
-     * Classe
-     * Matière
-     * Enseignant
+     * Affectations enseignant / classe / matière
      */
     public function affectations()
     {
 
         return $this->hasMany(
 
-            ClasseMatiere::class
+            ClasseMatiere::class,
+
+            'enseignant_id'
 
         );
 
@@ -105,14 +108,16 @@ class Enseignant extends Model
 
 
     /**
-     * Notes saisies par cet enseignant.
+     * Notes saisies par l'enseignant
      */
     public function notes()
     {
 
         return $this->hasMany(
 
-            Note::class
+            Note::class,
+
+            'enseignant_id'
 
         );
 

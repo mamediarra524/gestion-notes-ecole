@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 
 
 @Injectable({
@@ -8,37 +9,74 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class NoteService {
 
 
+
+  private http = inject(HttpClient);
+
+
+
   private apiUrl =
+
   'http://127.0.0.1:8000/api/notes';
 
 
 
-  constructor(
-    private http:HttpClient
-  ){}
 
 
 
 
+  private options()
+  {
 
-  private options(){
+
+    const token = localStorage.getItem('token');
+
+
+
+    console.log(
+
+      "TOKEN ENVOYE NOTES :",
+
+      token
+
+    );
+
+
+
 
 
     return {
 
+
       headers:new HttpHeaders({
 
+
+
         Authorization:
-        'Bearer ' + localStorage.getItem('token'),
+
+        `Bearer ${token}`,
+
+
 
         Accept:
+
+        'application/json',
+
+
+
+        'Content-Type':
+
         'application/json'
 
+
+
       })
+
+
 
     };
 
 
+
   }
 
 
@@ -46,14 +84,26 @@ export class NoteService {
 
 
 
-  getNotes(){
 
 
-    return this.http.get(
+
+  // ============================
+  // LISTE DES NOTES
+  // ============================
+
+
+  getNotes()
+  {
+
+
+    return this.http.get<any[]>(
+
 
       this.apiUrl,
 
+
       this.options()
+
 
     );
 
@@ -65,16 +115,29 @@ export class NoteService {
 
 
 
-  ajouterNote(data:any){
+
+
+
+  // ============================
+  // AJOUTER UNE NOTE
+  // ============================
+
+
+  ajouterNote(data:any)
+  {
 
 
     return this.http.post(
 
+
       this.apiUrl,
+
 
       data,
 
+
       this.options()
+
 
     );
 
@@ -87,19 +150,65 @@ export class NoteService {
 
 
 
+
+
+  // ============================
+  // AFFICHER UNE NOTE
+  // ============================
+
+
+  getNote(id:number)
+  {
+
+
+    return this.http.get(
+
+
+      `${this.apiUrl}/${id}`,
+
+
+      this.options()
+
+
+    );
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // ============================
+  // MODIFIER UNE NOTE
+  // ============================
+
+
   modifierNote(
+
     id:number,
+
     data:any
-  ){
+
+  )
+  {
 
 
     return this.http.put(
 
+
       `${this.apiUrl}/${id}`,
+
 
       data,
 
+
       this.options()
+
 
     );
 
@@ -113,14 +222,24 @@ export class NoteService {
 
 
 
-  supprimerNote(id:number){
+
+  // ============================
+  // SUPPRIMER UNE NOTE
+  // ============================
+
+
+  supprimerNote(id:number)
+  {
 
 
     return this.http.delete(
 
+
       `${this.apiUrl}/${id}`,
 
+
       this.options()
+
 
     );
 

@@ -1,175 +1,168 @@
 <div class="enseignants-container">
 
 
-<a 
-routerLink="/dashboard"
-class="back-btn">
+  <!-- RETOUR DASHBOARD -->
 
-⬅ Retour Dashboard
+  <a
+    routerLink="/dashboard"
+    class="back-btn">
 
-</a>
+    ⬅ Retour Dashboard
 
+  </a>
 
 
 
 
-<h1>
-👨‍🏫 Gestion des enseignants
-</h1>
 
+  <!-- TITRE -->
 
+  <h1>
 
+    👨‍🏫 Gestion des enseignants
 
+  </h1>
 
-<p 
-*ngIf="message"
-class="message">
 
-{{message}}
 
-</p>
 
 
+  <!-- MESSAGE -->
 
+  <p
+    *ngIf="message"
+    class="message">
 
+    {{message}}
 
+  </p>
 
 
 
-<!-- FORMULAIRE -->
 
 
-<div class="form-card">
 
 
-<h2>
 
-{{ modification ? 
-'Modifier un enseignant' :
-'Ajouter un enseignant'}}
 
-</h2>
+  <!-- FORMULAIRE -->
 
+  <div class="form-card">
 
 
+    <h2>
 
+      {{ modification 
+      ? 'Modifier un enseignant'
+      : 'Ajouter un enseignant'}}
 
-<form
-(ngSubmit)="modification ? enregistrerModification() : ajouterEnseignant()">
+    </h2>
 
 
-<label>
-Nom
-</label>
 
 
-<input
 
-type="text"
 
-[(ngModel)]="enseignant.nom"
+    <form
+    (ngSubmit)="modification 
+    ? enregistrerModification() 
+    : ajouterEnseignant()">
 
-name="nom"
 
-required>
 
 
 
-<label>
-Prénom
-</label>
+      <!-- NOM -->
 
+      <label>
 
-<input
+        Nom
 
-type="text"
+      </label>
 
-[(ngModel)]="enseignant.prenom"
 
-name="prenom"
+      <input
 
-required>
+      type="text"
 
+      [(ngModel)]="enseignant.nom"
 
+      name="nom"
 
-<label>
-Email
-</label>
+      required>
 
 
-<input
 
-type="email"
 
-[(ngModel)]="enseignant.email"
 
-name="email"
 
-required>
 
+      <!-- PRENOM -->
 
+      <label>
 
-<label>
-Téléphone
-</label>
+        Prénom
 
+      </label>
 
-<input
 
-type="text"
+      <input
 
-[(ngModel)]="enseignant.telephone"
+      type="text"
 
-name="telephone">
+      [(ngModel)]="enseignant.prenom"
 
+      name="prenom"
 
+      required>
 
 
 
 
-<button 
-type="submit"
-class="btn-save">
 
 
-{{ modification ?
-'Modifier' :
-'Ajouter'}}
 
+      <!-- EMAIL -->
 
-</button>
+      <label>
 
+        Email
 
+      </label>
 
 
+      <input
 
+      type="email"
 
-<button
+      [(ngModel)]="enseignant.email"
 
-type="button"
+      name="email"
 
-class="btn-cancel"
+      required>
 
-*ngIf="modification"
 
-(click)="resetForm()">
 
 
-Annuler
 
 
-</button>
 
+      <!-- TELEPHONE -->
 
+      <label>
 
+        Téléphone
 
+      </label>
 
-</form>
 
+      <input
 
-</div>
+      type="text"
 
+      [(ngModel)]="enseignant.telephone"
 
+      name="telephone">
 
 
 
@@ -177,236 +170,434 @@ Annuler
 
 
 
-<!-- RECHERCHE -->
+      <!-- MOT DE PASSE -->
 
+      <label>
 
-<div class="search-box">
+        Mot de passe
 
+      </label>
 
-<label>
 
-🔎 Rechercher :
+      <input
 
-</label>
+      type="password"
 
+      [(ngModel)]="enseignant.password"
 
+      name="password"
 
-<input
+      [required]="!modification"
 
-type="text"
+      minlength="6">
 
-[(ngModel)]="recherche"
 
-placeholder="Nom, prénom ou email">
 
 
-</div>
 
 
 
+      <!-- CONFIRMATION -->
 
+      <label>
 
+        Confirmer le mot de passe
 
+      </label>
 
 
+      <input
 
-<!-- TABLEAU -->
+      type="password"
 
+      [(ngModel)]="enseignant.password_confirmation"
 
-<div class="table-card">
+      name="password_confirmation"
 
+      [required]="!modification">
 
-<table>
 
 
-<thead>
 
-<tr>
 
-<th>ID</th>
 
-<th>Nom</th>
 
-<th>Prénom</th>
+      <!-- BOUTON ENREGISTRER -->
 
-<th>Email</th>
+      <button
 
-<th>Téléphone</th>
+      type="submit"
 
-<th>Actions</th>
+      class="btn-save">
 
 
-</tr>
+      {{ modification 
+      ? 'Modifier'
+      : 'Ajouter'}}
 
-</thead>
 
+      </button>
 
 
 
 
-<tbody>
 
 
-<tr 
-*ngFor="let e of enseignantsFiltres">
+      <!-- ANNULER -->
 
+      <button
 
-<td>
+      type="button"
 
-{{e.id}}
+      class="btn-cancel"
 
-</td>
+      *ngIf="modification"
 
+      (click)="resetForm()">
 
 
-<td>
+      Annuler
 
-{{e.nom}}
 
-</td>
+      </button>
 
 
 
-<td>
+    </form>
 
-{{e.prenom}}
 
-</td>
 
+  </div>
 
 
-<td>
 
-{{e.email}}
 
-</td>
 
 
 
-<td>
 
-{{e.telephone}}
 
-</td>
+  <!-- RECHERCHE -->
 
 
+  <div class="search-box">
 
 
+    <label>
 
-<td>
+      🔎 Rechercher :
 
+    </label>
 
-<button
 
-class="edit"
 
-(click)="modifier(e)">
+    <input
 
-✏️ Modifier
+    type="text"
 
-</button>
+    [(ngModel)]="recherche"
 
+    placeholder="Nom, prénom ou email">
 
 
+  </div>
 
 
-<button
 
-class="delete"
 
-(click)="supprimer(e.id)">
 
-🗑 Supprimer
 
-</button>
 
 
-</td>
 
+  <!-- TABLEAU -->
 
-</tr>
 
+  <div class="table-card">
 
 
+    <table>
 
 
 
+      <thead>
 
-<tr 
-*ngIf="enseignantsFiltres.length===0">
 
+        <tr>
 
-<td colspan="6">
 
-Aucun enseignant trouvé
+          <th>ID</th>
 
-</td>
+          <th>Nom</th>
 
+          <th>Prénom</th>
 
-</tr>
+          <th>Email</th>
 
+          <th>Téléphone</th>
 
+          <th>Compte</th>
 
-</tbody>
+          <th>Actions</th>
 
 
+        </tr>
 
-</table>
 
+      </thead>
 
-</div>
 
 
 
 
 
 
+      <tbody>
 
 
 
-<!-- PAGINATION -->
 
+        <tr
 
-<div class="pagination">
+        *ngFor="let e of enseignantsFiltres">
 
 
-<button
 
-(click)="pagePrecedente()"
 
-[disabled]="page===1">
 
-⬅ Précédent
+          <td>
 
-</button>
+            {{e.id}}
 
+          </td>
 
 
 
 
-<span>
 
-Page {{page}} / {{totalPages}}
 
-</span>
+          <td>
 
+            {{e.nom}}
 
+          </td>
 
 
 
-<button
 
-(click)="pageSuivante()"
 
-[disabled]="page===totalPages">
 
-Suivant ➡
+          <td>
 
-</button>
+            {{e.prenom}}
 
+          </td>
 
 
-</div>
+
+
+
+
+          <td>
+
+            {{e.email}}
+
+          </td>
+
+
+
+
+
+
+          <td>
+
+            {{e.telephone}}
+
+          </td>
+
+
+
+
+
+
+
+          <!-- RESET PASSWORD -->
+
+
+          <td>
+
+
+            <button
+
+            class="reset"
+
+            (click)="resetPassword(e)">
+
+
+            🔑 Réinitialiser
+
+
+            </button>
+
+
+
+          </td>
+
+
+
+
+
+
+
+          <!-- ACTIONS -->
+
+
+          <td>
+
+
+            <button
+
+            class="edit"
+
+            (click)="modifier(e)">
+
+
+            ✏️ Modifier
+
+
+            </button>
+
+
+
+
+
+
+            <button
+
+            class="delete"
+
+            (click)="supprimer(e.id)">
+
+
+            🗑 Supprimer
+
+
+            </button>
+
+
+
+          </td>
+
+
+
+
+
+        </tr>
+
+
+
+
+
+
+
+
+
+        <tr
+
+        *ngIf="enseignantsFiltres.length===0">
+
+
+          <td colspan="7">
+
+
+            Aucun enseignant trouvé
+
+
+          </td>
+
+
+        </tr>
+
+
+
+
+
+
+      </tbody>
+
+
+
+    </table>
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+  <!-- PAGINATION -->
+
+
+  <div class="pagination">
+
+
+
+    <button
+
+    (click)="pagePrecedente()"
+
+    [disabled]="page===1">
+
+
+    ⬅ Précédent
+
+
+    </button>
+
+
+
+
+
+
+    <span>
+
+
+      Page {{page}} / {{totalPages}}
+
+
+    </span>
+
+
+
+
+
+
+
+    <button
+
+    (click)="pageSuivante()"
+
+    [disabled]="page===totalPages">
+
+
+    Suivant ➡
+
+
+    </button>
+
+
+
+
+
+  </div>
+
+
 
 
 

@@ -69,6 +69,52 @@ export class AuthService {
 
 
 
+  saveUser(user:any){
+
+
+    localStorage.setItem(
+
+      'user',
+
+      JSON.stringify(user)
+
+    );
+
+
+  }
+
+
+
+
+
+
+
+
+
+  getUser(){
+
+
+    const user = localStorage.getItem('user');
+
+
+
+    return user
+
+    ? JSON.parse(user)
+
+    : null;
+
+
+  }
+
+
+
+
+
+
+
+
+
   getToken(){
 
 
@@ -101,16 +147,35 @@ export class AuthService {
 
 
 
+  hasRole(role:string):boolean{
+
+
+    const user = this.getUser();
+
+
+
+    return user?.role === role;
+
+
+  }
+
+
+
+
+
+
+
+
+
   logout(){
 
-
-    // Supprimer le token
 
     localStorage.removeItem('token');
 
 
+    localStorage.removeItem('user');
 
-    // Retourner vers la page login
+
 
     this.router.navigate(['/login']);
 

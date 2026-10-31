@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn:'root'
 })
 export class ClasseMatiereService {
 
@@ -15,13 +15,16 @@ export class ClasseMatiereService {
 
 
 
+  private mesAffectationsUrl =
+  'http://127.0.0.1:8000/api/mes-affectations';
+
+
+
 
 
   constructor(
-    private http: HttpClient
-  ) {}
-
-
+    private http:HttpClient
+  ){}
 
 
 
@@ -32,7 +35,7 @@ export class ClasseMatiereService {
 
     return {
 
-      headers: new HttpHeaders({
+      headers:new HttpHeaders({
 
         'Authorization':
 
@@ -40,6 +43,11 @@ export class ClasseMatiereService {
 
 
         'Accept':
+
+        'application/json',
+
+
+        'Content-Type':
 
         'application/json'
 
@@ -59,8 +67,10 @@ export class ClasseMatiereService {
 
 
 
-  // Liste des affectations classe-matière
-
+  /**
+   * ADMIN :
+   * Toutes les affectations
+   */
   getClasseMatieres(){
 
 
@@ -83,8 +93,35 @@ export class ClasseMatiereService {
 
 
 
-  // Ajouter une affectation
+  /**
+   * ENSEIGNANT :
+   * Ses propres affectations
+   */
+  getMesAffectations(){
 
+
+    return this.http.get(
+
+      this.mesAffectationsUrl,
+
+      this.headers()
+
+    );
+
+
+  }
+
+
+
+
+
+
+
+
+
+  /**
+   * Ajouter une affectation
+   */
   ajouterClasseMatiere(data:any){
 
 
@@ -109,8 +146,9 @@ export class ClasseMatiereService {
 
 
 
-  // Modifier une affectation
-
+  /**
+   * Modifier une affectation
+   */
   modifierClasseMatiere(
 
     id:number,
@@ -141,9 +179,14 @@ export class ClasseMatiereService {
 
 
 
-  // Supprimer une affectation
+  /**
+   * Supprimer une affectation
+   */
+  supprimerClasseMatiere(
 
-  supprimerClasseMatiere(id:number){
+    id:number
+
+  ){
 
 
     return this.http.delete(

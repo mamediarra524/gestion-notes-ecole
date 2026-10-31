@@ -21,6 +21,7 @@
         }
 
 
+
         h1 {
 
             text-align: center;
@@ -28,6 +29,7 @@
             margin-bottom: 30px;
 
         }
+
 
 
         .info {
@@ -39,6 +41,7 @@
         }
 
 
+
         table {
 
             width: 100%;
@@ -48,6 +51,8 @@
             margin-top: 20px;
 
         }
+
+
 
 
 
@@ -63,11 +68,15 @@
 
 
 
+
+
         th {
 
             background-color: #eeeeee;
 
         }
+
+
 
 
 
@@ -81,6 +90,8 @@
 
 
 
+
+
         .footer {
 
             margin-top: 60px;
@@ -90,6 +101,7 @@
         }
 
 
+
     </style>
 
 
@@ -97,13 +109,22 @@
 
 
 
+
+
 <body>
 
 
 
+
+
 <h1>
+
     BULLETIN SCOLAIRE
+
 </h1>
+
+
+
 
 
 
@@ -112,26 +133,53 @@
 <div class="info">
 
 
-    <strong>Nom :</strong>
+
+    <strong>
+
+        Nom :
+
+    </strong>
+
 
     {{ $eleve['nom'] }}
+
 
 
     <br>
 
 
-    <strong>Prénom :</strong>
+
+
+
+    <strong>
+
+        Prénom :
+
+    </strong>
+
 
     {{ $eleve['prenom'] }}
 
 
 
+
+
     <br>
 
 
-    <strong>Classe :</strong>
+
+
+
+    <strong>
+
+        Classe :
+
+    </strong>
+
 
     {{ $eleve['classe'] }}
+
+
 
 
 
@@ -148,88 +196,199 @@
 <table>
 
 
-    <thead>
-
-        <tr>
-
-            <th>
-                Matière
-            </th>
+<thead>
 
 
-            <th>
-                Coefficient
-            </th>
+<tr>
 
 
-            <th>
-                Moyenne
-            </th>
+
+    <th>
+
+        Matière
+
+    </th>
 
 
-            <th>
-                Points
-            </th>
 
 
-        </tr>
+    <th>
 
+        Dev 1
 
-    </thead>
+    </th>
 
 
 
 
 
-    <tbody>
+    <th>
 
+        Dev 2
 
-    @foreach($matieres as $matiere)
-
-
-        <tr>
-
-
-            <td>
-
-                {{ $matiere['nom'] }}
-
-            </td>
+    </th>
 
 
 
-            <td>
-
-                {{ $matiere['coefficient'] }}
-
-            </td>
 
 
+    <th>
 
-            <td>
+        Composition
 
-                {{ $matiere['moyenne'] }}
-
-            </td>
+    </th>
 
 
 
-            <td>
-
-                {{ $matiere['points'] }}
-
-            </td>
 
 
+    <th>
 
-        </tr>
+        Coefficient
 
-
-    @endforeach
+    </th>
 
 
 
-    </tbody>
+
+
+    <th>
+
+        Moyenne
+
+    </th>
+
+
+
+
+
+    <th>
+
+        Points
+
+    </th>
+
+
+
+
+</tr>
+
+
+
+</thead>
+
+
+
+
+
+
+
+
+<tbody>
+
+
+
+@foreach($matieres as $matiere)
+
+
+
+<tr>
+
+
+
+
+    <td>
+
+        {{ $matiere['nom'] }}
+
+    </td>
+
+
+
+
+
+
+
+    <td>
+
+        {{ $matiere['evaluations'][0]['note'] ?? '-' }}
+
+    </td>
+
+
+
+
+
+
+
+    <td>
+
+        {{ $matiere['evaluations'][1]['note'] ?? '-' }}
+
+    </td>
+
+
+
+
+
+
+
+    <td>
+
+        {{ $matiere['evaluations'][2]['note'] ?? '-' }}
+
+    </td>
+
+
+
+
+
+
+
+    <td>
+
+        {{ $matiere['coefficient'] }}
+
+    </td>
+
+
+
+
+
+
+
+    <td>
+
+        {{ $matiere['moyenne'] }}
+
+    </td>
+
+
+
+
+
+
+
+    <td>
+
+        {{ $matiere['points'] }}
+
+    </td>
+
+
+
+
+
+</tr>
+
+
+
+
+@endforeach
+
+
+
+</tbody>
 
 
 
@@ -247,20 +406,30 @@
 
 
     <h3>
+
         Résultats
+
     </h3>
 
 
 
+
+
     <p>
 
+
         <strong>
+
             Moyenne générale de l'élève :
+
         </strong>
+
 
         {{ $moyenneGenerale }}
 
+
         /20
+
 
     </p>
 
@@ -268,15 +437,23 @@
 
 
 
+
+
     <p>
 
+
         <strong>
+
             Moyenne générale de la classe :
+
         </strong>
+
 
         {{ $moyenneClasse }}
 
+
         /20
+
 
     </p>
 
@@ -284,15 +461,23 @@
 
 
 
+
+
     <p>
 
+
         <strong>
+
             Rang :
+
         </strong>
+
 
         {{ $rang }}
 
+
         ème
+
 
     </p>
 
@@ -300,13 +485,20 @@
 
 
 
+
+
     <p>
 
+
         <strong>
+
             Appréciation :
+
         </strong>
 
+
         {{ $appreciation }}
+
 
     </p>
 
@@ -332,10 +524,13 @@
     </p>
 
 
+
     <br><br>
 
 
+
     ______________________
+
 
 
 </div>

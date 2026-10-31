@@ -6,16 +6,23 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
 
 
+
 @Component({
   selector: 'app-login',
+
   standalone: true,
+
   imports: [
     FormsModule,
     CommonModule
   ],
+
   templateUrl: './login.html',
+
   styleUrl: './login.css'
 })
+
+
 export class Login {
 
 
@@ -24,6 +31,8 @@ export class Login {
   password: string = '';
 
   message: string = '';
+
+
 
 
 
@@ -39,16 +48,29 @@ export class Login {
 
 
 
+
+
+
+
   connexion() {
 
 
     const data = {
 
+
       email: this.email,
+
 
       password: this.password
 
+
     };
+
+
+
+
+
+
 
 
 
@@ -56,54 +78,127 @@ export class Login {
 
     .subscribe({
 
-      next: (response: any) => {
+
+
+
+
+      next: (response:any) => {
+
 
 
         console.log(
-          "Réponse API : ",
+
+          "Réponse API :",
+
           response
+
         );
 
 
+
+
+
+
+
+
+        // Sauvegarde du token Sanctum
 
         this.auth.saveToken(
+
           response.token
+
         );
+
+
+
+
+
+
+
+
+        // Sauvegarde de l'utilisateur connecté
+
+        // nécessaire pour roleGuard
+
+        this.auth.saveUser(
+
+          response.user
+
+        );
+
+
+
+
+
 
 
 
         this.message =
+
         "Connexion réussie";
 
 
 
+
+
+
+
+
         this.router.navigate([
+
           '/dashboard'
+
         ]);
+
+
+
 
 
       },
 
 
 
-      error: (error: any) => {
+
+
+
+
+
+      error:(error:any)=> {
+
 
 
         console.log(
-          "Erreur API : ",
+
+          "Erreur API :",
+
           error
+
         );
 
 
 
+
+
+
+
+
         this.message =
+
         "Email ou mot de passe incorrect";
+
+
+
 
 
       }
 
 
+
+
+
     });
+
+
 
 
   }

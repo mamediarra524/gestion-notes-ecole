@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 
 import { ClasseMatiereService } from '../../services/classe-matiere';
@@ -13,14 +13,16 @@ import { EnseignantService } from '../../services/enseignant';
 
 @Component({
 
-  selector: 'app-classe-matieres',
+  selector:'app-classe-matieres',
 
   standalone:true,
 
   imports:[
+
     CommonModule,
-    FormsModule,
-    RouterLink
+
+    FormsModule
+
   ],
 
   templateUrl:'./classe-matieres.html',
@@ -33,16 +35,22 @@ import { EnseignantService } from '../../services/enseignant';
 export class ClasseMatieres implements OnInit {
 
 
+
   affectations:any[]=[];
+
 
   classes:any[]=[];
 
+
   matieres:any[]=[];
+
 
   enseignants:any[]=[];
 
 
+
   message:string='';
+
 
   recherche:string='';
 
@@ -50,20 +58,23 @@ export class ClasseMatieres implements OnInit {
 
   modification:boolean=false;
 
+
   idModification:number|null=null;
 
 
 
-  // PAGINATION
 
-  page:number = 1;
+  page:number=1;
 
-  taillePage:number = 10;
+
+  taillePage:number=10;
+
 
 
 
 
   affectation:any={
+
 
     classe_id:null,
 
@@ -73,7 +84,10 @@ export class ClasseMatieres implements OnInit {
 
     coefficient:1
 
+
   };
+
+
 
 
 
@@ -83,17 +97,24 @@ export class ClasseMatieres implements OnInit {
 
   constructor(
 
+
     private classeMatiereService:ClasseMatiereService,
+
 
     private classeService:ClasseService,
 
+
     private matiereService:MatiereService,
+
 
     private enseignantService:EnseignantService,
 
+
     private cd:ChangeDetectorRef,
 
+
     private router:Router
+
 
   ){}
 
@@ -103,13 +124,18 @@ export class ClasseMatieres implements OnInit {
 
   ngOnInit(){
 
+
     this.chargerAffectations();
+
 
     this.chargerClasses();
 
+
     this.chargerMatieres();
 
+
     this.chargerEnseignants();
+
 
   }
 
@@ -119,9 +145,17 @@ export class ClasseMatieres implements OnInit {
 
 
 
+
+
   retourDashboard(){
 
-    this.router.navigate(['/dashboard']);
+
+    this.router.navigate([
+
+      '/dashboard'
+
+    ]);
+
 
   }
 
@@ -137,23 +171,30 @@ export class ClasseMatieres implements OnInit {
 
 
     this.classeMatiereService
+
     .getClasseMatieres()
 
     .subscribe({
+
 
       next:(data:any)=>{
 
 
         this.affectations =
+
+
         Array.isArray(data)
 
+
         ? [...data]
+
 
         : [];
 
 
 
-        this.page = 1;
+        this.page=1;
+
 
 
         this.cd.detectChanges();
@@ -162,12 +203,15 @@ export class ClasseMatieres implements OnInit {
       },
 
 
+
       error:(err:any)=>{
 
 
         console.log(err);
 
-        this.message =
+
+        this.message=
+
         "Erreur chargement affectations";
 
 
@@ -186,20 +230,28 @@ export class ClasseMatieres implements OnInit {
 
 
 
+
   chargerClasses(){
 
 
-    this.classeService.getClasses()
+    this.classeService
+
+    .getClasses()
 
     .subscribe({
+
 
       next:(data:any)=>{
 
 
         this.classes =
+
+
         Array.isArray(data)
 
+
         ? data
+
 
         : [];
 
@@ -209,14 +261,18 @@ export class ClasseMatieres implements OnInit {
 
       error:(err:any)=>{
 
+
         console.log(err);
 
+
       }
+
 
     });
 
 
   }
+
 
 
 
@@ -228,17 +284,24 @@ export class ClasseMatieres implements OnInit {
   chargerMatieres(){
 
 
-    this.matiereService.getMatieres()
+    this.matiereService
+
+    .getMatieres()
 
     .subscribe({
+
 
       next:(data:any)=>{
 
 
         this.matieres =
+
+
         Array.isArray(data)
 
+
         ? data
+
 
         : [];
 
@@ -248,9 +311,12 @@ export class ClasseMatieres implements OnInit {
 
       error:(err:any)=>{
 
+
         console.log(err);
 
+
       }
+
 
     });
 
@@ -264,20 +330,28 @@ export class ClasseMatieres implements OnInit {
 
 
 
+
   chargerEnseignants(){
 
 
-    this.enseignantService.getEnseignants()
+    this.enseignantService
+
+    .getEnseignants()
 
     .subscribe({
+
 
       next:(data:any)=>{
 
 
         this.enseignants =
+
+
         Array.isArray(data)
 
+
         ? data
+
 
         : [];
 
@@ -287,9 +361,12 @@ export class ClasseMatieres implements OnInit {
 
       error:(err:any)=>{
 
+
         console.log(err);
 
+
       }
+
 
     });
 
@@ -308,13 +385,18 @@ export class ClasseMatieres implements OnInit {
 
 
     const texte =
+
     this.recherche
+
     .toLowerCase()
+
     .trim();
 
 
 
-    let resultat = this.affectations;
+
+    let resultat=this.affectations;
+
 
 
 
@@ -322,29 +404,37 @@ export class ClasseMatieres implements OnInit {
     if(texte){
 
 
-      resultat =
-      this.affectations.filter(a=>{
+      resultat=this.affectations.filter(a=>{
 
 
         return (
 
           a.classe?.nom
+
           ?.toLowerCase()
+
           .includes(texte)
 
 
           ||
+
 
           a.matiere?.nom
+
           ?.toLowerCase()
+
           .includes(texte)
 
 
           ||
 
+
           a.enseignant?.nom
+
           ?.toLowerCase()
+
           .includes(texte)
+
 
         );
 
@@ -358,11 +448,14 @@ export class ClasseMatieres implements OnInit {
 
 
 
-    const debut =
-    (this.page-1)
-    *
-    this.taillePage;
 
+    const debut=
+
+    (this.page-1)
+
+    *
+
+    this.taillePage;
 
 
 
@@ -370,7 +463,7 @@ export class ClasseMatieres implements OnInit {
 
       debut,
 
-      debut + this.taillePage
+      debut+this.taillePage
 
     );
 
@@ -388,9 +481,12 @@ export class ClasseMatieres implements OnInit {
   get totalPages(){
 
 
-    const texte =
+    const texte=
+
     this.recherche
+
     .toLowerCase()
+
     .trim();
 
 
@@ -399,32 +495,41 @@ export class ClasseMatieres implements OnInit {
 
 
 
+
     if(texte){
 
 
-      resultat =
-      this.affectations.filter(a=>{
+      resultat=this.affectations.filter(a=>{
 
 
         return (
 
           a.classe?.nom
+
           ?.toLowerCase()
+
           .includes(texte)
 
 
           ||
+
 
           a.matiere?.nom
+
           ?.toLowerCase()
+
           .includes(texte)
 
 
           ||
 
+
           a.enseignant?.nom
+
           ?.toLowerCase()
+
           .includes(texte)
+
 
         );
 
@@ -433,6 +538,8 @@ export class ClasseMatieres implements OnInit {
 
 
     }
+
+
 
 
 
@@ -474,10 +581,11 @@ export class ClasseMatieres implements OnInit {
 
 
 
+
   pagePrecedente(){
 
 
-    if(this.page > 1){
+    if(this.page>1){
 
       this.page--;
 
@@ -497,8 +605,8 @@ export class ClasseMatieres implements OnInit {
   ajouter(){
 
 
-    if(
 
+    if(
 
       !this.affectation.classe_id ||
 
@@ -506,11 +614,11 @@ export class ClasseMatieres implements OnInit {
 
       !this.affectation.enseignant_id
 
-
     ){
 
 
-      this.message =
+      this.message=
+
       "Veuillez remplir tous les champs";
 
 
@@ -522,18 +630,26 @@ export class ClasseMatieres implements OnInit {
 
 
 
+
+
     this.classeMatiereService
 
-    .ajouterClasseMatiere(this.affectation)
+    .ajouterClasseMatiere(
+
+      this.affectation
+
+    )
 
     .subscribe({
+
 
 
       next:()=>{
 
 
-        this.message =
-        "Affectation ajoutée avec succès";
+        this.message=
+
+        "Affectation ajoutée";
 
 
         this.reset();
@@ -545,19 +661,24 @@ export class ClasseMatieres implements OnInit {
       },
 
 
+
       error:(err:any)=>{
 
 
         console.log(err);
 
-        this.message =
+
+        this.message=
+
         "Erreur ajout";
 
 
       }
 
 
+
     });
+
 
 
   }
@@ -584,12 +705,12 @@ export class ClasseMatieres implements OnInit {
 
       coefficient:item.coefficient
 
+
     };
 
 
 
-    this.idModification =
-    item.id;
+    this.idModification=item.id;
 
 
     this.modification=true;
@@ -608,13 +729,11 @@ export class ClasseMatieres implements OnInit {
   enregistrerModification(){
 
 
-
-    if(this.idModification === null){
+    if(this.idModification===null){
 
       return;
 
     }
-
 
 
 
@@ -629,14 +748,14 @@ export class ClasseMatieres implements OnInit {
 
     )
 
-
     .subscribe({
 
 
       next:()=>{
 
 
-        this.message =
+        this.message=
+
         "Modification réussie";
 
 
@@ -655,7 +774,8 @@ export class ClasseMatieres implements OnInit {
         console.log(err);
 
 
-        this.message =
+        this.message=
+
         "Erreur modification";
 
 
@@ -663,6 +783,7 @@ export class ClasseMatieres implements OnInit {
 
 
     });
+
 
 
   }
@@ -679,7 +800,9 @@ export class ClasseMatieres implements OnInit {
 
 
     if(confirm(
+
       "Voulez-vous supprimer cette affectation ?"
+
     )){
 
 
@@ -693,7 +816,8 @@ export class ClasseMatieres implements OnInit {
         next:()=>{
 
 
-          this.message =
+          this.message=
+
           "Suppression réussie";
 
 
@@ -709,7 +833,8 @@ export class ClasseMatieres implements OnInit {
           console.log(err);
 
 
-          this.message =
+          this.message=
+
           "Erreur suppression";
 
 

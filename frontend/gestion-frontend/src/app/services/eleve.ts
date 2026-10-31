@@ -2,125 +2,187 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
+
 @Injectable({
-  providedIn: 'root'
+providedIn:'root'
 })
 export class EleveService {
 
 
-  private http = inject(HttpClient);
 
+private http = inject(HttpClient);
 
-  private apiUrl = 'http://127.0.0.1:8000/api/eleves';
 
 
+private apiUrl =
+'http://127.0.0.1:8000/api/eleves';
 
-  private getOptions(){
 
-    const token = localStorage.getItem('token');
 
 
-    return {
 
-      headers: new HttpHeaders({
+private options(){
 
-        Authorization: `Bearer ${token}`,
 
-        Accept: 'application/json'
+const token = localStorage.getItem('token');
 
-      })
 
-    };
+return {
 
-  }
 
+headers:new HttpHeaders({
 
 
+Authorization:
 
-  getEleves(){
+`Bearer ${token}`,
 
-    return this.http.get(
 
-      this.apiUrl,
+Accept:'application/json'
 
-      this.getOptions()
 
-    );
+})
 
-  }
 
+};
 
 
+}
 
 
-  /**
-   * Récupérer les élèves d'une classe
-   */
-  getElevesParClasse(id:number){
 
 
-    return this.http.get(
 
-      `http://127.0.0.1:8000/api/classes/${id}/eleves`,
 
-      this.getOptions()
+// =====================
+// ADMIN
+// =====================
 
-    );
 
+getEleves(){
 
-  }
 
+return this.http.get<any[]>(
 
+this.apiUrl,
 
+this.options()
 
+);
 
-  ajouterEleve(data:any){
 
-    return this.http.post(
+}
 
-      this.apiUrl,
 
-      data,
 
-      this.getOptions()
 
-    );
 
-  }
 
 
 
+// =====================
+// ENSEIGNANT
+// =====================
 
 
-  modifierEleve(id:number, data:any){
+getElevesParClasse(id:number){
 
-    return this.http.put(
 
-      `${this.apiUrl}/${id}`,
+return this.http.get<any[]>(
 
-      data,
 
-      this.getOptions()
+`http://127.0.0.1:8000/api/classes/${id}/eleves`,
 
-    );
 
-  }
+this.options()
 
 
+);
 
 
+}
 
-  supprimerEleve(id:number){
 
-    return this.http.delete(
 
-      `${this.apiUrl}/${id}`,
 
-      this.getOptions()
 
-    );
+getParClasse(id:number){
 
-  }
+
+return this.getElevesParClasse(id);
+
+
+}
+
+
+
+
+
+
+
+
+
+ajouterEleve(data:any){
+
+
+return this.http.post(
+
+this.apiUrl,
+
+data,
+
+this.options()
+
+);
+
+
+}
+
+
+
+
+
+
+
+modifierEleve(
+id:number,
+data:any
+){
+
+
+return this.http.put(
+
+`${this.apiUrl}/${id}`,
+
+data,
+
+this.options()
+
+);
+
+
+}
+
+
+
+
+
+
+
+supprimerEleve(id:number){
+
+
+return this.http.delete(
+
+`${this.apiUrl}/${id}`,
+
+this.options()
+
+);
+
+
+}
+
 
 
 }

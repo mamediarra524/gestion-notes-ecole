@@ -14,9 +14,12 @@ export class EnseignantService {
 
 
 
+
   constructor(
     private http: HttpClient
   ) {}
+
+
 
 
 
@@ -56,7 +59,11 @@ export class EnseignantService {
 
 
 
-  // Liste des enseignants
+
+
+  // =========================
+  // LISTE ENSEIGNANTS
+  // =========================
 
   getEnseignants(){
 
@@ -78,9 +85,15 @@ export class EnseignantService {
 
 
 
-  // Ajouter un enseignant
 
-  ajouterEnseignant(enseignant:any){
+
+  // =========================
+  // AJOUT ENSEIGNANT
+  // =========================
+
+  ajouterEnseignant(
+    enseignant:any
+  ){
 
 
     return this.http.post(
@@ -102,11 +115,18 @@ export class EnseignantService {
 
 
 
-  // Modifier un enseignant
+
+
+  // =========================
+  // MODIFICATION
+  // =========================
 
   modifierEnseignant(
+
     id:number,
+
     enseignant:any
+
   ){
 
 
@@ -129,9 +149,17 @@ export class EnseignantService {
 
 
 
-  // Supprimer un enseignant
 
-  supprimerEnseignant(id:number){
+
+  // =========================
+  // SUPPRESSION
+  // =========================
+
+  supprimerEnseignant(
+
+    id:number
+
+  ){
 
 
     return this.http.delete(
@@ -144,6 +172,39 @@ export class EnseignantService {
 
 
   }
+
+
+
+
+
+
+
+
+
+  // =========================
+  // RESET MOT DE PASSE
+  // =========================
+
+  resetPassword(
+
+    id:number
+
+  ){
+
+
+    return this.http.post(
+
+      `${this.apiUrl}/${id}/reset-password`,
+
+      {},
+
+      this.headers()
+
+    );
+
+
+  }
+
 
 
 }

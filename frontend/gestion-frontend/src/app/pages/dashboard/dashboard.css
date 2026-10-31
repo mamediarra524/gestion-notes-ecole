@@ -250,7 +250,7 @@
 
 
 
-/* Bulletins */
+
 
 .yellow {
 
@@ -260,9 +260,23 @@
 
 
 
+
+
 .cyan {
 
   background: linear-gradient(135deg,#22d3ee,#0891b2);
+
+}
+
+
+
+
+
+/* Evaluations */
+
+.pink {
+
+  background: linear-gradient(135deg,#ec4899,#db2777);
 
 }
 

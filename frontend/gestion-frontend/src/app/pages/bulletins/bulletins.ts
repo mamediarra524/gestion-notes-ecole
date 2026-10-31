@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -12,507 +12,616 @@ import { ClasseService } from '../../services/classe';
 
 @Component({
 
-  selector:'app-bulletins',
+selector:'app-bulletins',
 
-  standalone:true,
+standalone:true,
 
-  imports:[
+imports:[
 
-    CommonModule,
+CommonModule,
 
-    FormsModule,
+FormsModule,
 
-    RouterLink
+RouterLink
 
-  ],
+],
 
-  templateUrl:'./bulletins.html',
+templateUrl:'./bulletins.html',
 
-  styleUrl:'./bulletins.css'
+styleUrl:'./bulletins.css'
 
 })
 
 
-export class Bulletins {
+export class Bulletins implements OnInit {
 
 
 
-  // ==========================
-  // Classes
-  // ==========================
+/*
+|--------------------------------------------------------------------------
+| CLASSES
+|--------------------------------------------------------------------------
+*/
 
-  classes:any[]=[];
 
-  classeId:number|null=null;
+classes:any[]=[];
 
 
+classeId:number|null=null;
 
 
 
-  // ==========================
-  // Élèves de la classe
-  // ==========================
 
-  elevesClasse:any[]=[];
 
 
 
+/*
+|--------------------------------------------------------------------------
+| ELEVES
+|--------------------------------------------------------------------------
+*/
 
 
-  // ==========================
-  // Bulletin affiché
-  // ==========================
+elevesClasse:any[]=[];
 
-  bulletin:any=null;
 
 
 
-  message:string='';
 
 
 
+/*
+|--------------------------------------------------------------------------
+| BULLETIN
+|--------------------------------------------------------------------------
+*/
 
 
+bulletin:any=null;
 
 
-  constructor(
+message:string='';
 
-    private bulletinService:BulletinService,
 
-    private eleveService:EleveService,
 
-    private classeService:ClasseService,
 
-    private cdr:ChangeDetectorRef
 
-  ){
 
 
-    this.chargerClasses();
+constructor(
 
+private bulletinService:BulletinService,
 
-  }
+private eleveService:EleveService,
 
+private classeService:ClasseService,
 
+private cdr:ChangeDetectorRef
 
 
+){}
 
 
 
 
 
-  // ==========================
-  // Charger les classes
-  // ==========================
 
-  chargerClasses(){
 
+ngOnInit(){
 
-    this.classeService
 
-    .getClasses()
+this.chargerClasses();
 
-    .subscribe({
 
-      next:(data:any)=>{
+}
 
 
-        console.log(
 
-          "Classes reçues :",
 
-          data
 
-        );
 
 
 
-        this.classes = Array.isArray(data)
 
-        ? [...data]
+/*
+|--------------------------------------------------------------------------
+| CHARGER CLASSES
+|--------------------------------------------------------------------------
+*/
 
-        : data.data ?? [];
 
+chargerClasses(){
 
 
-        this.cdr.detectChanges();
+console.log(
 
+"Chargement classes..."
 
-      },
+);
 
 
-      error:(err:any)=>{
 
 
-        console.error(
+this.classeService
 
-          "Erreur classes :",
+.getClasses()
 
-          err
+.subscribe({
 
-        );
 
+next:(data:any)=>{
 
 
-        this.message =
+console.log(
 
-        "Erreur chargement classes";
+"Classes reçues :",
 
+data
 
-      }
+);
 
 
-    });
 
 
-  }
+this.classes = Array.isArray(data)
 
+?
 
+[...data]
 
+:
 
+data.data ?? [];
 
 
 
 
 
-  // ==========================
-  // Charger les élèves d'une classe
-  // ==========================
+console.log(
 
-  chargerElevesClasse(){
+"Classes affichées :",
 
+this.classes
 
+);
 
-    this.bulletin=null;
 
 
+this.cdr.detectChanges();
 
-    if(this.classeId === null){
 
 
-      this.elevesClasse=[];
+},
 
 
-      return;
 
+error:(err)=>{
 
-    }
 
+console.error(
 
+"Erreur classes",
 
+err
 
+);
 
 
+this.message=
 
-    this.eleveService
+"Erreur chargement classes";
 
-    .getElevesParClasse(this.classeId)
 
-    .subscribe({
+}
 
-      next:(data:any)=>{
 
 
-        console.log(
+});
 
-          "Élèves reçus :",
 
-          data
 
-        );
+}
 
 
 
-        this.elevesClasse = Array.isArray(data)
 
-        ? [...data]
 
-        : data.data ?? [];
 
 
 
-        this.message='';
 
+/*
+|--------------------------------------------------------------------------
+| CHARGER ELEVES D'UNE CLASSE
+|--------------------------------------------------------------------------
+*/
 
 
-        this.cdr.detectChanges();
+chargerElevesClasse(){
 
 
 
-      },
+this.bulletin=null;
 
 
-      error:(err:any)=>{
 
 
-        console.error(
+if(this.classeId===null){
 
-          "Erreur élèves :",
 
-          err
+this.elevesClasse=[];
 
-        );
 
+return;
 
 
-        this.message =
+}
 
-        "Erreur chargement élèves";
 
 
-      }
 
 
-    });
 
+console.log(
 
+"Classe choisie :",
 
-  }
+this.classeId
 
+);
 
 
 
 
 
 
+this.eleveService
 
+.getElevesParClasse(
 
-  // ==========================
-  // Afficher bulletin
-  // ==========================
+Number(this.classeId)
 
-  voirBulletin(id:number){
+)
 
+.subscribe({
 
 
-    console.log(
 
-      "ID élève envoyé :",
+next:(data:any)=>{
 
-      id
 
-    );
+console.log(
 
+"Élèves reçus :",
 
+data
 
+);
 
 
-    this.bulletinService
 
-    .getBulletin(id)
 
-    .subscribe({
 
-      next:(data:any)=>{
+this.elevesClasse = Array.isArray(data)
 
+?
 
-        console.log(
+[...data]
 
-          "Bulletin reçu :",
+:
 
-          data
+data.data ?? [];
 
-        );
 
 
 
-        // vider ancien bulletin
 
-        this.bulletin=null;
+this.message='';
 
 
 
-        setTimeout(()=>{
+this.cdr.detectChanges();
 
 
-          this.bulletin={...data};
 
+},
 
 
-          console.log(
 
-            "Bulletin affiché :",
 
-            this.bulletin
+error:(err)=>{
 
-          );
 
+console.error(
 
+"Erreur élèves",
 
-          this.message='';
+err
 
+);
 
 
-          this.cdr.detectChanges();
+this.message=
 
+"Erreur chargement élèves";
 
 
-          // descendre automatiquement
+}
 
-          this.scrollVersBulletin();
 
 
+});
 
-        },100);
 
 
+}
 
-      },
 
 
-      error:(err:any)=>{
 
 
-        console.error(
 
-          "Erreur bulletin :",
 
-          err
 
-        );
 
+/*
+|--------------------------------------------------------------------------
+| VOIR BULLETIN
+|--------------------------------------------------------------------------
+*/
 
 
-        this.message =
+voirBulletin(id:number){
 
-        "Erreur chargement bulletin";
 
 
-      }
+console.log(
 
+"ID élève :",
 
-    });
+id
 
+);
 
 
-  }
 
 
 
+this.bulletinService
 
+.getBulletin(id)
 
+.subscribe({
 
 
 
+next:(data:any)=>{
 
-  // ==========================
-  // Scroll automatique
-  // ==========================
 
-  scrollVersBulletin(){
 
+console.log(
 
-    setTimeout(()=>{
+"Bulletin reçu :",
 
+data
 
-      const element = document.getElementById('bulletin');
+);
 
 
 
-      if(element){
 
 
-        element.scrollIntoView({
+this.bulletin=null;
 
-          behavior:'smooth',
 
-          block:'start'
 
-        });
+setTimeout(()=>{
 
 
-      }
 
+this.bulletin={...data};
 
-    },200);
 
 
-  }
+this.message='';
 
 
 
+this.cdr.detectChanges();
 
 
 
+this.scrollVersBulletin();
 
 
 
-  // ==========================
-  // Télécharger PDF
-  // ==========================
+},100);
 
-  telechargerPDF(id:number){
 
 
+},
 
-    this.bulletinService
 
-    .getBulletinPdf(id)
 
-    .subscribe({
 
-      next:(data:Blob)=>{
+error:(err)=>{
 
 
-        const url =
+console.error(
 
-        window.URL.createObjectURL(data);
+"Erreur bulletin",
 
+err
 
+);
 
-        const lien =
 
-        document.createElement('a');
+this.message=
 
+"Erreur chargement bulletin";
 
 
-        lien.href=url;
+}
 
 
 
-        lien.download=
+});
 
-        'bulletin.pdf';
 
 
+}
 
-        lien.click();
 
 
 
-        window.URL.revokeObjectURL(url);
 
 
 
-      },
 
 
-      error:(err:any)=>{
+/*
+|--------------------------------------------------------------------------
+| SCROLL BULLETIN
+|--------------------------------------------------------------------------
+*/
 
 
-        console.error(
+scrollVersBulletin(){
 
-          "Erreur PDF :",
 
-          err
+setTimeout(()=>{
 
-        );
 
+const element=
 
+document.getElementById(
 
-        this.message =
+'bulletin'
 
-        "Erreur téléchargement PDF";
+);
 
 
-      }
 
 
-    });
+if(element){
 
 
+element.scrollIntoView({
 
-  }
+
+behavior:'smooth',
+
+
+block:'start'
+
+
+});
+
+
+}
+
+
+
+},200);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| PDF
+|--------------------------------------------------------------------------
+*/
+
+
+telechargerPDF(id:number){
+
+
+
+this.bulletinService
+
+.getBulletinPdf(id)
+
+.subscribe({
+
+
+
+next:(data:Blob)=>{
+
+
+
+const url=
+
+window.URL.createObjectURL(data);
+
+
+
+
+const lien=
+
+document.createElement('a');
+
+
+
+lien.href=url;
+
+
+
+lien.download=
+
+'bulletin.pdf';
+
+
+
+lien.click();
+
+
+
+window.URL.revokeObjectURL(url);
+
+
+
+},
+
+
+
+
+
+error:(err)=>{
+
+
+console.error(
+
+"Erreur PDF",
+
+err
+
+);
+
+
+this.message=
+
+"Erreur téléchargement PDF";
+
+
+}
+
+
+
+});
+
+
+
+}
 
 
 

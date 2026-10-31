@@ -1,32 +1,36 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 
 import { NoteService } from '../../services/note';
+import { ClasseService } from '../../services/classe';
 import { EleveService } from '../../services/eleve';
-import { MatiereService } from '../../services/matiere';
+import { EvaluationService } from '../../services/evaluation';
+import { ClasseMatiereService } from '../../services/classe-matiere';
 
 
 
 @Component({
 
-  selector:'app-notes',
+selector:'app-notes',
 
-  standalone:true,
+standalone:true,
 
-  imports:[
+imports:[
 
-    CommonModule,
-    FormsModule,
-    RouterModule
+CommonModule,
 
-  ],
+FormsModule,
 
-  templateUrl:'./notes.html',
+RouterLink
 
-  styleUrl:'./notes.css'
+],
+
+templateUrl:'./notes.html',
+
+styleUrl:'./notes.css'
 
 })
 
@@ -35,72 +39,79 @@ export class Notes implements OnInit {
 
 
 
-  notes:any[]=[];
+notes:any[]=[];
 
-  notesFiltrees:any[]=[];
+notesFiltrees:any[]=[];
 
+notesPage:any[]=[];
 
-  eleves:any[]=[];
 
-  matieres:any[]=[];
 
+classes:any[]=[];
 
+matieres:any[]=[];
 
-  message:string='';
+elevesClasse:any[]=[];
 
+evaluationsMatiere:any[]=[];
 
 
-  modification:boolean=false;
 
 
-  noteId:number|null=null;
 
+// =======================
+// SAISIE
+// =======================
 
 
+classeSaisie:any='';
 
+matiereSaisie:any='';
 
-  // Recherche et filtre
+evaluationSaisie:any='';
 
-  recherche:string='';
 
+notesSaisie:any={};
 
-  matiereFiltre:any=null;
 
 
 
 
 
-  // Pagination
 
-  page:number=1;
+// =======================
+// FILTRES
+// =======================
 
 
-  taillePage:number=20;
+classeFiltre:any='';
 
+matiereFiltre:any='';
 
-  totalPages:number=1;
+recherche:string='';
 
 
 
 
 
+message:string='';
 
 
 
 
-  note:any={
 
 
-    eleve_id:null,
 
-    matiere_id:null,
+// =======================
+// PAGINATION
+// =======================
 
-    enseignant_id:null,
 
-    note:null
+pageActuelle:number=1;
 
+taillePage:number=10;
 
-  };
+totalPages:number=1;
 
 
 
@@ -109,269 +120,268 @@ export class Notes implements OnInit {
 
 
 
+// =======================
+// MODIFICATION
+// =======================
 
-  constructor(
 
+noteModification:any=null;
 
-    private noteService:NoteService,
 
 
-    private eleveService:EleveService,
 
 
-    private matiereService:MatiereService,
 
 
-    private cd:ChangeDetectorRef
 
+constructor(
 
-  ){}
 
+private noteService:NoteService,
 
+private classeService:ClasseService,
 
+private eleveService:EleveService,
 
+private evaluationService:EvaluationService,
 
-  ngOnInit():void{
+private classeMatiereService:ClasseMatiereService,
 
+private cd:ChangeDetectorRef
 
-    this.chargerNotes();
 
-    this.chargerEleves();
+){}
 
-    this.chargerMatieres();
 
 
-  }
 
 
 
 
 
 
+ngOnInit(){
 
 
+this.chargerNotes();
 
-  // =========================
-  // CHARGER NOTES
-  // =========================
 
+this.chargerClasses();
 
-  chargerNotes(){
 
+this.chargerMesMatieres();
 
-    this.noteService.getNotes()
 
 
-    .subscribe({
+}
 
 
-      next:(data:any)=>{
 
 
-        console.log(
-          "Notes reçues :",
-          data
-        );
 
 
 
-        this.notes=data;
 
 
-        this.appliquerFiltre();
+// =======================
+// CHARGER NOTES
+// =======================
 
 
-        this.cd.detectChanges();
+chargerNotes(){
 
 
-      },
+this.noteService
 
+.getNotes()
 
-      error:(err:any)=>{
+.subscribe({
 
 
-        console.log(err);
+next:(data:any)=>{
 
 
-      }
+console.log(
 
+"NOTES RECUES",
 
-    });
+data
 
+);
 
-  }
 
 
+this.notes=[...data];
 
 
+this.notesFiltrees=[...data];
 
 
+this.pageActuelle=1;
 
 
+this.mettreAJourPagination();
 
-  // =========================
-  // FILTRE + RECHERCHE
-  // =========================
 
 
-  appliquerFiltre(){
+this.cd.detectChanges();
 
 
-    let resultat=this.notes;
 
+},
 
 
-    if(this.recherche){
+error:(err)=>{
 
 
-      const texte=this.recherche.toLowerCase();
+console.log(err);
 
 
+this.message="Erreur chargement notes";
 
-      resultat=resultat.filter((n:any)=>{
 
+}
 
-        const nom =
-        n.eleve?.nom?.toLowerCase() || '';
 
+});
 
 
-        const prenom =
-        n.eleve?.prenom?.toLowerCase() || '';
 
+}
 
 
-        return (
 
-          nom.includes(texte)
 
-          ||
 
-          prenom.includes(texte)
 
-        );
 
 
-      });
 
+// =======================
+// MATIERES DU PROF
+// =======================
 
-    }
 
+chargerMesMatieres(){
 
 
+this.classeMatiereService
 
+.getMesAffectations()
 
+.subscribe({
 
 
-    if(this.matiereFiltre){
+next:(data:any)=>{
 
 
-      resultat=resultat.filter((n:any)=>
+console.log(
 
+"AFFECTATIONS",
 
-        n.matiere_id ==
-        this.matiereFiltre
+data
 
+);
 
-      );
 
 
-    }
 
+this.matieres=[
 
 
 
+...new Map(
 
-    this.notesFiltrees=resultat;
 
+data.map((a:any)=>[
 
+a.matiere.id,
 
-    this.totalPages=Math.ceil(
+a.matiere
 
-      this.notesFiltrees.length /
-      this.taillePage
+])
 
-    );
+).values()
 
 
 
-    this.page=1;
+];
 
 
 
-  }
+this.cd.detectChanges();
 
 
 
+},
 
 
+error:(err)=>{
 
 
+console.log(err);
 
 
-  // =========================
-  // PAGINATION
-  // =========================
+this.message="Erreur chargement matières";
 
 
-  get notesPage(){
+}
 
 
-    const debut =
+});
 
-    (this.page-1)
-    *
-    this.taillePage;
 
 
+}
 
-    return this.notesFiltrees.slice(
 
-      debut,
 
-      debut + this.taillePage
 
-    );
 
 
-  }
 
 
 
+// =======================
+// CLASSES
+// =======================
 
 
+chargerClasses(){
 
-  pageSuivante(){
 
+this.classeService
 
-    if(this.page < this.totalPages){
+.getClasses()
 
-      this.page++;
+.subscribe({
 
-    }
 
+next:(data:any)=>{
 
-  }
 
+this.classes=[...data];
 
 
+this.cd.detectChanges();
 
 
+},
 
 
-  pagePrecedente(){
+error:(err)=>{
 
 
-    if(this.page>1){
+console.log(err);
 
-      this.page--;
 
-    }
+}
 
 
-  }
+});
 
 
+}
 
 
 
@@ -379,333 +389,812 @@ export class Notes implements OnInit {
 
 
 
-  // =========================
-  // CHARGER ELEVES
-  // =========================
 
 
-  chargerEleves(){
+// =======================
+// ELEVES PAR CLASSE
+// =======================
 
 
-    this.eleveService.getEleves()
+chargerElevesClasse(){
 
 
-    .subscribe({
+this.elevesClasse=[];
 
 
-      next:(data:any)=>{
+this.notesSaisie={};
 
 
-        this.eleves=data;
 
 
-        this.cd.detectChanges();
 
+if(!this.classeSaisie)
 
-      },
+return;
 
 
-      error:(err:any)=>{
 
 
-        console.log(err);
 
+this.eleveService
 
-      }
+.getParClasse(
 
+Number(this.classeSaisie)
 
-    });
+)
 
+.subscribe({
 
-  }
 
+next:(data:any)=>{
 
 
+this.elevesClasse=[...data];
 
 
 
+this.elevesClasse.forEach(e=>{
 
 
+this.notesSaisie[e.id]='';
 
-  // =========================
-  // CHARGER MATIERES
-  // =========================
 
 
-  chargerMatieres(){
+});
 
 
-    this.matiereService.getMatieres()
 
+this.cd.detectChanges();
 
-    .subscribe({
 
+},
 
-      next:(data:any)=>{
 
+error:(err)=>{
 
-        this.matieres=data;
 
+console.log(err);
 
-        this.cd.detectChanges();
 
+this.message="Erreur chargement élèves";
 
-      },
 
+}
 
-      error:(err:any)=>{
 
+});
 
-        console.log(err);
 
+}
 
-      }
 
 
-    });
 
 
-  }
 
 
 
 
+// =======================
+// EVALUATIONS PAR MATIERE
+// =======================
 
 
+chargerEvaluationsMatiere(){
 
 
+this.evaluationsMatiere=[];
 
-  // =========================
-  // AJOUT / MODIFICATION
-  // =========================
 
+this.evaluationSaisie='';
 
-  enregistrerNote(){
 
 
-    if(this.modification && this.noteId){
 
 
+if(!this.matiereSaisie)
 
-      this.noteService.modifierNote(
+return;
 
-        this.noteId,
 
-        this.note
 
-      )
 
-      .subscribe({
 
+this.evaluationService
 
-        next:()=>{
+.getEvaluationsParMatiere(
 
+Number(this.matiereSaisie)
 
-          this.message=
-          "Note modifiée avec succès";
+)
 
+.subscribe({
 
-          this.chargerNotes();
 
+next:(data:any)=>{
 
-          this.resetForm();
 
+console.log(
 
-        },
+"EVALUATIONS",
 
+data
 
-        error:(err:any)=>{
+);
 
 
-          this.message=
-          err.error.message;
 
+this.evaluationsMatiere=[...data];
 
-        }
 
 
-      });
+this.cd.detectChanges();
 
 
 
-    }
+},
 
-    else {
 
+error:(err)=>{
 
 
-      this.noteService.ajouterNote(
+console.log(err);
 
-        this.note
 
-      )
+this.message="Erreur évaluations";
 
 
-      .subscribe({
+}
 
 
-        next:()=>{
+});
 
+}
+// =======================
+// ENREGISTRER NOTES
+// =======================
 
-          this.message=
-          "Note ajoutée avec succès";
 
+enregistrerNotes(){
 
-          this.chargerNotes();
 
 
-          this.resetForm();
+if(!this.evaluationSaisie){
 
 
-        },
+this.message="⚠️ Choisir une évaluation";
 
 
-        error:(err:any)=>{
+return;
 
 
-          this.message=
-          err.error.message;
+}
 
 
-        }
 
 
-      });
 
+Object.keys(this.notesSaisie)
 
-    }
+.forEach(id=>{
 
 
-  }
+const valeur=this.notesSaisie[id];
 
 
 
+if(
 
+valeur!=='' &&
 
+valeur!==null &&
 
+valeur!==undefined
 
+){
 
 
-  modifierNote(n:any){
 
+this.noteService
 
+.ajouterNote({
 
-    this.modification=true;
 
+eleve_id:Number(id),
 
-    this.noteId=n.id;
 
+evaluation_id:Number(this.evaluationSaisie),
 
 
-    this.note={
+note:Number(valeur)
 
 
-      eleve_id:n.eleve_id,
+})
 
+.subscribe({
 
-      matiere_id:n.matiere_id,
 
+next:()=>{
 
-      enseignant_id:n.enseignant_id,
 
+this.message="✅ Notes enregistrées avec succès";
 
-      note:n.note
 
+this.chargerNotes();
 
-    };
 
+this.resetSaisie();
 
-  }
 
 
+setTimeout(()=>{
 
 
+this.message='';
 
 
+},3000);
 
 
 
-  supprimerNote(id:number){
+},
 
 
-    if(confirm(
-      "Supprimer cette note ?"
-    )){
+error:(err)=>{
 
 
-      this.noteService.supprimerNote(id)
+console.log(err);
 
 
-      .subscribe({
+this.message="❌ Erreur enregistrement";
 
 
-        next:()=>{
+}
 
 
-          this.message=
-          "Note supprimée avec succès";
+});
 
 
-          this.chargerNotes();
 
+}
 
-        },
 
 
-        error:(err:any)=>{
+});
 
 
-          console.log(err);
 
+}
 
-        }
 
 
-      });
 
 
-    }
 
 
-  }
 
 
+// =======================
+// RESET SAISIE
+// =======================
 
 
+resetSaisie(){
 
 
+this.classeSaisie='';
 
 
+this.matiereSaisie='';
 
-  resetForm(){
 
+this.evaluationSaisie='';
 
-    this.modification=false;
 
+this.elevesClasse=[];
 
-    this.noteId=null;
 
+this.notesSaisie={};
 
 
-    this.note={
+}
 
 
-      eleve_id:null,
 
 
-      matiere_id:null,
 
 
-      enseignant_id:null,
 
 
-      note:null
 
+/// =======================
+// FILTRES
+// =======================
 
-    };
 
+filtrer(){
 
-  }
+
+console.log(
+"FILTRES :",
+this.classeFiltre,
+this.matiereFiltre,
+this.recherche
+);
+
+
+
+
+
+this.notesFiltrees = this.notes.filter((n:any)=>{
+
+
+
+
+
+// =======================
+// CLASSE
+// =======================
+
+
+const classeId =
+
+n.eleve?.classe?.id ??
+
+n.eleve?.classe_id;
+
+
+
+
+
+const classeOK =
+
+
+!this.classeFiltre ||
+
+
+Number(classeId) === Number(this.classeFiltre);
+
+
+
+
+
+
+
+
+
+// =======================
+// MATIERE
+// =======================
+
+
+const matiereId =
+
+
+n.evaluation?.matiere?.id ??
+
+n.evaluation?.matiere_id;
+
+
+
+
+
+const matiereOK =
+
+
+!this.matiereFiltre ||
+
+
+Number(matiereId) === Number(this.matiereFiltre);
+
+
+
+
+
+
+
+
+
+// =======================
+// RECHERCHE ELEVE
+// =======================
+
+
+const nomEleve =
+
+
+(
+
+(n.eleve?.prenom ?? '')
+
++
+
+' '
+
++
+
+(n.eleve?.nom ?? '')
+
+)
+
+.toLowerCase();
+
+
+
+
+
+const rechercheOK =
+
+
+!this.recherche ||
+
+
+nomEleve.includes(
+
+this.recherche.toLowerCase()
+
+);
+
+
+
+
+
+
+
+
+
+return (
+
+classeOK &&
+
+matiereOK &&
+
+rechercheOK
+
+);
+
+
+
+});
+
+
+
+
+
+
+
+console.log(
+
+"NOTES APRES FILTRE",
+
+this.notesFiltrees
+
+);
+
+
+
+
+
+
+this.pageActuelle=1;
+
+
+this.mettreAJourPagination();
+
+
+
+}
+
+
+
+
+
+
+// =======================
+// PAGINATION
+// =======================
+
+
+mettreAJourPagination(){
+
+
+
+this.totalPages=Math.ceil(
+
+this.notesFiltrees.length /
+
+this.taillePage
+
+);
+
+
+
+
+
+if(this.totalPages < 1){
+
+
+this.totalPages=1;
+
+
+}
+
+
+
+
+
+
+if(this.pageActuelle > this.totalPages){
+
+
+this.pageActuelle=this.totalPages;
+
+
+}
+
+
+
+
+
+
+const debut =
+
+
+(this.pageActuelle-1)
+
+*
+
+this.taillePage;
+
+
+
+
+
+
+const fin =
+
+
+debut +
+
+this.taillePage;
+
+
+
+
+
+
+this.notesPage=this.notesFiltrees.slice(
+
+debut,
+
+fin
+
+);
+
+
+
+
+
+
+this.cd.detectChanges();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+pageSuivante(){
+
+
+
+if(this.pageActuelle < this.totalPages){
+
+
+
+this.pageActuelle++;
+
+
+this.mettreAJourPagination();
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+pagePrecedente(){
+
+
+
+if(this.pageActuelle > 1){
+
+
+
+this.pageActuelle--;
+
+
+this.mettreAJourPagination();
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =======================
+// MODIFIER
+// =======================
+
+
+modifierNote(n:any){
+
+
+
+this.noteModification={...n};
+
+
+
+}
+
+
+
+
+
+
+
+
+enregistrerModification(){
+
+
+
+this.noteService
+
+.modifierNote(
+
+this.noteModification.id,
+
+{
+
+note:Number(this.noteModification.note)
+
+}
+
+)
+
+.subscribe({
+
+
+next:()=>{
+
+
+this.message="✅ Note modifiée";
+
+
+this.noteModification=null;
+
+
+this.chargerNotes();
+
+
+
+},
+
+
+error:(err)=>{
+
+
+console.log(err);
+
+
+this.message="Erreur modification";
+
+
+}
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =======================
+// SUPPRIMER
+// =======================
+
+
+supprimerNote(id:number){
+
+
+
+if(confirm(
+
+"Supprimer cette note ?"
+
+)){
+
+
+
+this.noteService
+
+.supprimerNote(id)
+
+.subscribe({
+
+
+
+next:()=>{
+
+
+this.message="✅ Note supprimée";
+
+
+this.chargerNotes();
+
+
+
+},
+
+
+error:(err)=>{
+
+
+console.log(err);
+
+
+this.message="Erreur suppression";
+
+
+}
+
+
+
+});
+
+
+
+}
+
+
+
+}
 
 
 

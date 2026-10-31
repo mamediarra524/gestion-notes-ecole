@@ -1,0 +1,262 @@
+.evaluations-container {
+
+  padding: 30px;
+
+  font-family: Arial, sans-serif;
+
+}
+
+
+
+
+
+button {
+
+  padding: 10px 15px;
+
+  margin: 5px;
+
+  border: none;
+
+  border-radius: 5px;
+
+  cursor: pointer;
+
+}
+
+
+
+
+
+button:hover {
+
+  opacity: 0.85;
+
+}
+
+
+
+
+
+h1 {
+
+  margin-top: 20px;
+
+  color: #333;
+
+}
+
+
+
+
+
+h2 {
+
+  margin-top: 25px;
+
+  color: #444;
+
+}
+
+
+
+
+
+
+p {
+
+  color: green;
+
+  font-weight: bold;
+
+}
+
+
+
+
+
+
+label {
+
+  display: block;
+
+  margin-top: 15px;
+
+  font-weight: bold;
+
+}
+
+
+
+
+
+input,
+
+select {
+
+  width: 300px;
+
+  padding: 10px;
+
+  margin-top: 5px;
+
+  border: 1px solid #ccc;
+
+  border-radius: 5px;
+
+}
+
+
+
+
+
+button:not(:first-child) {
+
+  background-color: #1976d2;
+
+  color: white;
+
+}
+
+
+
+
+
+hr {
+
+  margin: 30px 0;
+
+  border: 0;
+
+  border-top: 1px solid #ddd;
+
+}
+
+
+
+
+
+
+
+table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+  margin-top: 20px;
+
+  background: white;
+
+}
+
+
+
+
+
+th {
+
+  background-color: #1976d2;
+
+  color: white;
+
+  padding: 12px;
+
+  text-align: left;
+
+}
+
+
+
+
+
+td {
+
+  padding: 10px;
+
+  border-bottom: 1px solid #ddd;
+
+}
+
+
+
+
+
+tr:hover {
+
+  background-color: #f5f5f5;
+
+}
+
+
+
+
+
+
+
+table button:first-child {
+
+  background-color: #ff9800;
+
+  color: white;
+
+}
+
+
+
+
+
+table button:last-child {
+
+  background-color: #d32f2f;
+
+  color: white;
+
+}
+
+
+
+
+
+.evaluations-container > button:first-child {
+
+  background-color: #555;
+
+  color: white;
+
+}
+
+
+
+
+
+
+@media(max-width:768px){
+
+
+  .evaluations-container {
+
+    padding:15px;
+
+  }
+
+
+
+  input,
+
+  select {
+
+    width:100%;
+
+  }
+
+
+
+  table {
+
+    font-size:14px;
+
+  }
+
+
+}

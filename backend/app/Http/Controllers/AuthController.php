@@ -11,8 +11,11 @@ use Illuminate\Support\Facades\Hash;
 
 
 
+
+
 class AuthController extends Controller
 {
+
 
 
     /**
@@ -24,13 +27,18 @@ class AuthController extends Controller
 
         $request->validate([
 
+
             'name'=>'required|string',
+
 
             'email'=>'required|email|unique:users,email',
 
+
             'password'=>'required|min:6',
 
+
             'role'=>'required|in:ADMIN,ENSEIGNANT'
+
 
         ]);
 
@@ -38,7 +46,11 @@ class AuthController extends Controller
 
 
 
+
+
+
         $user = User::create([
+
 
 
             'name'=>$request->name,
@@ -55,6 +67,7 @@ class AuthController extends Controller
             'role'=>$request->role
 
 
+
         ]);
 
 
@@ -63,9 +76,14 @@ class AuthController extends Controller
 
 
 
+
         $token = $user
+
             ->createToken('auth_token')
+
             ->plainTextToken;
+
+
 
 
 
@@ -76,20 +94,30 @@ class AuthController extends Controller
         return response()->json([
 
 
+
             'message'=>'Utilisateur créé avec succès',
+
+
 
 
             'user'=>[
 
+
                 'id'=>$user->id,
+
 
                 'name'=>$user->name,
 
+
                 'email'=>$user->email,
+
 
                 'role'=>$user->role
 
+
             ],
+
+
 
 
             'token'=>$token
@@ -99,7 +127,12 @@ class AuthController extends Controller
         ],201);
 
 
+
     }
+
+
+
+
 
 
 
@@ -110,7 +143,7 @@ class AuthController extends Controller
 
 
     /**
-     * Connexion
+     * Connexion utilisateur
      */
     public function login(Request $request)
     {
@@ -118,9 +151,14 @@ class AuthController extends Controller
 
         $request->validate([
 
+
+
             'email'=>'required|email',
 
+
             'password'=>'required'
+
+
 
         ]);
 
@@ -130,9 +168,14 @@ class AuthController extends Controller
 
 
 
+
+
         $user = User::where(
+
             'email',
+
             $request->email
+
         )->first();
 
 
@@ -141,21 +184,37 @@ class AuthController extends Controller
 
 
 
+
+
         if(
+
+
             !$user ||
+
+
             !Hash::check(
+
                 $request->password,
+
                 $user->password
+
             )
-        )
-        {
+
+
+        ){
+
 
 
             return response()->json([
 
+
+
                 'message'=>'Email ou mot de passe incorrect'
 
+
+
             ],401);
+
 
 
         }
@@ -166,9 +225,29 @@ class AuthController extends Controller
 
 
 
+
+
+        // Supprimer les anciens tokens
+
+        $user->tokens()->delete();
+
+
+
+
+
+
+
+
+
+        // Nouveau token Sanctum
+
         $token = $user
+
             ->createToken('auth_token')
+
             ->plainTextToken;
+
+
 
 
 
@@ -179,21 +258,33 @@ class AuthController extends Controller
         return response()->json([
 
 
+
             'message'=>'Connexion réussie',
+
+
 
 
 
             'user'=>[
 
+
+
                 'id'=>$user->id,
+
 
                 'name'=>$user->name,
 
+
                 'email'=>$user->email,
+
 
                 'role'=>$user->role
 
+
+
             ],
+
+
 
 
 
@@ -206,6 +297,9 @@ class AuthController extends Controller
 
 
     }
+
+
+
 
 
 
@@ -222,14 +316,22 @@ class AuthController extends Controller
     {
 
 
-        return response()->json(
+        return response()->json([
 
-            $request->user()
 
-        );
+
+            'user'=>$request->user()
+
+
+
+        ]);
+
 
 
     }
+
+
+
 
 
 
@@ -246,21 +348,35 @@ class AuthController extends Controller
     {
 
 
+
         $request->user()
+
             ->tokens()
+
             ->delete();
+
+
+
+
 
 
 
 
         return response()->json([
 
+
+
             'message'=>'Déconnexion réussie'
+
+
 
         ]);
 
 
+
     }
+
+
 
 
 

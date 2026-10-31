@@ -10,14 +10,17 @@ import { Matieres } from './pages/matieres/matieres';
 import { Notes } from './pages/notes/notes';
 import { Enseignants } from './pages/enseignants/enseignants';
 import { ClasseMatieres } from './pages/classe-matieres/classe-matieres';
+import { Evaluations } from './pages/evaluations/evaluations';
 
 import { Statistiques } from './pages/statistiques/statistiques';
-
 import { Bulletins } from './pages/bulletins/bulletins';
 
 import { NotFound } from './pages/not-found/not-found';
 
+
 import { authGuard } from './guards/auth-guard';
+import { roleGuard } from './guards/role.guard';
+
 
 
 
@@ -26,18 +29,16 @@ export const routes: Routes = [
 
 
 
-  /*
-  ==========================
-  REDIRECTION
-  ==========================
-  */
+// ==========================
+// REDIRECTION
+// ==========================
 
 
-  {
-    path:'',
-    redirectTo:'login',
-    pathMatch:'full'
-  },
+{
+path:'',
+redirectTo:'login',
+pathMatch:'full'
+},
 
 
 
@@ -45,43 +46,39 @@ export const routes: Routes = [
 
 
 
+// ==========================
+// CONNEXION
+// ==========================
 
 
-  /*
-  ==========================
-  CONNEXION
-  ==========================
-  */
+{
+path:'login',
+component:Login
+},
 
 
-  {
-    path:'login',
-    component:Login
-  },
 
 
 
 
 
+// ==========================
+// DASHBOARD
+// ==========================
 
 
+{
+path:'dashboard',
 
+component:Dashboard,
 
-  /*
-  ==========================
-  DASHBOARD
-  ==========================
-  */
+canActivate:[
 
+authGuard
 
-  {
-    path:'dashboard',
-    component:Dashboard,
-    canActivate:[
-      authGuard
-    ]
-  },
+]
 
+},
 
 
 
@@ -89,92 +86,77 @@ export const routes: Routes = [
 
 
 
+// ==========================
+// ADMINISTRATION
+// ==========================
 
-  /*
-  ==========================
-  ELEVES
-  ==========================
-  */
 
+{
+path:'classes',
 
-  {
-    path:'eleves',
-    component:Eleves,
-    canActivate:[
-      authGuard
-    ]
-  },
+component:Classes,
 
+canActivate:[
 
+authGuard,
 
+roleGuard([
 
+'ADMIN'
 
+])
 
+]
 
+},
 
 
-  /*
-  ==========================
-  CLASSES
-  ==========================
-  */
 
 
-  {
-    path:'classes',
-    component:Classes,
-    canActivate:[
-      authGuard
-    ]
-  },
 
 
+{
+path:'eleves',
 
+component:Eleves,
 
+canActivate:[
 
+authGuard,
 
+roleGuard([
 
+'ADMIN'
 
+])
 
-  /*
-  ==========================
-  MATIERES
-  ==========================
-  */
+]
 
+},
 
-  {
-    path:'matieres',
-    component:Matieres,
-    canActivate:[
-      authGuard
-    ]
-  },
 
 
 
 
 
+{
+path:'matieres',
 
+component:Matieres,
 
+canActivate:[
 
+authGuard,
 
-  /*
-  ==========================
-  ENSEIGNANTS
-  ==========================
-  */
+roleGuard([
 
+'ADMIN'
 
-  {
-    path:'enseignants',
-    component:Enseignants,
-    canActivate:[
-      authGuard
-    ]
-  },
+])
 
+]
 
+},
 
 
 
@@ -182,109 +164,182 @@ export const routes: Routes = [
 
 
 
-  /*
-  ==========================
-  AFFECTATIONS
-  ==========================
-  */
+{
+path:'enseignants',
 
+component:Enseignants,
 
-  {
-    path:'classe-matieres',
-    component:ClasseMatieres,
-    canActivate:[
-      authGuard
-    ]
-  },
+canActivate:[
 
+authGuard,
 
+roleGuard([
 
+'ADMIN'
 
+])
 
+]
 
+},
 
 
 
-  /*
-  ==========================
-  NOTES
-  ==========================
-  */
 
 
-  {
-    path:'notes',
-    component:Notes,
-    canActivate:[
-      authGuard
-    ]
-  },
 
 
+{
+path:'classe-matieres',
 
+component:ClasseMatieres,
 
+canActivate:[
 
+authGuard,
 
+roleGuard([
 
+'ADMIN'
 
+])
 
-  /*
-  ==========================
-  BULLETINS
-  ==========================
-  */
+]
 
+},
 
-  {
-    path:'bulletins',
-    component:Bulletins,
-    canActivate:[
-      authGuard
-    ]
-  },
 
 
 
 
 
 
+{
+path:'evaluations',
 
+component:Evaluations,
 
+canActivate:[
 
-  /*
-  ==========================
-  STATISTIQUES
-  ==========================
-  */
+authGuard,
 
+roleGuard([
 
-  {
-    path:'statistiques',
-    component:Statistiques,
-    canActivate:[
-      authGuard
-    ]
-  },
+'ADMIN'
 
+])
 
+]
 
+},
 
 
 
 
 
 
-  /*
-  ==========================
-  PAGE NON TROUVEE
-  ==========================
-  */
 
+// ==========================
+// NOTES ENSEIGNANT
+// ==========================
 
-  {
-    path:'**',
-    component:NotFound
-  }
+
+{
+path:'notes',
+
+component:Notes,
+
+canActivate:[
+
+authGuard,
+
+roleGuard([
+
+'ENSEIGNANT'
+
+])
+
+]
+
+},
+
+
+
+
+
+
+
+// ==========================
+// BULLETINS ADMIN UNIQUEMENT
+// ==========================
+
+
+{
+path:'bulletins',
+
+component:Bulletins,
+
+canActivate:[
+
+authGuard,
+
+roleGuard([
+
+'ADMIN'
+
+])
+
+]
+
+},
+
+
+
+
+
+
+
+// ==========================
+// STATISTIQUES ADMIN
+// ==========================
+
+
+{
+path:'statistiques',
+
+component:Statistiques,
+
+canActivate:[
+
+authGuard,
+
+roleGuard([
+
+'ADMIN'
+
+])
+
+]
+
+},
+
+
+
+
+
+
+
+// ==========================
+// PAGE NON TROUVEE
+// ==========================
+
+
+{
+path:'**',
+
+component:NotFound
+
+}
 
 
 

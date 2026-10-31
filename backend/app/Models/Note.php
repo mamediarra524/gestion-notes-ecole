@@ -4,24 +4,17 @@ namespace App\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 
 
 class Note extends Model
 {
-
-    use HasFactory;
-
 
 
     protected $fillable = [
 
         'eleve_id',
 
-        'matiere_id',
-
-        'enseignant_id',
+        'evaluation_id',
 
         'note'
 
@@ -30,22 +23,6 @@ class Note extends Model
 
 
 
-
-    protected $casts = [
-
-        'note' => 'decimal:2'
-
-    ];
-
-
-
-
-
-
-
-    /**
-     * Une note appartient à un élève.
-     */
     public function eleve()
     {
 
@@ -59,38 +36,14 @@ class Note extends Model
 
 
 
-
-
-    /**
-     * Une note appartient à une matière.
-     */
-    public function matiere()
+    public function evaluation()
     {
 
         return $this->belongsTo(
-            Matiere::class
+            Evaluation::class
         );
 
     }
-
-
-
-
-
-
-
-    /**
-     * Une note est saisie par un enseignant.
-     */
-    public function enseignant()
-    {
-
-        return $this->belongsTo(
-            Enseignant::class
-        );
-
-    }
-
 
 
 }

@@ -1,9 +1,7 @@
 <?php
 
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 
 
 use App\Http\Controllers\AuthController;
@@ -15,31 +13,35 @@ use App\Http\Controllers\EnseignantController;
 use App\Http\Controllers\ClasseMatiereController;
 use App\Http\Controllers\BulletinController;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Controllers\EvaluationController;
 
 
 
 
 /*
 |--------------------------------------------------------------------------
-| AUTHENTIFICATION
+| AUTH
 |--------------------------------------------------------------------------
 */
 
 
 Route::post(
     '/register',
-    [AuthController::class,'register']
+    [
+        AuthController::class,
+        'register'
+    ]
 );
 
 
 
 Route::post(
     '/login',
-    [AuthController::class,'login']
+    [
+        AuthController::class,
+        'login'
+    ]
 );
-
-
 
 
 
@@ -60,9 +62,10 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
+
     /*
     |--------------------------------------------------------------------------
-    | Utilisateur connecté
+    | UTILISATEUR CONNECTE
     |--------------------------------------------------------------------------
     */
 
@@ -92,17 +95,11 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
     Route::get(
-
         '/dashboard',
-
         [
-
             DashboardController::class,
-
             'index'
-
         ]
-
     );
 
 
@@ -115,7 +112,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
     /*
     |--------------------------------------------------------------------------
-    | ADMINISTRATION
+    | ADMIN UNIQUEMENT
     |--------------------------------------------------------------------------
     */
 
@@ -126,61 +123,35 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
+
         /*
-        |--------------------------------------------------------------------------
-        | Classes
-        |--------------------------------------------------------------------------
+        | CLASSES
         */
 
 
         Route::apiResource(
-
             'classes',
-
             ClasseController::class
-
-        )
-
-        ->parameters([
-
-            'classes'=>'classe'
-
-        ]);
-
-
+        );
 
 
 
         Route::get(
-
             'classes/{id}/moyenne',
-
             [
-
                 ClasseController::class,
-
                 'moyenne'
-
             ]
-
         );
 
 
 
-
-
         Route::get(
-
             'classes/{id}/classement',
-
             [
-
                 ClasseController::class,
-
                 'classement'
-
             ]
-
         );
 
 
@@ -192,42 +163,23 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         /*
-        |--------------------------------------------------------------------------
-        | Élèves
-        |--------------------------------------------------------------------------
+        | ELEVES
         */
 
 
         Route::apiResource(
-
             'eleves',
-
             EleveController::class
-
-        )
-
-        ->parameters([
-
-            'eleves'=>'eleve'
-
-        ]);
-
-
+        );
 
 
 
         Route::get(
-
             'eleves/{id}/moyenne',
-
             [
-
                 EleveController::class,
-
                 'moyenne'
-
             ]
-
         );
 
 
@@ -239,25 +191,14 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         /*
-        |--------------------------------------------------------------------------
-        | Matières
-        |--------------------------------------------------------------------------
+        | MATIERES
         */
 
 
         Route::apiResource(
-
             'matieres',
-
             MatiereController::class
-
-        )
-
-        ->parameters([
-
-            'matieres'=>'matiere'
-
-        ]);
+        );
 
 
 
@@ -268,25 +209,14 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         /*
-        |--------------------------------------------------------------------------
-        | Enseignants
-        |--------------------------------------------------------------------------
+        | ENSEIGNANTS
         */
 
 
         Route::apiResource(
-
             'enseignants',
-
             EnseignantController::class
-
-        )
-
-        ->parameters([
-
-            'enseignants'=>'enseignant'
-
-        ]);
+        );
 
 
 
@@ -297,27 +227,63 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         /*
-        |--------------------------------------------------------------------------
-        | Classe Matière Enseignant
-        |--------------------------------------------------------------------------
+        | AFFECTATIONS
         */
 
 
         Route::apiResource(
-
             'classe-matieres',
-
             ClasseMatiereController::class
-
-        )
-
-        ->parameters([
-
-            'classe-matieres'=>'classe_matiere'
-
-        ]);
+        );
 
 
+
+
+
+
+
+
+
+        /*
+        | EVALUATIONS
+        */
+
+
+        Route::apiResource(
+            'evaluations',
+            EvaluationController::class
+        );
+
+
+
+
+
+
+
+
+
+        /*
+        | BULLETINS
+        */
+
+
+        Route::get(
+            'eleves/{id}/bulletin',
+            [
+                BulletinController::class,
+                'show'
+            ]
+        );
+
+
+
+        Route::get(
+            'eleves/{id}/bulletin/pdf',
+            [
+                BulletinController::class,
+                'pdf'
+            ]
+        );
 
 
 
@@ -333,111 +299,111 @@ Route::middleware('auth:sanctum')->group(function(){
 
     /*
     |--------------------------------------------------------------------------
-    | NOTES
-    |--------------------------------------------------------------------------
-    */
-
-
-    Route::apiResource(
-
-        'notes',
-
-        NoteController::class
-
-    )
-
-    ->parameters([
-
-        'notes'=>'note'
-
-    ]);
-
-
-
-
-
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | BULLETINS
+    | ENSEIGNANT
     |--------------------------------------------------------------------------
     */
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Liste des élèves d'une classe
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-
-        'classes/{id}/eleves',
-
-        [
-
-            EleveController::class,
-
-            'parClasse'
-
-        ]
-
-    );
-
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Bulletin JSON
-    |--------------------------------------------------------------------------
-    */
-
-
-    Route::get(
-
-        'eleves/{id}/bulletin',
-
-        [
-
-            BulletinController::class,
-
-            'show'
-
-        ]
-
-    );
+    Route::middleware('role:ENSEIGNANT')->group(function(){
 
 
 
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Bulletin PDF
-    |--------------------------------------------------------------------------
-    */
+        /*
+        | Affectations de l'enseignant connecté
+        */
 
 
-    Route::get(
+        Route::get(
+            'mes-affectations',
+            [
+                ClasseMatiereController::class,
+                'mesAffectations'
+            ]
+        );
 
-        'eleves/{id}/bulletin/pdf',
 
-        [
 
-            BulletinController::class,
 
-            'pdf'
 
-        ]
 
-    );
+
+        /*
+        | Voir les classes nécessaires à la saisie
+        */
+
+
+        Route::get(
+            'liste-classes',
+            [
+                ClasseController::class,
+                'liste'
+            ]
+        );
+
+
+
+
+
+
+
+
+        /*
+        | Élèves d'une classe
+        */
+
+
+        Route::get(
+            'classes/{id}/eleves',
+            [
+                EleveController::class,
+                'parClasse'
+            ]
+        );
+
+
+
+
+
+
+
+
+        /*
+        | Evaluations des matières affectées
+        */
+
+
+        Route::get(
+            'evaluations/matiere/{id}',
+            [
+                EvaluationController::class,
+                'parMatiere'
+            ]
+        );
+
+
+
+
+
+
+
+
+        /*
+        | SAISIE NOTES
+        */
+
+
+        Route::apiResource(
+            'notes',
+            NoteController::class
+        );
+
+
+
+    });
 
 
 
@@ -455,17 +421,11 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
     Route::post(
-
         '/logout',
-
         [
-
             AuthController::class,
-
             'logout'
-
         ]
-
     );
 
 

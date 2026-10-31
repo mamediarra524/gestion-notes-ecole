@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 class ClasseMatiere extends Model
 {
 
-    protected $table = 'classe_matiere';
 
+    protected $table = 'classe_matiere';
 
 
 
@@ -29,17 +28,20 @@ class ClasseMatiere extends Model
 
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Classe liée
+    |--------------------------------------------------------------------------
+    */
 
-
-    /**
-     * Classe associée
-     */
     public function classe()
     {
 
         return $this->belongsTo(
 
-            Classe::class
+            Classe::class,
+
+            'classe_id'
 
         );
 
@@ -50,16 +52,20 @@ class ClasseMatiere extends Model
 
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Matière liée
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * Matière associée
-     */
     public function matiere()
     {
 
         return $this->belongsTo(
 
-            Matiere::class
+            Matiere::class,
+
+            'matiere_id'
 
         );
 
@@ -70,16 +76,20 @@ class ClasseMatiere extends Model
 
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Enseignant lié
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * Enseignant associé
-     */
     public function enseignant()
     {
 
         return $this->belongsTo(
 
-            Enseignant::class
+            Enseignant::class,
+
+            'enseignant_id'
 
         );
 

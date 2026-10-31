@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Enseignant;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 
 class EnseignantController extends Controller
@@ -34,8 +36,10 @@ class EnseignantController extends Controller
 
 
 
+
+
     /**
-     * Ajouter un enseignant
+     * Ajouter un enseignant + créer son compte
      */
     public function store(Request $request)
     {
@@ -44,37 +48,24 @@ class EnseignantController extends Controller
         $request->validate([
 
 
-            'nom' => 'required|string|max:100',
-
-            'prenom' => 'required|string|max:100',
-
-            'email' => 'required|email|unique:enseignants,email',
-
-            'telephone' => 'nullable|string|max:20'
+            'nom' => 
+            'required|string|max:100',
 
 
-        ],
-        [
+            'prenom' => 
+            'required|string|max:100',
 
 
-            'nom.required' =>
-            'Le nom est obligatoire',
+            'email' =>
+            'required|email|unique:users,email|unique:enseignants,email',
 
 
-            'prenom.required' =>
-            'Le prénom est obligatoire',
+            'telephone' =>
+            'nullable|string|max:20',
 
 
-            'email.required' =>
-            'L\'email est obligatoire',
-
-
-            'email.email' =>
-            'L\'email doit être valide',
-
-
-            'email.unique' =>
-            'Cet email existe déjà'
+            'password' =>
+            'required|string|min:6|confirmed'
 
 
         ]);
@@ -84,20 +75,77 @@ class EnseignantController extends Controller
 
 
 
+
+
+
+        // Création du compte utilisateur
+
+        $user = User::create([
+
+
+            'name' =>
+
+            $request->nom . ' ' . $request->prenom,
+
+
+            'email' =>
+
+            $request->email,
+
+
+            'password' =>
+
+            Hash::make($request->password),
+
+
+            'role' =>
+
+            'ENSEIGNANT'
+
+
+        ]);
+
+
+
+
+
+
+
+
+
+        // Création de la fiche enseignant
 
         $enseignant = Enseignant::create([
 
 
-            'nom' => $request->nom,
+            'nom' =>
 
-            'prenom' => $request->prenom,
+            $request->nom,
 
-            'email' => $request->email,
 
-            'telephone' => $request->telephone
+            'prenom' =>
+
+            $request->prenom,
+
+
+            'email' =>
+
+            $request->email,
+
+
+            'telephone' =>
+
+            $request->telephone,
+
+
+            'user_id' =>
+
+            $user->id
 
 
         ]);
+
+
 
 
 
@@ -109,10 +157,12 @@ class EnseignantController extends Controller
 
 
             'message' =>
-            'Enseignant ajouté avec succès',
+
+            'Enseignant et compte créés avec succès',
 
 
             'enseignant' =>
+
             $enseignant
 
 
@@ -140,9 +190,12 @@ class EnseignantController extends Controller
         return response()->json(
 
             $enseignant->load([
+
+                'user',
                 'classes',
                 'affectations',
                 'notes'
+
             ])
 
         );
@@ -162,8 +215,11 @@ class EnseignantController extends Controller
      * Modifier un enseignant
      */
     public function update(
+
         Request $request,
+
         Enseignant $enseignant
+
     )
     {
 
@@ -171,14 +227,23 @@ class EnseignantController extends Controller
         $request->validate([
 
 
-            'nom' => 'required|string|max:100',
+            'nom' =>
 
-            'prenom' => 'required|string|max:100',
+            'required|string|max:100',
+
+
+            'prenom' =>
+
+            'required|string|max:100',
+
 
             'email' =>
+
             'required|email|unique:enseignants,email,' . $enseignant->id,
 
+
             'telephone' =>
+
             'nullable|string|max:20'
 
 
@@ -190,22 +255,28 @@ class EnseignantController extends Controller
 
 
 
+
+
         $enseignant->update([
 
 
             'nom' =>
+
             $request->nom,
 
 
             'prenom' =>
+
             $request->prenom,
 
 
             'email' =>
+
             $request->email,
 
 
             'telephone' =>
+
             $request->telephone
 
 
@@ -217,15 +288,146 @@ class EnseignantController extends Controller
 
 
 
+
+
+        // Mise à jour du compte utilisateur
+
+        if($enseignant->user)
+        {
+
+
+            $enseignant->user->update([
+
+
+                'name' =>
+
+                $request->nom . ' ' . $request->prenom,
+
+
+                'email' =>
+
+                $request->email
+
+
+            ]);
+
+
+        }
+
+
+
+
+
+
+
+
+
         return response()->json([
 
 
             'message' =>
+
             'Enseignant modifié avec succès',
 
 
             'enseignant' =>
+
             $enseignant
+
+
+        ]);
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+    /**
+     * Réinitialiser le mot de passe
+     */
+    public function resetPassword(
+
+        Enseignant $enseignant
+
+    )
+    {
+
+
+        if(!$enseignant->user)
+        {
+
+
+            return response()->json([
+
+
+                'message' =>
+
+                'Cet enseignant ne possède pas de compte utilisateur'
+
+
+            ],422);
+
+
+        }
+
+
+
+
+
+
+
+
+
+        // Mot de passe temporaire
+
+        $nouveauMotDePasse = "Ecole@2026";
+
+
+
+
+
+
+
+
+
+        // Modification du mot de passe
+
+        $enseignant->user->update([
+
+
+            'password' =>
+
+            Hash::make($nouveauMotDePasse)
+
+
+        ]);
+
+
+
+
+
+
+
+
+
+        return response()->json([
+
+
+            'message' =>
+
+            'Mot de passe réinitialisé avec succès',
+
+
+            'password' =>
+
+            $nouveauMotDePasse
 
 
         ]);
@@ -245,7 +447,11 @@ class EnseignantController extends Controller
     /**
      * Supprimer un enseignant
      */
-    public function destroy(Enseignant $enseignant)
+    public function destroy(
+
+        Enseignant $enseignant
+
+    )
     {
 
 
@@ -257,6 +463,7 @@ class EnseignantController extends Controller
 
 
                 'message' =>
+
                 'Impossible de supprimer cet enseignant car il possède des affectations'
 
 
@@ -270,7 +477,34 @@ class EnseignantController extends Controller
 
 
 
+
+
+
+        // Supprimer le compte utilisateur associé
+
+        if($enseignant->user)
+        {
+
+
+            $enseignant->user->delete();
+
+
+        }
+
+
+
+
+
+
+
+
+
+        // Supprimer l'enseignant
+
         $enseignant->delete();
+
+
+
 
 
 
@@ -281,6 +515,7 @@ class EnseignantController extends Controller
 
 
             'message' =>
+
             'Enseignant supprimé avec succès'
 
 

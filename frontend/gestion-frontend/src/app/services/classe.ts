@@ -4,17 +4,21 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn:'root'
 })
 export class ClasseService {
+
 
 
   private http = inject(HttpClient);
 
 
 
-  private apiUrl = 
-  'http://127.0.0.1:8000/api/classes';
+  // Pour enseignants + admin
+  private apiUrl =
+
+  'http://127.0.0.1:8000/api/liste-classes';
+
 
 
 
@@ -25,15 +29,25 @@ export class ClasseService {
     const token = localStorage.getItem('token');
 
 
+
     return {
 
-      headers: new HttpHeaders({
 
-        Authorization: `Bearer ${token}`,
+      headers:new HttpHeaders({
 
-        Accept: 'application/json'
+
+        Authorization:
+
+        `Bearer ${token}`,
+
+
+        Accept:
+
+        'application/json'
+
 
       })
+
 
     };
 
@@ -45,20 +59,47 @@ export class ClasseService {
 
 
 
+
+
+
+  // Charger les classes
+
   getClasses(){
 
 
-    return this.http.get(
+    return this.http.get<any[]>(
+
 
       this.apiUrl,
 
+
       this.options()
+
 
     );
 
 
   }
 
+
+
+
+
+
+
+
+
+
+
+  // ==========================
+  // ADMIN UNIQUEMENT
+  // ==========================
+
+
+
+  private adminUrl =
+
+  'http://127.0.0.1:8000/api/classes';
 
 
 
@@ -70,11 +111,15 @@ export class ClasseService {
 
     return this.http.post(
 
-      this.apiUrl,
+
+      this.adminUrl,
+
 
       data,
 
+
       this.options()
+
 
     );
 
@@ -87,16 +132,23 @@ export class ClasseService {
 
 
 
-  modifierClasse(id:number, data:any){
+  modifierClasse(
+    id:number,
+    data:any
+  ){
 
 
     return this.http.put(
 
-      `${this.apiUrl}/${id}`,
+
+      `${this.adminUrl}/${id}`,
+
 
       data,
 
+
       this.options()
+
 
     );
 
@@ -114,9 +166,12 @@ export class ClasseService {
 
     return this.http.delete(
 
-      `${this.apiUrl}/${id}`,
+
+      `${this.adminUrl}/${id}`,
+
 
       this.options()
+
 
     );
 

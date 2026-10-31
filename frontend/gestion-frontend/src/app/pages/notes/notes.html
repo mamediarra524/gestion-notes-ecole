@@ -1,142 +1,136 @@
 <div class="notes-container">
 
 
-    <!-- RETOUR DASHBOARD -->
+<button
 
-    <button 
-        routerLink="/dashboard"
-        class="retour-btn">
+class="retour-btn"
 
-        ⬅ Retour au tableau de bord
+routerLink="/dashboard">
 
-    </button>
+⬅ Dashboard
 
+</button>
 
 
 
 
-    <h1>
-        📝 Gestion des notes
-    </h1>
+<h1>
+📝 Gestion des notes
+</h1>
 
 
 
 
+<p class="message">
+{{message}}
+</p>
 
-    <!-- MESSAGE -->
 
-    <p 
-    class="message"
-    *ngIf="message">
 
-        {{message}}
 
-    </p>
 
 
+<!-- ========================= -->
+<!-- SAISIE DES NOTES -->
+<!-- ========================= -->
 
 
+<div class="form-card">
 
 
+<h2>
+Saisie des notes
+</h2>
 
 
-    <!-- FORMULAIRE -->
 
-    <div class="form-card">
 
 
-        <h2>
+<label>
+Classe :
+</label>
 
-            {{ modification ? 'Modifier une note' : 'Ajouter une note' }}
 
-        </h2>
 
+<select
 
+[(ngModel)]="classeSaisie"
 
+name="classeSaisie"
 
+(change)="chargerElevesClasse()">
 
-        <form 
-        (ngSubmit)="enregistrerNote()">
 
 
+<option value="">
 
+Choisir classe
 
+</option>
 
-            <label>
-                Élève
-            </label>
 
 
-            <select 
-            [(ngModel)]="note.eleve_id"
-            name="eleve_id"
-            required>
+<option
 
+*ngFor="let c of classes"
 
-                <option 
-                [ngValue]="null">
+[value]="c.id">
 
-                    Choisir un élève
 
-                </option>
+{{c.nom}}
 
 
+</option>
 
-                <option 
-                *ngFor="let eleve of eleves"
-                [ngValue]="eleve.id">
 
 
-                    {{eleve.prenom}} {{eleve.nom}}
+</select>
 
 
-                </option>
 
 
-            </select>
 
 
 
+<label>
+Matière :
+</label>
 
 
 
+<select
 
+[(ngModel)]="matiereSaisie"
 
+name="matiereSaisie"
 
-            <label>
-                Matière
-            </label>
+(change)="chargerEvaluationsMatiere()">
 
 
 
-            <select 
-            [(ngModel)]="note.matiere_id"
-            name="matiere_id"
-            required>
+<option value="">
 
+Choisir matière
 
-                <option 
-                [ngValue]="null">
+</option>
 
-                    Choisir une matière
 
-                </option>
 
+<option
 
+*ngFor="let m of matieres"
 
-                <option 
-                *ngFor="let matiere of matieres"
-                [ngValue]="matiere.id">
+[value]="m.id">
 
 
-                    {{matiere.nom}}
+{{m.nom}}
 
 
-                </option>
+</option>
 
 
-            </select>
 
+</select>
 
 
 
@@ -144,152 +138,154 @@
 
 
 
+<label>
+Évaluation :
+</label>
 
-            <label>
-                Note /20
-            </label>
 
 
-            <input
+<select
 
-                type="number"
+[(ngModel)]="evaluationSaisie"
 
-                min="0"
+name="evaluationSaisie">
 
-                max="20"
 
-                step="0.01"
 
-                [(ngModel)]="note.note"
+<option value="">
 
-                name="note"
+Choisir évaluation
 
-                required
+</option>
 
-            />
 
 
 
+<option
 
+*ngFor="let e of evaluationsMatiere"
 
+[value]="e.id">
 
 
+{{e.libelle}}
 
+-
 
-            <button 
-            type="submit"
-            class="btn-save">
+Coefficient {{e.coefficient}}
 
 
-                {{ modification ? 'Modifier' : 'Ajouter' }}
 
+</option>
 
-            </button>
 
 
+</select>
 
 
 
 
 
 
-            <button
 
-            *ngIf="modification"
+<table
 
-            type="button"
+*ngIf="elevesClasse.length>0">
 
-            class="btn-cancel"
 
-            (click)="resetForm()">
+<thead>
 
+<tr>
 
-                Annuler
 
+<th>
+Élève
+</th>
 
-            </button>
 
+<th>
+Note /20
+</th>
 
 
+</tr>
 
-        </form>
 
+</thead>
 
-    </div>
 
 
 
+<tbody>
 
 
+<tr
 
+*ngFor="let e of elevesClasse">
 
 
+<td>
 
-    <!-- RECHERCHE + FILTRE -->
+{{e.prenom}}
 
-    <div class="filter-card">
+{{e.nom}}
 
+</td>
 
-        <h2>
-            🔎 Recherche
-        </h2>
 
 
+<td>
 
-        <input
 
-        type="text"
+<input
 
-        placeholder="Rechercher un élève..."
+type="number"
 
-        [(ngModel)]="recherche"
+min="0"
 
-        name="recherche"
+max="20"
 
-        (input)="appliquerFiltre()"
+[(ngModel)]="notesSaisie[e.id]"
 
-        />
+[name]="'note'+e.id"
 
+>
 
 
+</td>
 
 
 
-        <select
+</tr>
 
-        [(ngModel)]="matiereFiltre"
 
-        name="matiereFiltre"
 
-        (change)="appliquerFiltre()">
+</tbody>
 
 
-            <option [ngValue]="null">
+</table>
 
-                Toutes les matières
 
-            </option>
 
 
 
-            <option
 
-            *ngFor="let matiere of matieres"
 
-            [ngValue]="matiere.id">
+<button
 
+class="btn-save"
 
-                {{matiere.nom}}
+(click)="enregistrerNotes()">
 
 
-            </option>
+💾 Enregistrer les notes
 
 
-        </select>
+</button>
 
 
-    </div>
 
+</div>
 
 
 
@@ -298,281 +294,458 @@
 
 
 
-    <!-- LISTE DES NOTES -->
 
+<!-- ========================= -->
+<!-- LISTE NOTES -->
+<!-- ========================= -->
 
-    <div class="table-card">
 
 
-        <h2>
-            📋 Liste des notes
-        </h2>
+<div class="table-card">
 
 
 
+<h2>
+Liste des notes
+</h2>
 
 
-        <table>
 
 
-            <thead>
 
+<!-- FILTRES -->
 
-                <tr>
 
+<div class="filter-card">
 
-                    <th>
-                        Élève
-                    </th>
 
 
-                    <th>
-                        Matière
-                    </th>
+<input
 
+placeholder="Rechercher élève"
 
-                    <th>
-                        Enseignant
-                    </th>
+[(ngModel)]="recherche"
 
+(input)="filtrer()"
 
-                    <th>
-                        Note
-                    </th>
+>
 
 
-                    <th>
-                        Actions
-                    </th>
 
 
-                </tr>
 
 
-            </thead>
 
+<select
 
+[(ngModel)]="classeFiltre"
 
+(change)="filtrer()">
 
 
 
+<option value="">
 
+Toutes les classes
 
-            <tbody>
+</option>
 
 
-                <tr 
-                *ngFor="let n of notesPage">
 
 
+<option
 
-                    <td>
+*ngFor="let c of classes"
 
+[value]="c.id">
 
-                        {{n.eleve?.prenom}}
-                        {{n.eleve?.nom}}
 
+{{c.nom}}
 
-                    </td>
 
+</option>
 
 
 
+</select>
 
 
 
-                    <td>
 
 
-                        {{n.matiere?.nom}}
 
 
-                    </td>
+<select
 
+[(ngModel)]="matiereFiltre"
 
+(change)="filtrer()">
 
 
 
+<option value="">
 
+Toutes les matières
 
-                    <td>
+</option>
 
 
-                        {{n.enseignant?.nom ?? '-'}}
 
 
-                    </td>
+<option
 
+*ngFor="let m of matieres"
 
+[value]="m.id">
 
 
+{{m.nom}}
 
 
+</option>
 
 
-                    <td>
 
+</select>
 
-                        <span
-                        [ngClass]="{
 
-                        'rouge': n.note < 10,
 
-                        'jaune': n.note >=10 && n.note <12,
 
-                        'bleu': n.note >=12 && n.note <16,
+</div>
+<!-- ========================= -->
+<!-- TABLEAU DES NOTES -->
+<!-- ========================= -->
 
-                        'vert': n.note >=16
 
-                        }">
+<table>
 
 
-                            ⭐ {{n.note}} /20
+<thead>
 
 
-                        </span>
+<tr>
 
 
-                    </td>
+<th>
+Classe
+</th>
 
 
+<th>
+Élève
+</th>
 
 
+<th>
+Matière
+</th>
 
 
+<th>
+Évaluation
+</th>
 
 
-                    <td>
+<th>
+Note
+</th>
 
 
-                        <button
+<th>
+Actions
+</th>
 
-                        class="btn-edit"
 
-                        (click)="modifierNote(n)">
+</tr>
 
 
-                            ✏️ Modifier
+</thead>
 
 
-                        </button>
 
 
 
+<tbody>
 
 
 
+<tr
 
-                        <button
+*ngFor="let n of notesPage">
 
-                        class="btn-delete"
 
-                        (click)="supprimerNote(n.id)">
 
 
-                            🗑️ Supprimer
 
+<td>
 
-                        </button>
+{{n.eleve?.classe?.nom}}
 
+</td>
 
 
-                    </td>
 
 
 
+<td>
 
+{{n.eleve?.prenom}}
 
-                </tr>
+{{n.eleve?.nom}}
 
+</td>
 
 
 
 
-                <tr 
-                *ngIf="notesPage.length === 0">
 
+<td>
 
-                    <td colspan="5">
+{{n.evaluation?.matiere?.nom}}
 
+</td>
 
-                        Aucune note trouvée
 
 
-                    </td>
 
 
-                </tr>
+<td>
 
+{{n.evaluation?.libelle}}
 
+</td>
 
-            </tbody>
 
 
 
 
-        </table>
+<td>
 
 
 
 
+<input
 
+*ngIf="noteModification?.id===n.id"
 
-        <!-- PAGINATION -->
+type="number"
 
+min="0"
 
-        <div class="pagination">
+max="20"
 
+[(ngModel)]="noteModification.note"
 
-            <button
+>
 
-            (click)="pagePrecedente()"
 
-            [disabled]="page===1">
 
 
-                ◀ Précédent
 
 
-            </button>
+<span
 
+*ngIf="noteModification?.id!==n.id">
 
 
+{{n.note}} /20
 
 
-            <span>
+</span>
 
 
-                Page {{page}} / {{totalPages}}
 
+</td>
 
-            </span>
 
 
 
 
 
-            <button
 
-            (click)="pageSuivante()"
+<td>
 
-            [disabled]="page===totalPages">
 
 
-                Suivant ▶
 
 
-            </button>
 
+<button
 
 
-        </div>
+class="btn-edit"
 
 
+*ngIf="noteModification?.id!==n.id"
 
 
+(click)="modifierNote(n)">
 
-    </div>
+
+
+✏️ Modifier
+
+
+
+</button>
+
+
+
+
+
+
+
+<button
+
+
+class="btn-save"
+
+
+*ngIf="noteModification?.id===n.id"
+
+
+(click)="enregistrerModification()">
+
+
+
+💾 Sauver
+
+
+
+</button>
+
+
+
+
+
+
+
+<button
+
+
+class="btn-delete"
+
+
+(click)="supprimerNote(n.id)">
+
+
+
+🗑️ Supprimer
+
+
+
+</button>
+
+
+
+
+
+</td>
+
+
+
+
+
+</tr>
+
+
+
+
+
+</tbody>
+
+
+</table>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ========================= -->
+<!-- PAGINATION -->
+<!-- ========================= -->
+
+
+<div
+
+
+class="pagination"
+
+
+*ngIf="notesFiltrees.length > taillePage">
+
+
+
+
+
+<button
+
+
+(click)="pagePrecedente()"
+
+
+[disabled]="pageActuelle===1">
+
+
+⬅️ Précédente
+
+
+</button>
+
+
+
+
+
+
+
+
+<span>
+
+
+Page {{pageActuelle}} / {{totalPages}}
+
+
+</span>
+
+
+
+
+
+
+
+
+<button
+
+
+(click)="pageSuivante()"
+
+
+[disabled]="pageActuelle===totalPages">
+
+
+Suivante ➡️
+
+
+</button>
+
+
+
+
+
+</div>
+
+
 
 
 

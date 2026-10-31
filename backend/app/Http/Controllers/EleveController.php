@@ -2,90 +2,52 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Eleve;
 use Illuminate\Http\Request;
+
+
 
 class EleveController extends Controller
 {
 
 
-    /**
-     * Afficher tous les élèves
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN : Tous les élèves
+    |--------------------------------------------------------------------------
+    */
+
+
     public function index()
     {
+
         return response()->json(
+
             Eleve::with('classe')->get()
+
         );
+
     }
 
 
 
 
 
-    /**
-     * Créer un élève
-     */
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN : Ajouter
+    |--------------------------------------------------------------------------
+    */
+
+
     public function store(Request $request)
     {
-        $request->validate([
 
-            'nom' => 'required|string',
+        $data=$request->validate([
 
-            'prenom' => 'required|string',
-
-            'date_naissance' => 'required|date',
-
-            'classe_id' => 'required|exists:classes,id',
-
-        ]);
-
-
-
-        $eleve = Eleve::create(
-
-            $request->all()
-
-        );
-
-
-
-        return response()->json([
-
-            'message' => 'Élève créé avec succès',
-
-            'eleve' => $eleve
-
-        ],201);
-
-    }
-
-
-
-
-
-    /**
-     * Afficher un élève
-     */
-    public function show(Eleve $eleve)
-    {
-        return response()->json(
-
-            $eleve->load('classe')
-
-        );
-    }
-
-
-
-
-
-    /**
-     * Modifier un élève
-     */
-    public function update(Request $request, Eleve $eleve)
-    {
-        $request->validate([
 
             'nom'=>'required|string',
 
@@ -93,27 +55,27 @@ class EleveController extends Controller
 
             'date_naissance'=>'required|date',
 
-            'classe_id'=>'required|exists:classes,id',
+            'classe_id'=>'required|exists:classes,id'
+
 
         ]);
 
 
 
-        $eleve->update(
-
-            $request->all()
-
-        );
+        $eleve=Eleve::create($data);
 
 
 
         return response()->json([
 
-            'message'=>'Élève modifié avec succès',
+
+            'message'=>'Élève ajouté',
 
             'eleve'=>$eleve
 
-        ]);
+
+        ],201);
+
 
     }
 
@@ -121,11 +83,73 @@ class EleveController extends Controller
 
 
 
-    /**
-     * Supprimer un élève
-     */
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN : Modifier
+    |--------------------------------------------------------------------------
+    */
+
+
+    public function update(Request $request,Eleve $eleve)
+    {
+
+
+        $data=$request->validate([
+
+
+            'nom'=>'required|string',
+
+            'prenom'=>'required|string',
+
+            'date_naissance'=>'required|date',
+
+            'classe_id'=>'required|exists:classes,id'
+
+
+        ]);
+
+
+
+        $eleve->update($data);
+
+
+
+        return response()->json([
+
+
+            'message'=>'Élève modifié',
+
+            'eleve'=>$eleve
+
+
+        ]);
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN : Supprimer
+    |--------------------------------------------------------------------------
+    */
+
+
     public function destroy(Eleve $eleve)
     {
+
 
         $eleve->delete();
 
@@ -133,9 +157,12 @@ class EleveController extends Controller
 
         return response()->json([
 
-            'message'=>'Élève supprimé avec succès'
+
+            'message'=>'Élève supprimé'
+
 
         ]);
+
 
     }
 
@@ -143,9 +170,18 @@ class EleveController extends Controller
 
 
 
-    /**
-     * Liste des élèves d'une classe
-     */
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ENSEIGNANT :
+    | Élèves d'une classe
+    |--------------------------------------------------------------------------
+    */
+
+
     public function parClasse($id)
     {
 
@@ -157,18 +193,12 @@ class EleveController extends Controller
             $id
 
         )
-
         ->with('classe')
-
         ->get();
 
 
 
-        return response()->json(
-
-            $eleves
-
-        );
+        return response()->json($eleves);
 
 
     }
@@ -177,84 +207,71 @@ class EleveController extends Controller
 
 
 
-    /**
-     * Calculer la moyenne d'un élève
-     */
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Moyenne élève
+    |--------------------------------------------------------------------------
+    */
+
+
     public function moyenne($id)
     {
 
-        $eleve = Eleve::with(
+
+        $eleve=Eleve::with(
 
             'notes.matiere'
 
-        )
-
-        ->findOrFail($id);
+        )->findOrFail($id);
 
 
 
+        $total=0;
 
-        $totalPoints = 0;
-
-        $totalCoefficients = 0;
-
+        $coef=0;
 
 
 
-        foreach($eleve->notes as $note)
-        {
+        foreach($eleve->notes as $note){
 
 
-            $coefficient =
-
-            $note->matiere->coefficient;
+            $c=$note->matiere->coefficient;
 
 
 
-            $totalPoints +=
-
-            $note->note * $coefficient;
+            $total += $note->note*$c;
 
 
-
-            $totalCoefficients +=
-
-            $coefficient;
+            $coef += $c;
 
 
         }
-
-
-
-
-        $moyenne = 0;
-
-
-
-        if($totalCoefficients > 0)
-        {
-
-            $moyenne =
-
-            $totalPoints /
-
-            $totalCoefficients;
-
-        }
-
-
 
 
 
         return response()->json([
 
-            'eleve'=>
-            $eleve->nom.' '.$eleve->prenom,
+
+            'eleve'=>$eleve->nom.' '.$eleve->prenom,
+
 
             'moyenne'=>
-            round($moyenne,2)
+
+            $coef>0 ?
+
+            round($total/$coef,2)
+
+            :
+
+            0
+
 
         ]);
+
 
 
     }

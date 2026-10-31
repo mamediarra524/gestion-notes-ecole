@@ -6,7 +6,6 @@ import { RouterLink } from '@angular/router';
 import { EnseignantService } from '../../services/enseignant';
 
 
-
 @Component({
 
   selector:'app-enseignants',
@@ -16,9 +15,7 @@ import { EnseignantService } from '../../services/enseignant';
   imports:[
 
     CommonModule,
-
     FormsModule,
-
     RouterLink
 
   ],
@@ -30,29 +27,18 @@ import { EnseignantService } from '../../services/enseignant';
 })
 
 
-
 export class Enseignants implements OnInit {
-
 
 
   enseignants:any[] = [];
 
-
   message:string = '';
-
-
 
   recherche:string = '';
 
-
-
   modification:boolean = false;
 
-
-
   idModification:number|null = null;
-
-
 
 
 
@@ -60,9 +46,7 @@ export class Enseignants implements OnInit {
   // PAGINATION
   // =========================
 
-
   page:number = 1;
-
 
   elementsParPage:number = 10;
 
@@ -70,20 +54,18 @@ export class Enseignants implements OnInit {
 
 
 
-
-
+  // =========================
+  // FORMULAIRE
+  // =========================
 
   enseignant:any = {
 
-
     nom:'',
-
     prenom:'',
-
     email:'',
-
-    telephone:''
-
+    telephone:'',
+    password:'',
+    password_confirmation:''
 
   };
 
@@ -93,16 +75,11 @@ export class Enseignants implements OnInit {
 
 
 
-
-
   constructor(
-
 
     private enseignantService:EnseignantService,
 
-
     private cd:ChangeDetectorRef
-
 
   ){}
 
@@ -112,12 +89,9 @@ export class Enseignants implements OnInit {
 
   ngOnInit(){
 
-
     this.chargerEnseignants();
 
-
   }
-
 
 
 
@@ -134,7 +108,6 @@ export class Enseignants implements OnInit {
   chargerEnseignants(){
 
 
-
     this.enseignantService
 
     .getEnseignants()
@@ -142,59 +115,42 @@ export class Enseignants implements OnInit {
     .subscribe({
 
 
-
       next:(data:any)=>{
 
 
-
         console.log(
-
           "Enseignants reçus :",
-
           data
-
         );
-
-
 
 
         this.enseignants = [...data];
 
 
-
         this.page = 1;
 
 
-
         this.cd.detectChanges();
-
 
 
       },
 
 
 
-
-
       error:(error:any)=>{
 
 
-
         console.log(error);
-
 
 
         this.message =
         "Erreur chargement enseignants";
 
 
-
       }
 
 
-
     });
-
 
 
   }
@@ -208,22 +164,16 @@ export class Enseignants implements OnInit {
 
 
   // =========================
-  // RECHERCHE + PAGINATION
+  // FILTRE + PAGINATION
   // =========================
 
 
   get enseignantsFiltres(){
 
 
-
-    const texte =
-
-    this.recherche
-
+    const texte = this.recherche
     .toLowerCase()
-
     .trim();
-
 
 
 
@@ -231,55 +181,27 @@ export class Enseignants implements OnInit {
 
 
 
-
-
-
     if(texte){
-
 
 
       resultat = this.enseignants.filter((e:any)=>
 
 
-
-        e.nom
-
-        .toLowerCase()
-
-        .includes(texte)
-
-
+        e.nom.toLowerCase().includes(texte)
 
         ||
 
-
-
-        e.prenom
-
-        .toLowerCase()
-
-        .includes(texte)
-
-
+        e.prenom.toLowerCase().includes(texte)
 
         ||
 
-
-
-        e.email
-
-        .toLowerCase()
-
-        .includes(texte)
-
+        e.email.toLowerCase().includes(texte)
 
 
       );
 
 
-
     }
-
 
 
 
@@ -295,24 +217,16 @@ export class Enseignants implements OnInit {
 
 
 
-
-
-
     return resultat.slice(
-
 
       debut,
 
-
       debut + this.elementsParPage
-
 
     );
 
 
-
   }
-
 
 
 
@@ -324,22 +238,16 @@ export class Enseignants implements OnInit {
   get totalPages(){
 
 
-
     return Math.ceil(
-
 
       this.enseignants.length /
 
       this.elementsParPage
 
-
     );
 
 
-
   }
-
-
 
 
 
@@ -350,15 +258,11 @@ export class Enseignants implements OnInit {
   pageSuivante(){
 
 
-
     if(this.page < this.totalPages){
-
 
       this.page++;
 
-
     }
-
 
 
   }
@@ -369,20 +273,14 @@ export class Enseignants implements OnInit {
 
 
 
-
-
   pagePrecedente(){
-
 
 
     if(this.page > 1){
 
-
       this.page--;
 
-
     }
-
 
 
   }
@@ -396,7 +294,7 @@ export class Enseignants implements OnInit {
 
 
   // =========================
-  // AJOUT
+  // AJOUT ENSEIGNANT
   // =========================
 
 
@@ -409,21 +307,41 @@ export class Enseignants implements OnInit {
 
       !this.enseignant.nom ||
 
-
       !this.enseignant.prenom ||
 
+      !this.enseignant.email ||
 
-      !this.enseignant.email
+      !this.enseignant.password
 
 
     ){
 
 
+      this.message =
+      "Veuillez remplir tous les champs obligatoires";
+
+
+      return;
+
+
+    }
+
+
+
+
+
+
+    if(
+
+      this.enseignant.password !==
+
+      this.enseignant.password_confirmation
+
+    ){
+
 
       this.message =
-
-      "Veuillez remplir les champs obligatoires";
-
+      "Les mots de passe ne correspondent pas";
 
 
       return;
@@ -452,13 +370,11 @@ export class Enseignants implements OnInit {
       next:(response:any)=>{
 
 
-
         console.log(response);
 
 
 
         this.message =
-
         "Enseignant ajouté avec succès";
 
 
@@ -480,15 +396,12 @@ export class Enseignants implements OnInit {
       error:(error:any)=>{
 
 
-
         console.log(error);
 
 
 
         this.message =
-
         "Erreur ajout enseignant";
-
 
 
       }
@@ -496,7 +409,6 @@ export class Enseignants implements OnInit {
 
 
     });
-
 
 
   }
@@ -517,35 +429,30 @@ export class Enseignants implements OnInit {
   modifier(e:any){
 
 
-
     this.enseignant = {
-
 
 
       nom:e.nom,
 
-
       prenom:e.prenom,
-
 
       email:e.email,
 
+      telephone:e.telephone,
 
-      telephone:e.telephone
+      password:'',
 
+      password_confirmation:''
 
 
     };
 
 
 
-
     this.idModification = e.id;
 
 
-
     this.modification = true;
-
 
 
   }
@@ -561,7 +468,6 @@ export class Enseignants implements OnInit {
   enregistrerModification(){
 
 
-
     if(this.idModification){
 
 
@@ -570,12 +476,9 @@ export class Enseignants implements OnInit {
 
       .modifierEnseignant(
 
-
         this.idModification,
 
-
         this.enseignant
-
 
       )
 
@@ -586,15 +489,12 @@ export class Enseignants implements OnInit {
         next:()=>{
 
 
-
           this.message =
-
           "Enseignant modifié avec succès";
 
 
 
           this.resetForm();
-
 
 
           this.chargerEnseignants();
@@ -606,9 +506,86 @@ export class Enseignants implements OnInit {
 
 
 
-
         error:(error:any)=>{
 
+
+          console.log(error);
+
+
+
+          this.message =
+          "Erreur modification enseignant";
+
+
+        }
+
+
+
+      });
+
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // =========================
+  // RESET MOT DE PASSE
+  // =========================
+
+
+  resetPassword(e:any){
+
+
+
+    if(confirm(
+
+      "Réinitialiser le mot de passe de "
+      + e.prenom
+      + " "
+      + e.nom
+      + " ?"
+
+    )){
+
+
+
+      this.enseignantService
+
+      .resetPassword(e.id)
+
+      .subscribe({
+
+
+
+        next:(response:any)=>{
+
+
+
+          alert(
+
+            "Nouveau mot de passe : "
+
+            + response.password
+
+          );
+
+
+
+        },
+
+
+
+
+        error:(error:any)=>{
 
 
           console.log(error);
@@ -617,8 +594,7 @@ export class Enseignants implements OnInit {
 
           this.message =
 
-          "Erreur modification enseignant";
-
+          "Erreur réinitialisation mot de passe";
 
 
         }
@@ -671,9 +647,7 @@ export class Enseignants implements OnInit {
         next:()=>{
 
 
-
           this.message =
-
           "Enseignant supprimé avec succès";
 
 
@@ -687,9 +661,7 @@ export class Enseignants implements OnInit {
 
 
 
-
         error:(error:any)=>{
-
 
 
           console.log(error);
@@ -697,9 +669,7 @@ export class Enseignants implements OnInit {
 
 
           this.message =
-
           "Erreur suppression";
-
 
 
         }
@@ -711,7 +681,6 @@ export class Enseignants implements OnInit {
 
 
     }
-
 
 
   }
@@ -736,30 +705,27 @@ export class Enseignants implements OnInit {
     this.enseignant = {
 
 
-
       nom:'',
-
 
       prenom:'',
 
-
       email:'',
 
+      telephone:'',
 
-      telephone:''
+      password:'',
 
+      password_confirmation:''
 
 
     };
 
 
 
-    this.modification=false;
+    this.modification = false;
 
 
-
-    this.idModification=null;
-
+    this.idModification = null;
 
 
   }

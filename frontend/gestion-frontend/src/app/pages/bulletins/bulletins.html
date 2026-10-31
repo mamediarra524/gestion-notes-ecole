@@ -14,9 +14,11 @@
 
 
 
+
     <h1>
         📄 Gestion des bulletins scolaires
     </h1>
+
 
 
 
@@ -40,11 +42,14 @@
             (change)="chargerElevesClasse()">
 
 
+
             <option [ngValue]="null">
 
                 -- Sélectionner une classe --
 
             </option>
+
+
 
 
 
@@ -55,7 +60,7 @@
                 [ngValue]="classe.id">
 
 
-                {{ classe.nom }}
+                {{classe.nom}}
 
 
             </option>
@@ -78,6 +83,7 @@
 
     <!-- LISTE DES ELEVES -->
 
+
     <div
 
     class="liste-eleves"
@@ -85,9 +91,14 @@
     *ngIf="elevesClasse.length > 0">
 
 
+
         <h2>
+
             👨‍🎓 Élèves de la classe
+
         </h2>
+
+
 
 
 
@@ -96,7 +107,9 @@
 
             <thead>
 
+
                 <tr>
+
 
                     <th>
                         Nom
@@ -132,21 +145,26 @@
 
                     <td>
 
-                        {{ eleve.nom }}
+                        {{eleve.nom}}
 
                     </td>
 
 
 
+
+
                     <td>
 
-                        {{ eleve.prenom }}
+                        {{eleve.prenom}}
 
                     </td>
 
 
 
+
+
                     <td>
+
 
 
                         <button
@@ -165,6 +183,8 @@
 
 
 
+
+
                         <button
 
                         class="btn-pdf"
@@ -172,7 +192,9 @@
                         (click)="telechargerPDF(eleve.id)">
 
 
+
                             📥 PDF
+
 
 
                         </button>
@@ -182,11 +204,11 @@
                     </td>
 
 
-
                 </tr>
 
 
             </tbody>
+
 
 
         </table>
@@ -205,6 +227,7 @@
 
     <!-- MESSAGE -->
 
+
     <p
 
     *ngIf="message"
@@ -212,7 +235,7 @@
     class="message">
 
 
-        {{ message }}
+        {{message}}
 
 
     </p>
@@ -225,7 +248,11 @@
 
 
 
+
+
+
     <!-- BULLETIN -->
+
 
     <div
 
@@ -239,41 +266,60 @@
 
 
 
+
+        <!-- ENTETE -->
+
+
         <div class="entete">
 
 
             <h2>
+
                 🏫 Bulletin scolaire
+
             </h2>
+
+
 
 
 
             <p>
 
+
                 Élève :
 
                 <strong>
 
-                    {{ bulletin?.eleve?.prenom }}
 
-                    {{ bulletin?.eleve?.nom }}
+                    {{bulletin?.eleve?.prenom}}
+
+                    {{bulletin?.eleve?.nom}}
+
 
                 </strong>
+
 
             </p>
 
 
 
 
+
+
+
             <p>
+
 
                 Classe :
 
                 <strong>
 
-                    {{ bulletin?.eleve?.classe }}
+
+                    {{bulletin?.eleve?.classe}}
+
 
                 </strong>
+
 
             </p>
 
@@ -293,8 +339,14 @@
 
 
         <h3>
+
             📚 Résultats par matière
+
         </h3>
+
+
+
+
 
 
 
@@ -303,11 +355,27 @@
 
             <thead>
 
+
                 <tr>
 
 
                     <th>
                         Matière
+                    </th>
+
+
+                    <th>
+                        Dev 1
+                    </th>
+
+
+                    <th>
+                        Dev 2
+                    </th>
+
+
+                    <th>
+                        Composition
                     </th>
 
 
@@ -335,6 +403,9 @@
 
 
 
+
+
+
             <tbody>
 
 
@@ -343,35 +414,100 @@
                 *ngFor="let matiere of bulletin?.matieres">
 
 
-                    <td>
-
-                        {{ matiere.nom }}
-
-                    </td>
 
 
 
                     <td>
 
-                        {{ matiere.coefficient }}
+                        {{matiere.nom}}
 
                     </td>
+
+
+
+
 
 
 
                     <td>
 
-                        ⭐ {{ matiere.moyenne }}
+
+                        {{matiere.evaluations[0]?.note ?? '-'}}
+
 
                     </td>
+
+
+
+
 
 
 
                     <td>
 
-                        {{ matiere.points }}
+
+                        {{matiere.evaluations[1]?.note ?? '-'}}
+
 
                     </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{matiere.evaluations[2]?.note ?? '-'}}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{matiere.coefficient}}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        ⭐ {{matiere.moyenne}}
+
+
+                    </td>
+
+
+
+
+
+
+
+                    <td>
+
+
+                        {{matiere.points}}
+
+
+                    </td>
+
+
 
 
 
@@ -381,7 +517,11 @@
             </tbody>
 
 
+
         </table>
+
+
+
 
 
 
@@ -398,23 +538,33 @@
 
 
             <h2>
+
                 📊 Résultat final
+
             </h2>
 
 
 
 
+
+
+
             <p>
+
 
                 Moyenne générale :
 
+
                 <strong>
 
-                    {{ bulletin?.moyenneGenerale }}
+
+                    {{bulletin?.moyenneGenerale}}
 
                     /20
 
+
                 </strong>
+
 
 
             </p>
@@ -423,17 +573,25 @@
 
 
 
+
+
+
             <p>
+
 
                 Moyenne générale de la classe :
 
+
                 <strong>
 
-                    {{ bulletin?.moyenneClasse }}
+
+                    {{bulletin?.moyenneClasse}}
 
                     /20
 
+
                 </strong>
+
 
 
             </p>
@@ -442,20 +600,29 @@
 
 
 
+
+
             <p>
+
 
                 Rang :
 
+
                 <strong>
 
-                    {{ bulletin?.rang }}
+
+                    {{bulletin?.rang}}
 
                     ème
+
 
                 </strong>
 
 
+
             </p>
+
+
 
 
 
@@ -463,16 +630,23 @@
 
             <p>
 
+
                 Appréciation :
+
 
                 <strong>
 
-                    {{ bulletin?.appreciation }}
+
+                    {{bulletin?.appreciation}}
+
 
                 </strong>
 
 
+
             </p>
+
+
 
 
 
@@ -486,7 +660,7 @@
 
 
 
-        <!-- TELECHARGEMENT PDF -->
+        <!-- PDF -->
 
 
         <button
@@ -506,7 +680,10 @@
 
 
 
+
+
     </div>
+
 
 
 

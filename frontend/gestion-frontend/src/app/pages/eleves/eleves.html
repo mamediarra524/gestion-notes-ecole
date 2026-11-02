@@ -27,10 +27,16 @@
   <!-- MESSAGE -->
 
   <p
+
+    #messageBox
+
     *ngIf="message"
+
     class="message">
 
+
     {{ message }}
+
 
   </p>
 
@@ -58,6 +64,7 @@
 
 
     <form
+
       (ngSubmit)="modification ? enregistrerModification() : ajouterEleve()">
 
 
@@ -154,9 +161,12 @@
 
 
         <option
+
           [ngValue]="null">
 
+
           Choisir une classe
+
 
         </option>
 
@@ -185,7 +195,9 @@
 
 
       <button
+
         type="submit"
+
         class="btn-save">
 
 
@@ -253,6 +265,8 @@
       type="text"
 
       [(ngModel)]="recherche"
+
+      name="recherche"
 
       placeholder="Nom ou prénom..."
 
@@ -348,6 +362,7 @@
 
 
         <tr
+
           *ngFor="let eleve of elevesFiltres">
 
 
@@ -409,6 +424,8 @@
 
             <button
 
+              type="button"
+
               class="btn-edit"
 
               (click)="modifier(eleve)">
@@ -425,6 +442,8 @@
 
 
             <button
+
+              type="button"
 
               class="btn-delete"
 
@@ -453,7 +472,7 @@
 
         <tr
 
-        *ngIf="elevesFiltres.length===0">
+          *ngIf="elevesFiltres.length===0">
 
 
           <td colspan="6">

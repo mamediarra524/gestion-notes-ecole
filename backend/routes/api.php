@@ -17,7 +17,6 @@ use App\Http\Controllers\EvaluationController;
 
 
 
-
 /*
 |--------------------------------------------------------------------------
 | AUTH
@@ -62,10 +61,9 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
-
     /*
     |--------------------------------------------------------------------------
-    | UTILISATEUR CONNECTE
+    | UTILISATEUR
     |--------------------------------------------------------------------------
     */
 
@@ -78,7 +76,6 @@ Route::middleware('auth:sanctum')->group(function(){
 
         }
     );
-
 
 
 
@@ -166,6 +163,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
+
         /*
         |--------------------------------------------------------------------------
         | ELEVES
@@ -176,12 +174,15 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::apiResource(
             'eleves',
             EleveController::class
-        );
+        )
+        ->parameters([
+            'eleves'=>'eleve'
+        ]);
 
 
 
         Route::get(
-            'eleves/{id}/moyenne',
+            'eleves/{eleve}/moyenne',
             [
                 EleveController::class,
                 'moyenne'
@@ -284,7 +285,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         Route::get(
-            'eleves/{id}/bulletin',
+            'eleves/{eleve}/bulletin',
             [
                 BulletinController::class,
                 'show'
@@ -294,12 +295,13 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         Route::get(
-            'eleves/{id}/bulletin/pdf',
+            'eleves/{eleve}/bulletin/pdf',
             [
                 BulletinController::class,
                 'pdf'
             ]
         );
+
 
 
 

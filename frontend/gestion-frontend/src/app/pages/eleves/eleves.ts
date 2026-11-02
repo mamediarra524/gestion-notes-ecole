@@ -1,4 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { 
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
+
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -32,6 +39,10 @@ import { ClasseService } from '../../services/classe';
 
 
 export class Eleves implements OnInit {
+
+
+
+  @ViewChild('messageBox') messageBox!: ElementRef;
 
 
 
@@ -75,6 +86,8 @@ export class Eleves implements OnInit {
 
 
 
+
+
   constructor(
 
     private eleveService:EleveService,
@@ -94,6 +107,7 @@ export class Eleves implements OnInit {
   ngOnInit(){
 
 
+
     const user = JSON.parse(
 
       localStorage.getItem('user') || '{}'
@@ -102,16 +116,14 @@ export class Eleves implements OnInit {
 
 
 
-
-
-    // ADMIN uniquement
-
     if(user.role !== 'ADMIN'){
 
 
       this.message =
-
       "Accès réservé à l'administration";
+
+
+      this.scrollMessage();
 
 
       return;
@@ -125,8 +137,8 @@ export class Eleves implements OnInit {
 
     this.chargerEleves();
 
-
     this.chargerClasses();
+
 
 
   }
@@ -139,11 +151,6 @@ export class Eleves implements OnInit {
 
 
 
-  // ===============================
-  // CHARGER LES ELEVES
-  // ===============================
-
-
   chargerEleves(){
 
 
@@ -154,19 +161,13 @@ export class Eleves implements OnInit {
     .subscribe({
 
 
-
       next:(data:any)=>{
 
 
         console.log(
-
           "Élèves reçus :",
-
           data
-
         );
-
-
 
 
 
@@ -178,12 +179,11 @@ export class Eleves implements OnInit {
 
 
 
-
-
         this.page=1;
 
 
         this.cd.detectChanges();
+
 
 
       },
@@ -196,9 +196,12 @@ export class Eleves implements OnInit {
         console.log(err);
 
 
-        this.message=
-
+        this.message =
         "Erreur chargement élèves";
+
+
+        this.scrollMessage();
+
 
 
       }
@@ -219,13 +222,7 @@ export class Eleves implements OnInit {
 
 
 
-  // ===============================
-  // CHARGER CLASSES
-  // ===============================
-
-
   chargerClasses(){
-
 
 
     this.classeService
@@ -250,6 +247,7 @@ export class Eleves implements OnInit {
         this.cd.detectChanges();
 
 
+
       },
 
 
@@ -258,6 +256,7 @@ export class Eleves implements OnInit {
 
 
         console.log(err);
+
 
 
       }
@@ -278,12 +277,8 @@ export class Eleves implements OnInit {
 
 
 
-  // ===============================
-  // RECHERCHE + PAGINATION
-  // ===============================
-
-
   get elevesFiltres(){
+
 
 
     let resultat=[...this.eleves];
@@ -305,10 +300,10 @@ export class Eleves implements OnInit {
     if(texte){
 
 
-
       resultat=resultat.filter(
 
         (e:any)=>
+
 
         e.nom
 
@@ -320,17 +315,21 @@ export class Eleves implements OnInit {
 
         ||
 
+
+
         e.prenom
 
         .toLowerCase()
 
         .includes(texte)
 
+
+
       );
 
+
+
     }
-
-
 
 
 
@@ -371,7 +370,6 @@ export class Eleves implements OnInit {
   get totalPages(){
 
 
-
     return Math.ceil(
 
       this.eleves.length /
@@ -379,6 +377,7 @@ export class Eleves implements OnInit {
       this.elementsParPage
 
     ) || 1;
+
 
 
   }
@@ -408,9 +407,6 @@ export class Eleves implements OnInit {
 
 
 
-
-
-
   pagePrecedente(){
 
 
@@ -431,11 +427,6 @@ export class Eleves implements OnInit {
 
 
 
-  // ===============================
-  // AJOUT
-  // ===============================
-
-
   ajouterEleve(){
 
 
@@ -448,18 +439,26 @@ export class Eleves implements OnInit {
 
 
 
-      next:()=>{
+      next:(res:any)=>{
 
 
-        this.message=
+        this.message =
+
+        res.message ||
 
         "Élève ajouté avec succès";
+
 
 
         this.resetForm();
 
 
         this.chargerEleves();
+
+
+
+        this.scrollMessage();
+
 
 
       },
@@ -472,9 +471,13 @@ export class Eleves implements OnInit {
         console.log(err);
 
 
-        this.message=
+        this.message =
 
         "Erreur ajout élève";
+
+
+        this.scrollMessage();
+
 
 
       }
@@ -495,11 +498,6 @@ export class Eleves implements OnInit {
 
 
 
-  // ===============================
-  // MODIFICATION
-  // ===============================
-
-
   modifier(eleve:any){
 
 
@@ -513,12 +511,25 @@ export class Eleves implements OnInit {
       prenom:eleve.prenom,
 
 
+
       date_naissance:
 
-      eleve.date_naissance.substring(0,10),
+      eleve.date_naissance
+
+      ?
+
+      eleve.date_naissance.substring(0,10)
+
+      :
+
+      '',
 
 
-      classe_id:eleve.classe_id
+
+      classe_id:
+
+      eleve.classe?.id || eleve.classe_id
+
 
 
     };
@@ -536,6 +547,17 @@ export class Eleves implements OnInit {
     this.modification=true;
 
 
+
+    window.scrollTo({
+
+      top:0,
+
+      behavior:'smooth'
+
+    });
+
+
+
   }
 
 
@@ -550,9 +572,11 @@ export class Eleves implements OnInit {
 
 
 
-    if(this.idModification===null)
+    if(this.idModification===null){
 
-    return;
+      return;
+
+    }
 
 
 
@@ -572,18 +596,26 @@ export class Eleves implements OnInit {
 
 
 
-      next:()=>{
+      next:(res:any)=>{
 
 
-        this.message=
+        this.message =
+
+        res.message ||
 
         "Élève modifié avec succès";
+
 
 
         this.resetForm();
 
 
         this.chargerEleves();
+
+
+
+        this.scrollMessage();
+
 
 
       },
@@ -593,12 +625,20 @@ export class Eleves implements OnInit {
       error:(err)=>{
 
 
-        console.log(err);
+        console.log(
+          "Erreur modification :",
+          err.error
+        );
 
 
-        this.message=
+
+        this.message =
 
         "Erreur modification";
+
+
+        this.scrollMessage();
+
 
 
       }
@@ -619,50 +659,120 @@ export class Eleves implements OnInit {
 
 
 
-  // ===============================
-  // SUPPRESSION
-  // ===============================
-
-
   supprimer(id:number){
 
 
 
-    if(confirm(
+    if(!confirm(
 
       "Supprimer cet élève ?"
 
     )){
 
 
-      this.eleveService
-
-      .supprimerEleve(id)
-
-      .subscribe({
-
-
-
-        next:()=>{
-
-
-          this.message=
-
-          "Élève supprimé";
-
-
-          this.chargerEleves();
-
-
-        }
-
-
-
-      });
-
+      return;
 
 
     }
+
+
+
+
+
+    this.eleveService
+
+    .supprimerEleve(id)
+
+    .subscribe({
+
+
+
+      next:(res:any)=>{
+
+
+        this.message =
+
+        res.message ||
+
+        "Élève supprimé avec succès";
+
+
+
+        this.chargerEleves();
+
+
+
+        this.scrollMessage();
+
+
+
+      },
+
+
+
+      error:(err)=>{
+
+
+        console.log(
+          "Erreur suppression :",
+          err
+        );
+
+
+
+        this.message =
+
+        "Erreur suppression";
+
+
+        this.scrollMessage();
+
+
+
+      }
+
+
+
+    });
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+  scrollMessage(){
+
+
+    setTimeout(()=>{
+
+
+      if(this.messageBox){
+
+
+        this.messageBox.nativeElement
+
+        .scrollIntoView({
+
+          behavior:'smooth',
+
+          block:'center'
+
+        });
+
+
+
+      }
+
+
+
+    },300);
 
 
 
@@ -677,7 +787,6 @@ export class Eleves implements OnInit {
 
 
   resetForm(){
-
 
 
     this.eleve={
@@ -702,6 +811,7 @@ export class Eleves implements OnInit {
     this.idModification=null;
 
 
+
   }
 
 
@@ -720,6 +830,7 @@ export class Eleves implements OnInit {
       '/dashboard'
 
     ]);
+
 
 
   }

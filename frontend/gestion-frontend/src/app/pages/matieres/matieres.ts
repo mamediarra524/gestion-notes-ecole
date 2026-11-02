@@ -1,4 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { 
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -34,31 +41,25 @@ export class Matieres implements OnInit {
 
 
 
-  matieres:any[] = [];
+  @ViewChild('messageBox') messageBox!: ElementRef;
 
+
+
+  matieres:any[] = [];
 
   message:string = '';
 
-
-
   recherche:string = '';
 
-
-
   modification:boolean = false;
-
 
   idModification:number|null = null;
 
 
 
-
-
   matiere:any = {
 
-
     nom:''
-
 
   };
 
@@ -66,17 +67,9 @@ export class Matieres implements OnInit {
 
 
 
-
-  // =========================
-  // PAGINATION
-  // =========================
-
-
   page:number = 1;
 
-
   taillePage:number = 10;
-
 
   totalPages:number = 1;
 
@@ -93,7 +86,6 @@ export class Matieres implements OnInit {
 
     private matiereService:MatiereService,
 
-
     private cd:ChangeDetectorRef
 
 
@@ -105,9 +97,7 @@ export class Matieres implements OnInit {
 
   ngOnInit(){
 
-
     this.chargerMatieres();
-
 
   }
 
@@ -117,11 +107,6 @@ export class Matieres implements OnInit {
 
 
 
-
-
-  // =========================
-  // CHARGER MATIERES
-  // =========================
 
 
   chargerMatieres(){
@@ -134,7 +119,6 @@ export class Matieres implements OnInit {
     .subscribe({
 
 
-
       next:(data:any)=>{
 
 
@@ -144,21 +128,16 @@ export class Matieres implements OnInit {
         );
 
 
-
         this.matieres = [...data];
-
 
 
         this.calculerPages();
 
 
-
         this.cd.detectChanges();
 
 
-
       },
-
 
 
       error:(error:any)=>{
@@ -167,17 +146,15 @@ export class Matieres implements OnInit {
         console.log(error);
 
 
-
-        this.message =
-        "Erreur chargement matières";
+        this.afficherMessage(
+          "Erreur chargement matières"
+        );
 
 
       }
 
 
-
     });
-
 
 
   }
@@ -190,13 +167,7 @@ export class Matieres implements OnInit {
 
 
 
-  // =========================
-  // RECHERCHE + PAGINATION
-  // =========================
-
-
   get matieresFiltrees(){
-
 
 
     const texte =
@@ -209,11 +180,7 @@ export class Matieres implements OnInit {
 
 
 
-
-
     let resultat = this.matieres;
-
-
 
 
 
@@ -224,21 +191,16 @@ export class Matieres implements OnInit {
 
         (matiere:any)=>
 
-
         matiere.nom
 
         .toLowerCase()
 
         .includes(texte)
 
-
       );
 
 
     }
-
-
-
 
 
 
@@ -252,30 +214,21 @@ export class Matieres implements OnInit {
 
 
 
-    if(this.totalPages === 0){
+    if(this.totalPages===0){
 
-
-      this.totalPages = 1;
-
+      this.totalPages=1;
 
     }
 
 
 
-
-
-
-
     const debut =
 
-    (this.page - 1)
+    (this.page-1)
 
     *
 
     this.taillePage;
-
-
-
 
 
 
@@ -286,7 +239,6 @@ export class Matieres implements OnInit {
       debut + this.taillePage
 
     );
-
 
 
   }
@@ -301,9 +253,7 @@ export class Matieres implements OnInit {
 
   rechercher(){
 
-
-    this.page = 1;
-
+    this.page=1;
 
   }
 
@@ -318,7 +268,7 @@ export class Matieres implements OnInit {
   calculerPages(){
 
 
-    this.totalPages = Math.ceil(
+    this.totalPages=Math.ceil(
 
       this.matieres.length /
 
@@ -328,11 +278,9 @@ export class Matieres implements OnInit {
 
 
 
-    if(this.totalPages === 0){
+    if(this.totalPages===0){
 
-
-      this.totalPages = 1;
-
+      this.totalPages=1;
 
     }
 
@@ -350,11 +298,9 @@ export class Matieres implements OnInit {
   pageSuivante(){
 
 
-    if(this.page < this.totalPages){
-
+    if(this.page<this.totalPages){
 
       this.page++;
-
 
     }
 
@@ -372,11 +318,9 @@ export class Matieres implements OnInit {
   pagePrecedente(){
 
 
-    if(this.page > 1){
-
+    if(this.page>1){
 
       this.page--;
-
 
     }
 
@@ -391,27 +335,20 @@ export class Matieres implements OnInit {
 
 
 
-  // =========================
-  // AJOUT
-  // =========================
-
-
   ajouterMatiere(){
-
 
 
     if(!this.matiere.nom || this.matiere.nom.trim()===''){
 
 
+      this.afficherMessage(
 
-      this.message =
+        "Le nom de la matière est obligatoire"
 
-      "Le nom de la matière est obligatoire";
-
+      );
 
 
       return;
-
 
     }
 
@@ -420,9 +357,7 @@ export class Matieres implements OnInit {
 
 
 
-
-
-    const existe = this.matieres.some(
+    const existe=this.matieres.some(
 
       (m:any)=>
 
@@ -432,9 +367,7 @@ export class Matieres implements OnInit {
 
       this.matiere.nom.toLowerCase()
 
-
     );
-
 
 
 
@@ -443,17 +376,17 @@ export class Matieres implements OnInit {
     if(existe){
 
 
-      this.message =
+      this.afficherMessage(
 
-      "Cette matière existe déjà";
+        "Cette matière existe déjà"
+
+      );
 
 
       return;
 
 
     }
-
-
 
 
 
@@ -472,14 +405,14 @@ export class Matieres implements OnInit {
       next:()=>{
 
 
-        this.message =
+        this.afficherMessage(
 
-        "Matière ajoutée avec succès";
+          "Matière ajoutée avec succès"
 
+        );
 
 
         this.resetForm();
-
 
 
         this.chargerMatieres();
@@ -496,10 +429,11 @@ export class Matieres implements OnInit {
         console.log(error);
 
 
+        this.afficherMessage(
 
-        this.message =
+          "Erreur ajout matière"
 
-        "Erreur ajout matière";
+        );
 
 
       }
@@ -520,16 +454,11 @@ export class Matieres implements OnInit {
 
 
 
-  // =========================
-  // MODIFIER
-  // =========================
-
-
   modifier(matiere:any){
 
 
 
-    this.matiere = {
+    this.matiere={
 
 
       nom:matiere.nom
@@ -539,10 +468,28 @@ export class Matieres implements OnInit {
 
 
 
-    this.idModification = matiere.id;
+    this.idModification=matiere.id;
 
 
-    this.modification = true;
+    this.modification=true;
+
+
+
+    setTimeout(()=>{
+
+
+      window.scrollTo({
+
+
+        top:0,
+
+        behavior:'smooth'
+
+
+      });
+
+
+    },200);
 
 
 
@@ -559,9 +506,7 @@ export class Matieres implements OnInit {
   enregistrerModification(){
 
 
-
     if(this.idModification){
-
 
 
       this.matiereService
@@ -581,14 +526,14 @@ export class Matieres implements OnInit {
         next:()=>{
 
 
-          this.message =
+          this.afficherMessage(
 
-          "Matière modifiée avec succès";
+            "Matière modifiée avec succès"
 
+          );
 
 
           this.resetForm();
-
 
 
           this.chargerMatieres();
@@ -605,10 +550,11 @@ export class Matieres implements OnInit {
           console.log(error);
 
 
+          this.afficherMessage(
 
-          this.message =
+            "Erreur modification matière"
 
-          "Erreur modification matière";
+          );
 
 
         }
@@ -632,13 +578,7 @@ export class Matieres implements OnInit {
 
 
 
-  // =========================
-  // SUPPRIMER
-  // =========================
-
-
   supprimer(id:number){
-
 
 
     if(confirm(
@@ -646,7 +586,6 @@ export class Matieres implements OnInit {
       "Voulez-vous supprimer cette matière ?"
 
     )){
-
 
 
       this.matiereService
@@ -660,17 +599,18 @@ export class Matieres implements OnInit {
         next:()=>{
 
 
-          this.message =
-
-          "Matière supprimée avec succès";
-
-
-
-          this.page = 1;
-
+          this.page=1;
 
 
           this.chargerMatieres();
+
+
+
+          this.afficherMessage(
+
+            "Matière supprimée avec succès"
+
+          );
 
 
 
@@ -684,10 +624,11 @@ export class Matieres implements OnInit {
           console.log(error);
 
 
+          this.afficherMessage(
 
-          this.message =
+            "Erreur suppression"
 
-          "Erreur suppression";
+          );
 
 
         }
@@ -701,6 +642,34 @@ export class Matieres implements OnInit {
     }
 
 
+  }
+
+
+
+
+
+
+
+
+
+  afficherMessage(msg:string){
+
+
+    this.message=msg;
+
+
+    this.scrollMessage();
+
+
+
+    setTimeout(()=>{
+
+
+      this.message='';
+
+
+    },3000);
+
 
   }
 
@@ -712,16 +681,48 @@ export class Matieres implements OnInit {
 
 
 
-  // =========================
-  // RESET
-  // =========================
+  scrollMessage(){
+
+
+    setTimeout(()=>{
+
+
+      if(this.messageBox){
+
+
+        this.messageBox.nativeElement
+
+        .scrollIntoView({
+
+
+          behavior:'smooth',
+
+          block:'center'
+
+
+        });
+
+
+      }
+
+
+    },300);
+
+
+  }
+
+
+
+
+
+
+
 
 
   resetForm(){
 
 
-
-    this.matiere = {
+    this.matiere={
 
 
       nom:''
@@ -730,12 +731,10 @@ export class Matieres implements OnInit {
     };
 
 
+    this.modification=false;
 
-    this.modification = false;
 
-
-    this.idModification = null;
-
+    this.idModification=null;
 
 
   }

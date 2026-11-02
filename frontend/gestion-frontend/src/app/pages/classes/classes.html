@@ -9,11 +9,9 @@
 
     class="back-btn"
 
-    (click)="retourDashboard()">
-
+    (click)="retourDashboard">
 
     ⬅ Retour Dashboard
-
 
   </button>
 
@@ -33,13 +31,13 @@
 
   <p
 
+    #messageBox
+
     *ngIf="message"
 
     class="message">
 
-
     {{ message }}
-
 
   </p>
 
@@ -53,15 +51,12 @@
 
   <!-- FORMULAIRE -->
 
-
   <div class="form-card">
 
 
     <h2>
 
-
       {{ modification ? 'Modifier une classe' : 'Ajouter une classe' }}
-
 
     </h2>
 
@@ -71,8 +66,9 @@
 
     <form
 
-      (ngSubmit)="modification ? enregistrerModification() : ajouterClasse()">
+      (ngSubmit)="modification ? enregistrerModification() : ajouterClasse()"
 
+      #classeForm="ngForm">
 
 
 
@@ -88,23 +84,17 @@
 
       <input
 
-
         type="text"
-
 
         [(ngModel)]="classe.nom"
 
-
         name="nom"
 
-
         placeholder="Exemple : 6ème A"
-
 
         required>
 
 
-    
 
 
 
@@ -120,18 +110,13 @@
 
       <input
 
-
         type="text"
-
 
         [(ngModel)]="classe.niveau"
 
-
         name="niveau"
 
-
         placeholder="Exemple : 6ème"
-
 
         required>
 
@@ -146,7 +131,9 @@
 
         type="submit"
 
-        class="save-btn">
+        class="save-btn"
+
+        [disabled]="classeForm.invalid">
 
 
         {{ modification ? 'Modifier' : 'Ajouter' }}
@@ -160,25 +147,18 @@
 
 
 
-
       <button
-
 
         type="button"
 
-
         class="cancel-btn"
 
-
         *ngIf="modification"
-
 
         (click)="resetForm()">
 
 
-
         Annuler
-
 
 
       </button>
@@ -215,22 +195,23 @@
 
 
 
+
     <input
 
 
       type="text"
 
-
       [(ngModel)]="recherche"
 
+      name="recherche"
 
       (ngModelChange)="page=1; calculerPages()"
-
 
       placeholder="Nom ou niveau...">
 
 
   </div>
+
 
 
 
@@ -273,22 +254,30 @@
 
 
           <th>
+
             ID
+
           </th>
 
 
           <th>
+
             Nom
+
           </th>
 
 
           <th>
+
             Niveau
+
           </th>
 
 
           <th>
+
             Actions
+
           </th>
 
 
@@ -313,9 +302,11 @@
 
 
 
+
+
           <td>
 
-            {{ classe.id }}
+            {{classe.id}}
 
           </td>
 
@@ -325,7 +316,7 @@
 
           <td>
 
-            {{ classe.nom }}
+            {{classe.nom}}
 
           </td>
 
@@ -335,9 +326,10 @@
 
           <td>
 
-            {{ classe.niveau }}
+            {{classe.niveau}}
 
           </td>
+
 
 
 
@@ -350,16 +342,14 @@
 
             <button
 
+              type="button"
 
               class="edit"
-
 
               (click)="modifier(classe)">
 
 
-
               ✏️ Modifier
-
 
 
             </button>
@@ -373,16 +363,14 @@
 
             <button
 
+              type="button"
 
               class="delete"
-
 
               (click)="supprimer(classe.id)">
 
 
-
               🗑 Supprimer
-
 
 
             </button>
@@ -452,19 +440,14 @@
 
     <button
 
-
       type="button"
-
 
       (click)="pagePrecedente()"
 
-
-      [disabled]="page === 1">
-
+      [disabled]="page===1">
 
 
       ⬅ Précédent
-
 
 
     </button>
@@ -478,9 +461,7 @@
 
     <span>
 
-
-      Page {{ page }} / {{ totalPages }}
-
+      Page {{page}} / {{totalPages}}
 
     </span>
 
@@ -493,19 +474,14 @@
 
     <button
 
-
       type="button"
-
 
       (click)="pageSuivante()"
 
-
-      [disabled]="page === totalPages">
-
+      [disabled]="page===totalPages">
 
 
       Suivant ➡
-
 
 
     </button>

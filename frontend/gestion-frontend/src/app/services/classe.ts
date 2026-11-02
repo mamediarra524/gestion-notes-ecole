@@ -2,52 +2,39 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
-
 @Injectable({
-  providedIn:'root'
+  providedIn: 'root'
 })
 export class ClasseService {
-
 
 
   private http = inject(HttpClient);
 
 
-
-  // Pour enseignants + admin
-  private apiUrl =
-
-  'http://127.0.0.1:8000/api/liste-classes';
+  private apiUrl = 'http://127.0.0.1:8000/api/classes';
 
 
 
-
-
+  /**
+   * Headers avec token Sanctum
+   */
   private options(){
 
 
     const token = localStorage.getItem('token');
 
 
-
     return {
 
+      headers: new HttpHeaders({
 
-      headers:new HttpHeaders({
+        Authorization: `Bearer ${token}`,
 
+        Accept: 'application/json',
 
-        Authorization:
-
-        `Bearer ${token}`,
-
-
-        Accept:
-
-        'application/json'
-
+        'Content-Type': 'application/json'
 
       })
-
 
     };
 
@@ -58,23 +45,18 @@ export class ClasseService {
 
 
 
-
-
-
-
-  // Charger les classes
-
+  /**
+   * Liste des classes
+   * ADMIN + ENSEIGNANT
+   */
   getClasses(){
 
 
     return this.http.get<any[]>(
 
-
       this.apiUrl,
 
-
       this.options()
-
 
     );
 
@@ -85,41 +67,41 @@ export class ClasseService {
 
 
 
+  /**
+   * Voir une classe
+   */
+  getClasse(id:number){
+
+
+    return this.http.get<any>(
+
+      `${this.apiUrl}/${id}`,
+
+      this.options()
+
+    );
+
+
+  }
 
 
 
 
 
-
-  // ==========================
-  // ADMIN UNIQUEMENT
-  // ==========================
-
-
-
-  private adminUrl =
-
-  'http://127.0.0.1:8000/api/classes';
-
-
-
-
-
-
+  /**
+   * Ajouter une classe
+   * ADMIN
+   */
   ajouterClasse(data:any){
 
 
-    return this.http.post(
+    return this.http.post<any>(
 
-
-      this.adminUrl,
-
+      this.apiUrl,
 
       data,
 
-
       this.options()
-
 
     );
 
@@ -130,25 +112,29 @@ export class ClasseService {
 
 
 
-
-
+  /**
+   * Modifier une classe
+   * ADMIN
+   */
   modifierClasse(
     id:number,
     data:any
   ){
 
 
-    return this.http.put(
+    return this.http.put<any>(
 
+      `${this.apiUrl}/${id}`,
 
-      `${this.adminUrl}/${id}`,
+      {
 
+        nom:data.nom,
 
-      data,
+        niveau:data.niveau
 
+      },
 
       this.options()
-
 
     );
 
@@ -159,25 +145,44 @@ export class ClasseService {
 
 
 
-
-
+  /**
+   * Supprimer une classe
+   * ADMIN
+   */
   supprimerClasse(id:number){
 
 
-    return this.http.delete(
+    return this.http.delete<any>(
 
-
-      `${this.adminUrl}/${id}`,
-
+      `${this.apiUrl}/${id}`,
 
       this.options()
-
 
     );
 
 
   }
 
+
+
+
+
+  /**
+   * Liste élèves d'une classe
+   */
+  getElevesClasse(id:number){
+
+
+    return this.http.get<any>(
+
+      `${this.apiUrl}/${id}/eleves`,
+
+      this.options()
+
+    );
+
+
+  }
 
 
 }

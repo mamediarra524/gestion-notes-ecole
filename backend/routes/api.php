@@ -18,7 +18,6 @@ use App\Http\Controllers\EvaluationController;
 
 
 
-
 /*
 |--------------------------------------------------------------------------
 | AUTH
@@ -50,7 +49,6 @@ Route::post(
 
 
 
-
 /*
 |--------------------------------------------------------------------------
 | ROUTES PROTEGEES
@@ -59,7 +57,6 @@ Route::post(
 
 
 Route::middleware('auth:sanctum')->group(function(){
-
 
 
 
@@ -81,7 +78,6 @@ Route::middleware('auth:sanctum')->group(function(){
 
         }
     );
-
 
 
 
@@ -115,7 +111,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN UNIQUEMENT
+    | ADMIN
     |--------------------------------------------------------------------------
     */
 
@@ -129,19 +125,24 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         /*
+        |--------------------------------------------------------------------------
         | CLASSES
+        |--------------------------------------------------------------------------
         */
 
 
         Route::apiResource(
             'classes',
             ClasseController::class
-        );
+        )
+        ->parameters([
+            'classes'=>'classe'
+        ]);
 
 
 
         Route::get(
-            'classes/{id}/moyenne',
+            'classes/{classe}/moyenne',
             [
                 ClasseController::class,
                 'moyenne'
@@ -151,7 +152,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         Route::get(
-            'classes/{id}/classement',
+            'classes/{classe}/classement',
             [
                 ClasseController::class,
                 'classement'
@@ -165,9 +166,10 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
-
         /*
+        |--------------------------------------------------------------------------
         | ELEVES
+        |--------------------------------------------------------------------------
         */
 
 
@@ -195,7 +197,9 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         /*
+        |--------------------------------------------------------------------------
         | MATIERES
+        |--------------------------------------------------------------------------
         */
 
 
@@ -213,7 +217,9 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         /*
+        |--------------------------------------------------------------------------
         | ENSEIGNANTS
+        |--------------------------------------------------------------------------
         */
 
 
@@ -231,7 +237,9 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         /*
+        |--------------------------------------------------------------------------
         | AFFECTATIONS
+        |--------------------------------------------------------------------------
         */
 
 
@@ -249,7 +257,9 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         /*
+        |--------------------------------------------------------------------------
         | EVALUATIONS
+        |--------------------------------------------------------------------------
         */
 
 
@@ -267,7 +277,9 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         /*
+        |--------------------------------------------------------------------------
         | BULLETINS
+        |--------------------------------------------------------------------------
         */
 
 
@@ -288,6 +300,7 @@ Route::middleware('auth:sanctum')->group(function(){
                 'pdf'
             ]
         );
+
 
 
 
@@ -315,9 +328,10 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
-
         /*
-        | Liste des classes
+        |--------------------------------------------------------------------------
+        | LISTE CLASSES
+        |--------------------------------------------------------------------------
         */
 
 
@@ -335,13 +349,16 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
+
         /*
-        | Élèves d'une classe
+        |--------------------------------------------------------------------------
+        | ELEVES PAR CLASSE
+        |--------------------------------------------------------------------------
         */
 
 
         Route::get(
-            'classes/{id}/eleves',
+            'classes/{classe}/eleves',
             [
                 EleveController::class,
                 'parClasse'
@@ -356,7 +373,9 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
         /*
-        | Evaluations par matière
+        |--------------------------------------------------------------------------
+        | EVALUATIONS PAR MATIERE
+        |--------------------------------------------------------------------------
         */
 
 
@@ -374,8 +393,11 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
+
         /*
-        | Notes
+        |--------------------------------------------------------------------------
+        | NOTES
+        |--------------------------------------------------------------------------
         */
 
 
@@ -383,6 +405,8 @@ Route::middleware('auth:sanctum')->group(function(){
             'notes',
             NoteController::class
         );
+
+
 
 
 
@@ -398,7 +422,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
     /*
     |--------------------------------------------------------------------------
-    | ENSEIGNANT UNIQUEMENT
+    | ENSEIGNANT
     |--------------------------------------------------------------------------
     */
 
@@ -407,11 +431,6 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
-
-
-        /*
-        | Affectations enseignant connecté
-        */
 
 
         Route::get(
@@ -425,7 +444,6 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
     });
-
 
 
 

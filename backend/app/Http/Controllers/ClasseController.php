@@ -18,9 +18,7 @@ class ClasseController extends Controller
     {
 
         return response()->json(
-
             Classe::all()
-
         );
 
     }
@@ -30,17 +28,16 @@ class ClasseController extends Controller
 
 
 
+
     /**
      * ADMIN + ENSEIGNANT :
-     * Liste des classes pour saisie des notes
+     * Liste des classes
      */
     public function liste()
     {
 
         return response()->json(
-
             Classe::all()
-
         );
 
     }
@@ -62,45 +59,31 @@ class ClasseController extends Controller
 
         $request->validate([
 
-
             'nom'=>'required|string',
-
 
             'niveau'=>'required|string'
 
-
         ]);
-
-
 
 
 
         $classe = Classe::create([
 
-
             'nom'=>$request->nom,
 
-
             'niveau'=>$request->niveau
-
 
         ]);
 
 
 
-
-
         return response()->json([
-
 
             'message'=>'Classe créée avec succès',
 
-
             'classe'=>$classe
 
-
         ],201);
-
 
 
     }
@@ -120,15 +103,11 @@ class ClasseController extends Controller
     public function show(Classe $classe)
     {
 
-
         return response()->json(
-
 
             $classe->load('eleves')
 
-
         );
-
 
     }
 
@@ -150,44 +129,31 @@ class ClasseController extends Controller
 
         $request->validate([
 
-
             'nom'=>'required|string',
-
 
             'niveau'=>'required|string'
 
-
         ]);
-
 
 
 
         $classe->update([
 
-
             'nom'=>$request->nom,
-
 
             'niveau'=>$request->niveau
 
-
         ]);
-
-
 
 
 
         return response()->json([
 
-
             'message'=>'Classe modifiée avec succès',
-
 
             'classe'=>$classe
 
-
         ]);
-
 
 
     }
@@ -208,7 +174,36 @@ class ClasseController extends Controller
     {
 
 
-        $classe->delete();
+        \Log::info("Suppression classe", [
+
+            'id'=>$classe->id,
+
+            'nom'=>$classe->nom
+
+        ]);
+
+
+
+
+        // Suppression des élèves liés
+        // (évite les blocages de clé étrangère)
+
+        $classe->eleves()->delete();
+
+
+
+
+        $supprime = $classe->delete();
+
+
+
+
+        \Log::info("Résultat suppression", [
+
+            'resultat'=>$supprime
+
+        ]);
+
 
 
 
@@ -216,7 +211,13 @@ class ClasseController extends Controller
         return response()->json([
 
 
-            'message'=>'Classe supprimée avec succès'
+            'message'=>'Classe supprimée avec succès',
+
+
+            'supprime'=>$supprime,
+
+
+            'id'=>$classe->id
 
 
         ]);
@@ -248,13 +249,9 @@ class ClasseController extends Controller
 
 
 
-
-
         $totalPoints=0;
 
         $totalCoefficients=0;
-
-
 
 
 
@@ -274,18 +271,15 @@ class ClasseController extends Controller
 
 
 
-
                 $totalPoints +=
 
                 $note->note * $coefficient;
 
 
 
-
                 $totalCoefficients +=
 
                 $coefficient;
-
 
 
             }
@@ -305,13 +299,11 @@ class ClasseController extends Controller
 
         {
 
-
             $moyenne =
 
             $totalPoints /
 
             $totalCoefficients;
-
 
         }
 
@@ -333,7 +325,6 @@ class ClasseController extends Controller
 
 
         ]);
-
 
 
     }
@@ -362,10 +353,7 @@ class ClasseController extends Controller
 
 
 
-
         $classement=[];
-
-
 
 
 
@@ -377,7 +365,6 @@ class ClasseController extends Controller
             $totalPoints=0;
 
             $totalCoefficients=0;
-
 
 
 
@@ -411,10 +398,7 @@ class ClasseController extends Controller
 
 
 
-
             $moyenne=0;
-
-
 
 
 
@@ -422,13 +406,11 @@ class ClasseController extends Controller
 
             {
 
-
                 $moyenne =
 
                 $totalPoints /
 
                 $totalCoefficients;
-
 
             }
 
@@ -436,27 +418,18 @@ class ClasseController extends Controller
 
 
 
-
-
             $classement[]=[
-
 
                 'nom'=>$eleve->nom,
 
-
                 'prenom'=>$eleve->prenom,
 
-
                 'moyenne'=>round($moyenne,2)
-
 
             ];
 
 
-
         }
-
-
 
 
 
@@ -470,13 +443,11 @@ class ClasseController extends Controller
 
             function($a,$b){
 
-
                 return $b['moyenne']
 
                 <=>
 
                 $a['moyenne'];
-
 
             }
 
@@ -488,17 +459,11 @@ class ClasseController extends Controller
 
 
 
-
-
         foreach($classement as $index=>&$eleve)
 
         {
 
-
-            $eleve['rang']=
-
-            $index+1;
-
+            $eleve['rang']=$index+1;
 
         }
 
@@ -513,7 +478,6 @@ class ClasseController extends Controller
             $classement
 
         );
-
 
 
     }

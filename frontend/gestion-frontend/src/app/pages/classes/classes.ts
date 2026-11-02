@@ -1,4 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { 
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -9,7 +16,7 @@ import { ClasseService } from '../../services/classe';
 
 @Component({
 
-  selector: 'app-classes',
+  selector:'app-classes',
 
   standalone:true,
 
@@ -34,6 +41,10 @@ export class Classes implements OnInit {
 
 
 
+  @ViewChild('messageBox') messageBox!: ElementRef;
+
+
+
   classes:any[] = [];
 
 
@@ -51,38 +62,24 @@ export class Classes implements OnInit {
 
 
 
-
-
-
   classe:any = {
-
 
     nom:'',
 
     niveau:''
-
 
   };
 
 
 
 
-
-  // ===========================
   // PAGINATION
-  // ===========================
-
 
   page:number = 1;
 
-
   elementsParPage:number = 10;
 
-
-  totalPages:number = 0;
-
-
-
+  totalPages:number = 1;
 
 
 
@@ -91,15 +88,11 @@ export class Classes implements OnInit {
 
   constructor(
 
-
     private classeService:ClasseService,
-
 
     private cd:ChangeDetectorRef,
 
-
     private router:Router
-
 
   ){}
 
@@ -109,9 +102,7 @@ export class Classes implements OnInit {
 
   ngOnInit(){
 
-
     this.chargerClasses();
-
 
   }
 
@@ -121,37 +112,31 @@ export class Classes implements OnInit {
 
 
 
-
-
-  // ===========================
-  // CHARGEMENT DES CLASSES
-  // ===========================
+  // =========================
+  // CHARGER LES CLASSES
+  // =========================
 
 
   chargerClasses(){
 
 
-
     this.classeService.getClasses()
 
-
     .subscribe({
-
 
 
       next:(data:any)=>{
 
 
         console.log(
-          "Classes reçues :",
+          "Classes chargées :",
           data
         );
 
 
-
         this.classes = Array.isArray(data)
 
-        ? [...data]
+        ? data
 
         : [];
 
@@ -160,33 +145,33 @@ export class Classes implements OnInit {
         this.calculerPages();
 
 
-
         this.cd.detectChanges();
-
 
 
       },
 
 
 
-      error:(error:any)=>{
+      error:(err)=>{
 
 
-        console.log(error);
-
+        console.log(
+          "Erreur chargement :",
+          err
+        );
 
 
         this.message =
-
         "Erreur chargement classes";
+
+
+        this.scrollMessage();
 
 
       }
 
 
-
     });
-
 
 
   }
@@ -198,14 +183,12 @@ export class Classes implements OnInit {
 
 
 
-
-  // ===========================
+  // =========================
   // RECHERCHE
-  // ===========================
+  // =========================
 
 
   get classesFiltrees(){
-
 
 
     const texte = this.recherche
@@ -216,52 +199,35 @@ export class Classes implements OnInit {
 
 
 
+    if(!texte){
 
-
-    let resultat = this.classes;
-
-
-
-    if(texte){
-
-
-      resultat = this.classes.filter((classe:any)=>{
-
-
-        return (
-
-
-          classe.nom
-
-          .toLowerCase()
-
-          .includes(texte)
-
-
-
-          ||
-
-
-
-          classe.niveau
-
-          .toLowerCase()
-
-          .includes(texte)
-
-
-
-        );
-
-
-      });
-
+      return this.classes;
 
     }
 
 
 
-    return resultat;
+
+    return this.classes.filter((c:any)=>{
+
+
+      return (
+
+        c.nom
+        .toLowerCase()
+        .includes(texte)
+
+
+        ||
+
+        c.niveau
+        .toLowerCase()
+        .includes(texte)
+
+      );
+
+
+    });
 
 
   }
@@ -274,18 +240,19 @@ export class Classes implements OnInit {
 
 
 
-  // ===========================
-  // PAGINATION RESULTAT
-  // ===========================
+  // =========================
+  // PAGINATION
+  // =========================
 
 
   get classesPaginees(){
 
 
-
     const debut =
 
-    (this.page - 1) *
+    (this.page - 1)
+
+    *
 
     this.elementsParPage;
 
@@ -293,20 +260,14 @@ export class Classes implements OnInit {
 
     return this.classesFiltrees.slice(
 
-
       debut,
 
-
       debut + this.elementsParPage
-
 
     );
 
 
   }
-
-
-
 
 
 
@@ -316,43 +277,23 @@ export class Classes implements OnInit {
   calculerPages(){
 
 
-
     this.totalPages = Math.ceil(
-
 
       this.classesFiltrees.length /
 
-
       this.elementsParPage
-
 
     );
 
 
-
-    if(this.totalPages === 0){
-
+    if(this.totalPages < 1){
 
       this.totalPages = 1;
 
-
     }
-
-
-
-    if(this.page > this.totalPages){
-
-
-      this.page = this.totalPages;
-
-
-    }
-
 
 
   }
-
-
 
 
 
@@ -365,16 +306,12 @@ export class Classes implements OnInit {
 
     if(this.page < this.totalPages){
 
-
       this.page++;
-
 
     }
 
 
   }
-
-
 
 
 
@@ -386,9 +323,7 @@ export class Classes implements OnInit {
 
     if(this.page > 1){
 
-
       this.page--;
-
 
     }
 
@@ -403,37 +338,38 @@ export class Classes implements OnInit {
 
 
 
-  // ===========================
+  // =========================
   // AJOUT
-  // ===========================
+  // =========================
 
 
   ajouterClasse(){
 
 
 
+    console.log(
+      "Ajout classe",
+      this.classe
+    );
+
+
+
     if(
-
-
       !this.classe.nom ||
-
-
       !this.classe.niveau
-
-
     ){
 
 
       this.message =
-
       "Veuillez remplir tous les champs";
+
+
+      this.scrollMessage();
 
 
       return;
 
-
     }
-
 
 
 
@@ -443,15 +379,23 @@ export class Classes implements OnInit {
 
     .ajouterClasse(this.classe)
 
-
     .subscribe({
 
 
 
-      next:()=>{
+      next:(res:any)=>{
+
+
+        console.log(
+          "Réponse ajout :",
+          res
+        );
+
 
 
         this.message =
+
+        res.message ||
 
         "Classe ajoutée avec succès";
 
@@ -460,8 +404,10 @@ export class Classes implements OnInit {
         this.resetForm();
 
 
-
         this.chargerClasses();
+
+
+        this.scrollMessage();
 
 
 
@@ -469,16 +415,17 @@ export class Classes implements OnInit {
 
 
 
-      error:(error:any)=>{
+      error:(err)=>{
 
 
-        console.log(error);
-
+        console.log(err);
 
 
         this.message =
-
         "Erreur ajout classe";
+
+
+        this.scrollMessage();
 
 
       }
@@ -499,12 +446,19 @@ export class Classes implements OnInit {
 
 
 
-  // ===========================
-  // MODIFIER
-  // ===========================
+  // =========================
+  // PREPARER MODIFICATION
+  // =========================
 
 
   modifier(classe:any){
+
+
+
+    console.log(
+      "Classe choisie :",
+      classe
+    );
 
 
 
@@ -525,8 +479,23 @@ export class Classes implements OnInit {
 
 
 
+    console.log(
+      "ID modification :",
+      this.idModification
+    );
+
+
     this.modification = true;
 
+
+
+    window.scrollTo({
+
+      top:0,
+
+      behavior:'smooth'
+
+    });
 
 
   }
@@ -537,76 +506,115 @@ export class Classes implements OnInit {
 
 
 
+
+
+  // =========================
+  // SAUVEGARDER MODIFICATION
+  // =========================
 
 
   enregistrerModification(){
 
 
 
-    if(this.idModification){
+    console.log(
+      "Modification lancée"
+    );
+
+
+    console.log(
+      "ID :",
+      this.idModification
+    );
+
+
+    console.log(
+      "Données :",
+      this.classe
+    );
 
 
 
-      this.classeService
+    if(this.idModification === null){
 
-      .modifierClasse(
-
-
-        this.idModification,
-
-
-        this.classe
-
-
-      )
-
-
-      .subscribe({
-
-
-
-        next:()=>{
-
-
-          this.message =
-
-          "Classe modifiée avec succès";
-
-
-
-          this.resetForm();
-
-
-
-          this.chargerClasses();
-
-
-
-        },
-
-
-
-        error:(error:any)=>{
-
-
-          console.log(error);
-
-
-
-          this.message =
-
-          "Erreur modification";
-
-
-        }
-
-
-
-      });
-
-
+      return;
 
     }
+
+
+
+
+
+
+    this.classeService
+
+    .modifierClasse(
+
+      this.idModification,
+
+      this.classe
+
+    )
+
+    .subscribe({
+
+
+
+      next:(res:any)=>{
+
+
+        console.log(
+          "Réponse API :",
+          res
+        );
+
+
+
+        this.message =
+
+        res.message ||
+
+        "Classe modifiée avec succès";
+
+
+
+        this.resetForm();
+
+
+        this.chargerClasses();
+
+
+        this.scrollMessage();
+
+
+
+      },
+
+
+
+      error:(err)=>{
+
+
+        console.log(
+          "Erreur modification :",
+          err
+        );
+
+
+
+        this.message =
+        "Erreur modification";
+
+
+        this.scrollMessage();
+
+
+
+      }
+
+
+
+    });
 
 
 
@@ -620,70 +628,95 @@ export class Classes implements OnInit {
 
 
 
-  // ===========================
+  // =========================
   // SUPPRESSION
-  // ===========================
+  // =========================
 
 
   supprimer(id:number){
 
 
 
-    if(confirm(
+    console.log(
+      "Suppression ID :",
+      id
+    );
+
+
+
+    if(!confirm(
 
       "Voulez-vous supprimer cette classe ?"
 
     )){
 
-
-
-      this.classeService
-
-      .supprimerClasse(id)
-
-
-      .subscribe({
-
-
-
-        next:()=>{
-
-
-          this.message =
-
-          "Classe supprimée avec succès";
-
-
-
-          this.chargerClasses();
-
-
-
-        },
-
-
-
-        error:(error:any)=>{
-
-
-          console.log(error);
-
-
-
-          this.message =
-
-          "Erreur suppression";
-
-
-        }
-
-
-
-      });
-
-
+      return;
 
     }
+
+
+
+
+
+    this.classeService
+
+    .supprimerClasse(id)
+
+    .subscribe({
+
+
+
+      next:(res:any)=>{
+
+
+        console.log(
+          "Réponse suppression :",
+          res
+        );
+
+
+
+        this.message =
+
+        res.message ||
+
+        "Classe supprimée avec succès";
+
+
+
+        this.chargerClasses();
+
+
+        this.scrollMessage();
+
+
+
+      },
+
+
+
+      error:(err)=>{
+
+
+        console.log(
+          "Erreur suppression :",
+          err
+        );
+
+
+
+        this.message =
+        "Erreur suppression";
+
+
+        this.scrollMessage();
+
+
+      }
+
+
+
+    });
 
 
 
@@ -697,9 +730,50 @@ export class Classes implements OnInit {
 
 
 
-  // ===========================
+  // =========================
+  // SCROLL MESSAGE
+  // =========================
+
+
+  scrollMessage(){
+
+
+    setTimeout(()=>{
+
+
+      if(this.messageBox){
+
+
+        this.messageBox.nativeElement
+
+        .scrollIntoView({
+
+          behavior:'smooth',
+
+          block:'center'
+
+        });
+
+
+      }
+
+
+    },300);
+
+
+  }
+
+
+
+
+
+
+
+
+
+  // =========================
   // RETOUR DASHBOARD
-  // ===========================
+  // =========================
 
 
   retourDashboard(){
@@ -718,29 +792,26 @@ export class Classes implements OnInit {
 
 
 
-  // ===========================
+  // =========================
   // RESET
-  // ===========================
+  // =========================
 
 
   resetForm(){
 
 
-
     this.classe = {
-
 
       nom:'',
 
-
       niveau:''
-
 
     };
 
 
 
     this.modification = false;
+
 
 
     this.idModification = null;

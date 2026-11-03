@@ -6,10 +6,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
 
 
-
 @Component({
   selector: 'app-login',
-
   standalone: true,
 
   imports: [
@@ -18,7 +16,6 @@ import { AuthService } from '../../services/auth';
   ],
 
   templateUrl: './login.html',
-
   styleUrl: './login.css'
 })
 
@@ -34,21 +31,10 @@ export class Login {
 
 
 
-
-
   constructor(
-
     private auth: AuthService,
-
     private router: Router
-
   ) {}
-
-
-
-
-
-
 
 
 
@@ -57,20 +43,17 @@ export class Login {
 
     const data = {
 
-
-      email: this.email,
-
+      email: this.email.trim(),
 
       password: this.password
-
 
     };
 
 
-
-
-
-
+    console.log(
+      "Données envoyées :",
+      data
+    );
 
 
 
@@ -80,77 +63,36 @@ export class Login {
 
 
 
-
-
       next: (response:any) => {
 
 
-
         console.log(
-
           "Réponse API :",
-
           response
-
         );
 
 
-
-
-
-
-
-
-        // Sauvegarde du token Sanctum
 
         this.auth.saveToken(
-
           response.token
-
         );
 
 
-
-
-
-
-
-
-        // Sauvegarde de l'utilisateur connecté
-
-        // nécessaire pour roleGuard
 
         this.auth.saveUser(
-
           response.user
-
         );
-
-
-
-
-
 
 
 
         this.message =
-
         "Connexion réussie";
 
 
 
-
-
-
-
-
         this.router.navigate([
-
           '/dashboard'
-
         ]);
-
-
 
 
 
@@ -158,51 +100,42 @@ export class Login {
 
 
 
-
-
-
-
-
-      error:(error:any)=> {
-
+      error: (error:any) => {
 
 
         console.log(
-
           "Erreur API :",
-
           error
-
         );
 
 
+        if(error.status === 401){
 
+          this.message =
+          "Email ou mot de passe incorrect";
 
+        }
+        else if(error.status === 422){
 
+          this.message =
+          "Veuillez remplir correctement les champs";
 
+        }
+        else {
 
+          this.message =
+          "Erreur serveur";
 
-        this.message =
-
-        "Email ou mot de passe incorrect";
-
-
-
+        }
 
 
       }
 
 
-
-
-
     });
 
 
-
-
   }
-
 
 
 }

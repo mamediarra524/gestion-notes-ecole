@@ -16,6 +16,42 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
 
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: edugestion-backend
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - postgres
+
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: gestion_notes_ecole
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+
+
+  frontend:
+    build:
+      context: ./frontend/gestion-frontend
+      dockerfile: Dockerfile
+
+    container_name: edugestion-frontend
+
+    ports:
+      - "4200:4200"
+
+    depends_on:
+      - backend
+
+
 volumes:
 
   postgres_data:

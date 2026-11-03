@@ -1,9 +1,17 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { 
+  Component, 
+  OnInit, 
+  ChangeDetectorRef,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { EnseignantService } from '../../services/enseignant';
+
 
 
 @Component({
@@ -30,6 +38,9 @@ import { EnseignantService } from '../../services/enseignant';
 export class Enseignants implements OnInit {
 
 
+  @ViewChild('messageBox') messageBox!: ElementRef;
+
+
   enseignants:any[] = [];
 
   message:string = '';
@@ -42,10 +53,6 @@ export class Enseignants implements OnInit {
 
 
 
-  // =========================
-  // PAGINATION
-  // =========================
-
   page:number = 1;
 
   elementsParPage:number = 10;
@@ -53,10 +60,6 @@ export class Enseignants implements OnInit {
 
 
 
-
-  // =========================
-  // FORMULAIRE
-  // =========================
 
   enseignant:any = {
 
@@ -100,10 +103,6 @@ export class Enseignants implements OnInit {
 
 
 
-  // =========================
-  // CHARGER ENSEIGNANTS
-  // =========================
-
 
   chargerEnseignants(){
 
@@ -136,15 +135,15 @@ export class Enseignants implements OnInit {
       },
 
 
-
       error:(error:any)=>{
 
 
         console.log(error);
 
 
-        this.message =
-        "Erreur chargement enseignants";
+        this.afficherMessage(
+          "Erreur chargement enseignants"
+        );
 
 
       }
@@ -161,11 +160,6 @@ export class Enseignants implements OnInit {
 
 
 
-
-
-  // =========================
-  // FILTRE + PAGINATION
-  // =========================
 
 
   get enseignantsFiltres(){
@@ -186,7 +180,6 @@ export class Enseignants implements OnInit {
 
       resultat = this.enseignants.filter((e:any)=>
 
-
         e.nom.toLowerCase().includes(texte)
 
         ||
@@ -197,13 +190,10 @@ export class Enseignants implements OnInit {
 
         e.email.toLowerCase().includes(texte)
 
-
       );
 
 
     }
-
-
 
 
 
@@ -293,13 +283,7 @@ export class Enseignants implements OnInit {
 
 
 
-  // =========================
-  // AJOUT ENSEIGNANT
-  // =========================
-
-
   ajouterEnseignant(){
-
 
 
     if(
@@ -317,8 +301,9 @@ export class Enseignants implements OnInit {
     ){
 
 
-      this.message =
-      "Veuillez remplir tous les champs obligatoires";
+      this.afficherMessage(
+        "Veuillez remplir tous les champs obligatoires"
+      );
 
 
       return;
@@ -340,8 +325,9 @@ export class Enseignants implements OnInit {
     ){
 
 
-      this.message =
-      "Les mots de passe ne correspondent pas";
+      this.afficherMessage(
+        "Les mots de passe ne correspondent pas"
+      );
 
 
       return;
@@ -374,8 +360,9 @@ export class Enseignants implements OnInit {
 
 
 
-        this.message =
-        "Enseignant ajouté avec succès";
+        this.afficherMessage(
+          "Enseignant ajouté avec succès"
+        );
 
 
 
@@ -391,8 +378,6 @@ export class Enseignants implements OnInit {
 
 
 
-
-
       error:(error:any)=>{
 
 
@@ -400,8 +385,9 @@ export class Enseignants implements OnInit {
 
 
 
-        this.message =
-        "Erreur ajout enseignant";
+        this.afficherMessage(
+          "Erreur ajout enseignant"
+        );
 
 
       }
@@ -419,11 +405,6 @@ export class Enseignants implements OnInit {
 
 
 
-
-
-  // =========================
-  // MODIFIER
-  // =========================
 
 
   modifier(e:any){
@@ -453,6 +434,25 @@ export class Enseignants implements OnInit {
 
 
     this.modification = true;
+
+
+
+    setTimeout(()=>{
+
+
+      window.scrollTo({
+
+
+        top:0,
+
+        behavior:'smooth'
+
+
+      });
+
+
+    },200);
+
 
 
   }
@@ -489,8 +489,9 @@ export class Enseignants implements OnInit {
         next:()=>{
 
 
-          this.message =
-          "Enseignant modifié avec succès";
+          this.afficherMessage(
+            "Enseignant modifié avec succès"
+          );
 
 
 
@@ -504,8 +505,6 @@ export class Enseignants implements OnInit {
         },
 
 
-
-
         error:(error:any)=>{
 
 
@@ -513,8 +512,9 @@ export class Enseignants implements OnInit {
 
 
 
-          this.message =
-          "Erreur modification enseignant";
+          this.afficherMessage(
+            "Erreur modification enseignant"
+          );
 
 
         }
@@ -537,25 +537,22 @@ export class Enseignants implements OnInit {
 
 
 
-  // =========================
-  // RESET MOT DE PASSE
-  // =========================
-
-
   resetPassword(e:any){
-
 
 
     if(confirm(
 
       "Réinitialiser le mot de passe de "
+
       + e.prenom
+
       + " "
+
       + e.nom
+
       + " ?"
 
     )){
-
 
 
       this.enseignantService
@@ -569,7 +566,6 @@ export class Enseignants implements OnInit {
         next:(response:any)=>{
 
 
-
           alert(
 
             "Nouveau mot de passe : "
@@ -580,8 +576,13 @@ export class Enseignants implements OnInit {
 
 
 
-        },
+          this.afficherMessage(
+            "Mot de passe réinitialisé avec succès"
+          );
 
+
+
+        },
 
 
 
@@ -591,10 +592,9 @@ export class Enseignants implements OnInit {
           console.log(error);
 
 
-
-          this.message =
-
-          "Erreur réinitialisation mot de passe";
+          this.afficherMessage(
+            "Erreur réinitialisation mot de passe"
+          );
 
 
         }
@@ -608,7 +608,6 @@ export class Enseignants implements OnInit {
     }
 
 
-
   }
 
 
@@ -619,13 +618,7 @@ export class Enseignants implements OnInit {
 
 
 
-  // =========================
-  // SUPPRIMER
-  // =========================
-
-
   supprimer(id:number){
-
 
 
     if(confirm(
@@ -633,7 +626,6 @@ export class Enseignants implements OnInit {
       "Voulez-vous supprimer cet enseignant ?"
 
     )){
-
 
 
       this.enseignantService
@@ -647,17 +639,17 @@ export class Enseignants implements OnInit {
         next:()=>{
 
 
-          this.message =
-          "Enseignant supprimé avec succès";
-
-
-
           this.chargerEnseignants();
 
 
 
-        },
+          this.afficherMessage(
+            "Enseignant supprimé avec succès"
+          );
 
+
+
+        },
 
 
 
@@ -668,8 +660,9 @@ export class Enseignants implements OnInit {
 
 
 
-          this.message =
-          "Erreur suppression";
+          this.afficherMessage(
+            "Erreur suppression"
+          );
 
 
         }
@@ -693,13 +686,74 @@ export class Enseignants implements OnInit {
 
 
 
-  // =========================
-  // RESET FORMULAIRE
-  // =========================
+  afficherMessage(message:string){
+
+
+    this.message = message;
+
+
+    setTimeout(()=>{
+
+
+      this.scrollMessage();
+
+
+    },200);
+
+
+
+    setTimeout(()=>{
+
+
+      this.message='';
+
+
+    },3000);
+
+
+  }
+
+
+
+
+
+
+
+
+
+  scrollMessage(){
+
+
+    if(this.messageBox){
+
+
+      this.messageBox.nativeElement
+
+      .scrollIntoView({
+
+
+        behavior:'smooth',
+
+        block:'center'
+
+
+      });
+
+
+    }
+
+
+  }
+
+
+
+
+
+
+
 
 
   resetForm(){
-
 
 
     this.enseignant = {

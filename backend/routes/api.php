@@ -61,13 +61,6 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | UTILISATEUR
-    |--------------------------------------------------------------------------
-    */
-
-
     Route::get(
         '/user',
         function(Request $request){
@@ -81,13 +74,6 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DASHBOARD
-    |--------------------------------------------------------------------------
-    */
 
 
     Route::get(
@@ -227,6 +213,19 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::apiResource(
             'enseignants',
             EnseignantController::class
+        )
+        ->parameters([
+            'enseignants'=>'enseignant'
+        ]);
+
+
+
+        Route::post(
+            'enseignants/{enseignant}/reset-password',
+            [
+                EnseignantController::class,
+                'resetPassword'
+            ]
         );
 
 
@@ -329,14 +328,6 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | LISTE CLASSES
-        |--------------------------------------------------------------------------
-        */
-
-
         Route::get(
             'liste-classes',
             [
@@ -350,13 +341,6 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | ELEVES PAR CLASSE
-        |--------------------------------------------------------------------------
-        */
 
 
         Route::get(
@@ -374,13 +358,6 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | EVALUATIONS PAR MATIERE
-        |--------------------------------------------------------------------------
-        */
-
-
         Route::get(
             'evaluations/matiere/{id}',
             [
@@ -394,13 +371,6 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | NOTES
-        |--------------------------------------------------------------------------
-        */
 
 
         Route::apiResource(

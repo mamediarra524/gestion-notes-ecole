@@ -20,7 +20,6 @@ import { EnseignantService } from '../../services/enseignant';
   imports:[
 
     CommonModule,
-
     FormsModule
 
   ],
@@ -38,12 +37,9 @@ export class ClasseMatieres implements OnInit {
 
   affectations:any[]=[];
 
-
   classes:any[]=[];
 
-
   matieres:any[]=[];
-
 
   enseignants:any[]=[];
 
@@ -51,21 +47,17 @@ export class ClasseMatieres implements OnInit {
 
   message:string='';
 
-
   recherche:string='';
 
 
 
   modification:boolean=false;
 
-
   idModification:number|null=null;
 
 
 
-
   page:number=1;
-
 
   taillePage:number=10;
 
@@ -75,7 +67,6 @@ export class ClasseMatieres implements OnInit {
 
   affectation:any={
 
-
     classe_id:null,
 
     matiere_id:null,
@@ -83,7 +74,6 @@ export class ClasseMatieres implements OnInit {
     enseignant_id:null,
 
     coefficient:1
-
 
   };
 
@@ -97,24 +87,17 @@ export class ClasseMatieres implements OnInit {
 
   constructor(
 
-
     private classeMatiereService:ClasseMatiereService,
-
 
     private classeService:ClasseService,
 
-
     private matiereService:MatiereService,
-
 
     private enseignantService:EnseignantService,
 
-
     private cd:ChangeDetectorRef,
 
-
     private router:Router
-
 
   ){}
 
@@ -127,12 +110,9 @@ export class ClasseMatieres implements OnInit {
 
     this.chargerAffectations();
 
-
     this.chargerClasses();
 
-
     this.chargerMatieres();
-
 
     this.chargerEnseignants();
 
@@ -180,14 +160,17 @@ export class ClasseMatieres implements OnInit {
       next:(data:any)=>{
 
 
-        this.affectations =
+        console.log(
+          "Affectations :",
+          data
+        );
 
+
+        this.affectations =
 
         Array.isArray(data)
 
-
         ? [...data]
-
 
         : [];
 
@@ -196,12 +179,10 @@ export class ClasseMatieres implements OnInit {
         this.page=1;
 
 
-
         this.cd.detectChanges();
 
 
       },
-
 
 
       error:(err:any)=>{
@@ -246,12 +227,9 @@ export class ClasseMatieres implements OnInit {
 
         this.classes =
 
-
         Array.isArray(data)
 
-
         ? data
-
 
         : [];
 
@@ -261,9 +239,7 @@ export class ClasseMatieres implements OnInit {
 
       error:(err:any)=>{
 
-
         console.log(err);
-
 
       }
 
@@ -296,12 +272,9 @@ export class ClasseMatieres implements OnInit {
 
         this.matieres =
 
-
         Array.isArray(data)
 
-
         ? data
-
 
         : [];
 
@@ -311,9 +284,7 @@ export class ClasseMatieres implements OnInit {
 
       error:(err:any)=>{
 
-
         console.log(err);
-
 
       }
 
@@ -346,12 +317,9 @@ export class ClasseMatieres implements OnInit {
 
         this.enseignants =
 
-
         Array.isArray(data)
 
-
         ? data
-
 
         : [];
 
@@ -361,9 +329,7 @@ export class ClasseMatieres implements OnInit {
 
       error:(err:any)=>{
 
-
         console.log(err);
-
 
       }
 
@@ -394,17 +360,14 @@ export class ClasseMatieres implements OnInit {
 
 
 
-
     let resultat=this.affectations;
-
-
 
 
 
     if(texte){
 
 
-      resultat=this.affectations.filter(a=>{
+      resultat=this.affectations.filter((a:any)=>{
 
 
         return (
@@ -416,7 +379,9 @@ export class ClasseMatieres implements OnInit {
           .includes(texte)
 
 
+
           ||
+
 
 
           a.matiere?.nom
@@ -426,7 +391,9 @@ export class ClasseMatieres implements OnInit {
           .includes(texte)
 
 
+
           ||
+
 
 
           a.enseignant?.nom
@@ -435,7 +402,6 @@ export class ClasseMatieres implements OnInit {
 
           .includes(texte)
 
-
         );
 
 
@@ -443,7 +409,6 @@ export class ClasseMatieres implements OnInit {
 
 
     }
-
 
 
 
@@ -463,7 +428,7 @@ export class ClasseMatieres implements OnInit {
 
       debut,
 
-      debut+this.taillePage
+      debut + this.taillePage
 
     );
 
@@ -481,71 +446,9 @@ export class ClasseMatieres implements OnInit {
   get totalPages(){
 
 
-    const texte=
-
-    this.recherche
-
-    .toLowerCase()
-
-    .trim();
-
-
-
-    let resultat=this.affectations;
-
-
-
-
-    if(texte){
-
-
-      resultat=this.affectations.filter(a=>{
-
-
-        return (
-
-          a.classe?.nom
-
-          ?.toLowerCase()
-
-          .includes(texte)
-
-
-          ||
-
-
-          a.matiere?.nom
-
-          ?.toLowerCase()
-
-          .includes(texte)
-
-
-          ||
-
-
-          a.enseignant?.nom
-
-          ?.toLowerCase()
-
-          .includes(texte)
-
-
-        );
-
-
-      });
-
-
-    }
-
-
-
-
-
     return Math.ceil(
 
-      resultat.length /
+      this.affectations.length /
 
       this.taillePage
 
@@ -585,7 +488,7 @@ export class ClasseMatieres implements OnInit {
   pagePrecedente(){
 
 
-    if(this.page>1){
+    if(this.page > 1){
 
       this.page--;
 
@@ -606,32 +509,6 @@ export class ClasseMatieres implements OnInit {
 
 
 
-    if(
-
-      !this.affectation.classe_id ||
-
-      !this.affectation.matiere_id ||
-
-      !this.affectation.enseignant_id
-
-    ){
-
-
-      this.message=
-
-      "Veuillez remplir tous les champs";
-
-
-      return;
-
-
-    }
-
-
-
-
-
-
     this.classeMatiereService
 
     .ajouterClasseMatiere(
@@ -643,13 +520,12 @@ export class ClasseMatieres implements OnInit {
     .subscribe({
 
 
-
       next:()=>{
 
 
         this.message=
 
-        "Affectation ajoutée";
+        "Affectation ajoutée avec succès";
 
 
         this.reset();
@@ -659,7 +535,6 @@ export class ClasseMatieres implements OnInit {
 
 
       },
-
 
 
       error:(err:any)=>{
@@ -676,9 +551,7 @@ export class ClasseMatieres implements OnInit {
       }
 
 
-
     });
-
 
 
   }
@@ -694,6 +567,16 @@ export class ClasseMatieres implements OnInit {
   modifier(item:any){
 
 
+    console.log(
+
+      "MODIFICATION ITEM :",
+
+      item
+
+    );
+
+
+
     this.affectation={
 
 
@@ -703,17 +586,52 @@ export class ClasseMatieres implements OnInit {
 
       enseignant_id:item.enseignant_id,
 
-      coefficient:item.coefficient
+      coefficient:item.coefficient ?? item.pivot?.coefficient
 
 
     };
 
 
 
-    this.idModification=item.id;
+    this.idModification =
+
+    item.id ?? item.pivot?.id;
+
 
 
     this.modification=true;
+
+
+
+    window.scrollTo({
+
+      top:0,
+
+      behavior:'smooth'
+
+    });
+
+
+  }
+
+
+
+
+
+
+
+
+
+  testModifier(item:any){
+
+
+    console.log(
+
+      "BOUTON MODIFIER CLIQUE :",
+
+      item
+
+    );
 
 
   }
@@ -729,11 +647,26 @@ export class ClasseMatieres implements OnInit {
   enregistrerModification(){
 
 
+    console.log(
+
+      "ENVOI MODIFICATION :",
+
+      this.idModification,
+
+      this.affectation
+
+    );
+
+
+
     if(this.idModification===null){
+
+      this.message="ID modification introuvable";
 
       return;
 
     }
+
 
 
 
@@ -751,7 +684,10 @@ export class ClasseMatieres implements OnInit {
     .subscribe({
 
 
-      next:()=>{
+      next:(response:any)=>{
+
+
+        console.log(response);
 
 
         this.message=
@@ -783,7 +719,6 @@ export class ClasseMatieres implements OnInit {
 
 
     });
-
 
 
   }

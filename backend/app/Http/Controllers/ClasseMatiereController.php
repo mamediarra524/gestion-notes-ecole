@@ -12,7 +12,7 @@ class ClasseMatiereController extends Controller
 
 
     /**
-     * Afficher toutes les affectations
+     * Liste des affectations
      * ADMIN
      */
     public function index()
@@ -48,7 +48,6 @@ class ClasseMatiereController extends Controller
         $user = Auth::user();
 
 
-
         $enseignant = $user->enseignant;
 
 
@@ -58,13 +57,10 @@ class ClasseMatiereController extends Controller
 
             return response()->json([
 
-
-                'message'=>
+                'message' =>
                 'Aucun enseignant associé à ce compte.'
 
-
             ],403);
-
 
         }
 
@@ -76,27 +72,20 @@ class ClasseMatiereController extends Controller
 
         $affectations = ClasseMatiere::with([
 
-
             'classe',
-
             'matiere'
-
 
         ])
 
         ->where(
 
-
             'enseignant_id',
 
-
             $enseignant->id
-
 
         )
 
         ->get();
-
 
 
 
@@ -118,34 +107,34 @@ class ClasseMatiereController extends Controller
 
 
     /**
-     * Créer une affectation
+     * Ajouter une affectation
      */
     public function store(Request $request)
     {
 
 
-        $request->validate([
+        $data = $request->validate([
 
 
-            'classe_id'=>
+            'classe_id' =>
 
             'required|exists:classes,id',
 
 
 
-            'matiere_id'=>
+            'matiere_id' =>
 
             'required|exists:matieres,id',
 
 
 
-            'enseignant_id'=>
+            'enseignant_id' =>
 
             'required|exists:enseignants,id',
 
 
 
-            'coefficient'=>
+            'coefficient' =>
 
             'required|integer|min:1|max:10'
 
@@ -162,29 +151,27 @@ class ClasseMatiereController extends Controller
         $affectation = ClasseMatiere::create([
 
 
+            'classe_id' =>
 
-            'classe_id'=>
-
-            $request->classe_id,
-
-
-
-            'matiere_id'=>
-
-            $request->matiere_id,
+            $data['classe_id'],
 
 
 
-            'enseignant_id'=>
+            'matiere_id' =>
 
-            $request->enseignant_id,
+            $data['matiere_id'],
 
 
 
-            'coefficient'=>
+            'enseignant_id' =>
 
-            $request->coefficient
+            $data['enseignant_id'],
 
+
+
+            'coefficient' =>
+
+            $data['coefficient']
 
 
         ]);
@@ -200,16 +187,15 @@ class ClasseMatiereController extends Controller
         return response()->json([
 
 
-            'message'=>
+            'message' =>
 
             'Affectation créée avec succès',
 
 
 
-            'affectation'=>
+            'affectation' =>
 
             $affectation->load([
-
 
                 'classe',
 
@@ -217,9 +203,7 @@ class ClasseMatiereController extends Controller
 
                 'enseignant'
 
-
             ])
-
 
 
         ],201);
@@ -236,7 +220,7 @@ class ClasseMatiereController extends Controller
 
 
     /**
-     * Afficher une affectation
+     * Voir une affectation
      */
     public function show(ClasseMatiere $classe_matiere)
     {
@@ -244,9 +228,7 @@ class ClasseMatiereController extends Controller
 
         return response()->json(
 
-
             $classe_matiere->load([
-
 
                 'classe',
 
@@ -254,9 +236,7 @@ class ClasseMatiereController extends Controller
 
                 'enseignant'
 
-
             ])
-
 
         );
 
@@ -278,40 +258,38 @@ class ClasseMatiereController extends Controller
 
         Request $request,
 
-        ClasseMatiere $classe_matière
+        ClasseMatiere $classe_matiere
 
     )
     {
 
 
-        $request->validate([
+        $data = $request->validate([
 
 
-
-            'classe_id'=>
+            'classe_id' =>
 
             'required|exists:classes,id',
 
 
 
-            'matiere_id'=>
+            'matiere_id' =>
 
             'required|exists:matieres,id',
 
 
 
-            'enseignant_id'=>
+            'enseignant_id' =>
 
             'required|exists:enseignants,id',
 
 
 
-            'coefficient'=>
+            'coefficient' =>
 
             'required|integer|min:1|max:10'
 
 
-
         ]);
 
 
@@ -322,35 +300,33 @@ class ClasseMatiereController extends Controller
 
 
 
-        $classe_matière->update([
+        $classe_matiere->classe_id =
+
+        $data['classe_id'];
 
 
 
-            'classe_id'=>
+        $classe_matiere->matiere_id =
 
-            $request->classe_id,
-
-
-
-            'matiere_id'=>
-
-            $request->matiere_id,
+        $data['matiere_id'];
 
 
 
-            'enseignant_id'=>
+        $classe_matiere->enseignant_id =
 
-            $request->enseignant_id,
-
-
-
-            'coefficient'=>
-
-            $request->coefficient
+        $data['enseignant_id'];
 
 
 
-        ]);
+        $classe_matiere->coefficient =
+
+        $data['coefficient'];
+
+
+
+
+
+        $classe_matiere->save();
 
 
 
@@ -363,17 +339,19 @@ class ClasseMatiereController extends Controller
         return response()->json([
 
 
-
-            'message'=>
+            'message' =>
 
             'Affectation modifiée avec succès',
 
 
 
-            'affectation'=>
+            'affectation' =>
 
-            $classe_matière->load([
+            $classe_matiere
 
+            ->fresh()
+
+            ->load([
 
                 'classe',
 
@@ -381,13 +359,10 @@ class ClasseMatiereController extends Controller
 
                 'enseignant'
 
-
             ])
 
 
-
         ]);
-
 
 
     }
@@ -412,10 +387,13 @@ class ClasseMatiereController extends Controller
 
 
 
+
+
+
         return response()->json([
 
 
-            'message'=>
+            'message' =>
 
             'Affectation supprimée avec succès'
 

@@ -1,6 +1,8 @@
 <div class="container">
 
 
+
+
   <!-- HEADER -->
 
   <div class="header">
@@ -13,11 +15,8 @@
 
 
     <button
-
       class="back-btn"
-
       type="button"
-
       (click)="retourDashboard()">
 
       ⬅ Retour Dashboard
@@ -36,9 +35,7 @@
   <!-- MESSAGE -->
 
   <p
-
     *ngIf="message"
-
     class="message">
 
     {{ message }}
@@ -75,9 +72,6 @@
 
 
 
-
-
-      <!-- CLASSE -->
 
 
       <div class="form-group">
@@ -134,9 +128,6 @@
 
 
 
-      <!-- MATIERE -->
-
-
       <div class="form-group">
 
 
@@ -191,9 +182,6 @@
 
 
 
-
-
-      <!-- ENSEIGNANT -->
 
 
       <div class="form-group">
@@ -255,9 +243,6 @@
 
 
 
-      <!-- COEFFICIENT -->
-
-
       <div class="form-group">
 
 
@@ -291,9 +276,6 @@
 
 
 
-
-
-      <!-- BOUTONS -->
 
 
       <button
@@ -351,9 +333,6 @@
 
 
 
-  <!-- RECHERCHE -->
-
-
   <div class="card">
 
 
@@ -371,6 +350,8 @@
 
       [(ngModel)]="recherche"
 
+      name="recherche"
+
       placeholder="Classe, matière ou enseignant...">
 
 
@@ -382,9 +363,6 @@
 
 
 
-
-
-  <!-- TABLEAU -->
 
 
   <div class="card">
@@ -450,7 +428,7 @@
 
         <tr
 
-          *ngFor="let item of affectationsFiltrees">
+          *ngFor="let item of affectationsFiltrees; let i=index">
 
 
 
@@ -509,7 +487,7 @@
 
               class="edit-btn"
 
-              (click)="modifier(item)">
+              (click)="modifier(item); testModifier(item)">
 
 
               ✏️ Modifier
@@ -528,7 +506,7 @@
 
               class="delete-btn"
 
-              (click)="supprimer(item.id)">
+              (click)="supprimer(item.id ?? item.pivot?.id)">
 
 
 
@@ -586,9 +564,6 @@
 
 
 
-
-
-    <!-- PAGINATION -->
 
 
     <div class="pagination">

@@ -1,8 +1,8 @@
 # Gestion des notes et bulletins d'une école
 
-## Présentation du projet
+## Projet Full Stack Web
 
-Ce projet consiste à développer une application web de gestion des notes et des bulletins scolaires pour une école privée.
+Application web de gestion des notes et des bulletins scolaires pour une école privée.
 
 L'objectif est de remplacer la gestion traditionnelle des notes sur fichiers Excel par une solution centralisée permettant :
 
@@ -11,22 +11,23 @@ L'objectif est de remplacer la gestion traditionnelle des notes sur fichiers Exc
 - la gestion des matières ;
 - la gestion des enseignants ;
 - la saisie des notes ;
-- le calcul des moyennes ;
-- la génération des bulletins scolaires.
+- le calcul automatique des moyennes ;
+- la génération des bulletins scolaires PDF.
 
-Le projet respecte les règles métier liées aux évaluations, aux coefficients, aux moyennes et aux rôles utilisateurs.
 
 ---
 
 # Technologies utilisées
+
 
 ## Backend
 
 - Laravel 12
 - PHP 8.2
 - API REST
-- Laravel Sanctum pour l'authentification
+- Laravel Sanctum
 - PostgreSQL
+
 
 ## Frontend
 
@@ -35,10 +36,13 @@ Le projet respecte les règles métier liées aux évaluations, aux coefficients
 - HTML5
 - CSS3
 
-## Base de données
 
-- PostgreSQL 16
+## Infrastructure
+
+- Docker
 - Docker Compose
+- PostgreSQL 16
+
 
 ---
 
@@ -51,21 +55,29 @@ gestion-notes-ecole/
 │   ├── app/
 │   ├── database/
 │   ├── routes/
+│   ├── Dockerfile
 │   └── composer.json
 │
 ├── frontend/
 │   └── gestion-frontend/
 │       ├── src/
+│       ├── Dockerfile
 │       └── package.json
+│
+├── docs/
+│   ├── captures/
+│   └── schema/
 │
 ├── compose.yaml
 ├── README.md
 └── NOTE_IA.md
 ```
 
+
 ---
 
-# Fonctionnalités principales
+# Fonctionnalités
+
 
 ## Administration
 
@@ -75,31 +87,39 @@ L'administrateur peut :
 - gérer les élèves ;
 - gérer les matières ;
 - gérer les enseignants ;
-- consulter le tableau de bord.
+- consulter les statistiques de l'école.
+
 
 ## Enseignant
 
 L'enseignant peut :
 
-- consulter ses matières affectées ;
+- se connecter à son espace ;
+- consulter ses affectations ;
 - choisir une classe ;
+- choisir une matière ;
 - sélectionner une évaluation ;
 - saisir les notes des élèves ;
-- modifier ou supprimer une note ;
+- modifier les notes ;
+- supprimer les notes ;
 - consulter les résultats.
 
-## Bulletins
+
+## Bulletins scolaires
 
 Le système permet :
 
 - le calcul des moyennes par matière ;
 - le calcul de la moyenne générale ;
-- l'affichage des bulletins ;
+- le classement des élèves ;
+- l'affichage des appréciations ;
 - la génération d'un bulletin PDF.
+
 
 ---
 
 # Modèle de données
+
 
 Les principales entités sont :
 
@@ -109,21 +129,26 @@ Les principales entités sont :
 - Matière
 - Enseignant
 - ClasseMatiere
-- Évaluation
+- Evaluation
 - Note
 - Bulletin
+
 
 Relations principales :
 
 - Une classe possède plusieurs élèves.
 - Une classe possède plusieurs matières.
-- Une matière peut appartenir à plusieurs classes.
+- Une matière appartient à plusieurs classes.
+- Un enseignant possède plusieurs affectations.
 - Une évaluation appartient à une matière.
 - Une note appartient à un élève et une évaluation.
+- Un bulletin appartient à un élève.
+
 
 ---
 
 # Installation
+
 
 ## Prérequis
 
@@ -135,15 +160,37 @@ Installer :
 - Angular CLI
 - Docker Desktop
 
+
 ---
 
-# Installation Backend
+# Installation avec Docker
 
-Aller dans le dossier backend :
+
+Depuis la racine du projet :
+
+```bash
+docker compose up -d --build
+```
+
+
+Vérifier les conteneurs :
+
+```bash
+docker compose ps
+```
+
+
+---
+
+# Installation Backend Laravel
+
+
+Entrer dans le backend :
 
 ```bash
 cd backend
 ```
+
 
 Installer les dépendances :
 
@@ -151,11 +198,13 @@ Installer les dépendances :
 composer install
 ```
 
+
 Créer le fichier environnement :
 
 ```bash
 cp .env.example .env
 ```
+
 
 Générer la clé Laravel :
 
@@ -163,43 +212,49 @@ Générer la clé Laravel :
 php artisan key:generate
 ```
 
+
 ---
 
-# Configuration Docker PostgreSQL
+# Base de données
 
-Lancer la base de données :
 
-```bash
-docker compose up -d
-```
-
-La base utilisée est :
+Nom de la base :
 
 ```
 gestion_notes_ecole
 ```
 
----
 
-# Migration de la base
+Migration :
 
 ```bash
 php artisan migrate
 ```
 
-Pour charger les données de démonstration :
+
+Charger les données de démonstration :
 
 ```bash
 php artisan db:seed
 ```
 
+
+Recréer complètement la base :
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+
 ---
 
-# Démarrer Laravel
+# Démarrer l'API Laravel
+
 
 ```bash
 php artisan serve
 ```
+
 
 API disponible :
 
@@ -207,15 +262,18 @@ API disponible :
 http://127.0.0.1:8000
 ```
 
+
 ---
 
 # Installation Frontend Angular
 
-Aller dans le dossier :
+
+Aller dans le frontend :
 
 ```bash
 cd frontend/gestion-frontend
 ```
+
 
 Installer les dépendances :
 
@@ -223,11 +281,13 @@ Installer les dépendances :
 npm install
 ```
 
+
 Démarrer Angular :
 
 ```bash
 ng serve
 ```
+
 
 Application disponible :
 
@@ -235,11 +295,25 @@ Application disponible :
 http://localhost:4200
 ```
 
+
 ---
 
 # Comptes de démonstration
 
+
 ## Administrateur
+
+Email :
+
+```
+admin@ecole.com
+```
+
+Mot de passe :
+
+```
+password
+```
 
 Rôle :
 
@@ -247,7 +321,20 @@ Rôle :
 ADMIN
 ```
 
+
 ## Enseignant
+
+Email :
+
+```
+prof.math@ecole.com
+```
+
+Mot de passe :
+
+```
+password
+```
 
 Rôle :
 
@@ -255,17 +342,121 @@ Rôle :
 ENSEIGNANT
 ```
 
+
+---
+
+# Données de démonstration
+
+
+La base contient :
+
+- 60 élèves
+- 5 classes
+- 5 matières
+- 5 enseignants
+- 15 évaluations
+- 900 notes
+
+
+---
+
+# Tableau de bord
+
+
+Le tableau de bord affiche :
+
+
+## Nombre d'élèves
+
+```
+COUNT(élèves)
+```
+
+
+## Nombre de classes
+
+```
+COUNT(classes)
+```
+
+
+## Nombre de matières
+
+```
+COUNT(matières)
+```
+
+
+## Nombre d'enseignants
+
+```
+COUNT(enseignants)
+```
+
+
+## Nombre de notes saisies
+
+```
+COUNT(notes)
+```
+
+
+## Moyenne générale
+
+```
+Somme(note × coefficient)
+/
+Somme(coefficients)
+```
+
+
+---
+
+# Calcul des moyennes
+
+
+## Moyenne matière
+
+```
+Somme(notes × coefficient évaluation)
+/
+Somme(coefficients évaluations)
+```
+
+
+## Moyenne générale
+
+```
+Somme(moyenne matière × coefficient matière)
+/
+Somme(coefficients matière)
+```
+
+
+## Mentions
+
+| Moyenne | Mention |
+|---|---|
+| >= 10 | Passable |
+| >= 12 | Assez bien |
+| >= 14 | Bien |
+| >= 16 | Très bien |
+
+
 ---
 
 # Tests réalisés
 
-Les fonctionnalités suivantes ont été testées :
+
+Fonctionnalités testées :
 
 - authentification ;
-- gestion des utilisateurs ;
+- gestion des rôles ;
 - gestion des classes ;
 - gestion des élèves ;
 - gestion des matières ;
+- gestion des enseignants ;
+- affectations ;
 - saisie des notes ;
 - modification des notes ;
 - suppression des notes ;
@@ -273,12 +464,84 @@ Les fonctionnalités suivantes ont été testées :
 - génération PDF ;
 - fonctionnement Docker PostgreSQL.
 
+
+Commande de test :
+
+```bash
+php artisan test
+```
+
+
+---
+
+# Captures d'écran
+
+
+Les captures sont disponibles dans :
+
+```
+docs/captures/
+```
+
+
+Captures principales :
+
+1. Page de connexion
+2. Dashboard administrateur
+3. Statistiques de l'école
+4. Saisie des notes enseignant
+5. Bulletin scolaire
+
+
+---
+
+# Bibliothèques utilisées
+
+
+## Backend
+
+- Laravel Framework
+- Laravel Sanctum
+
+
+## Frontend
+
+- Angular Router
+- Angular Forms
+- Angular HttpClient
+
+
+## Infrastructure
+
+- Docker
+- Docker Compose
+- PostgreSQL
+
+
+---
+
+# Améliorations possibles
+
+
+- ajout de graphiques statistiques avancés ;
+- gestion des absences ;
+- export Excel des résultats ;
+- notifications utilisateurs ;
+- historique des bulletins.
+
+
 ---
 
 # Auteur
 
-Projet réalisé dans le cadre d'un projet de développement Full Stack Web.
+
+Projet réalisé dans le cadre d'un projet Full Stack Web.
+
 
 Technologies principales :
 
 Laravel + Angular + PostgreSQL + Docker
+
+
+
+

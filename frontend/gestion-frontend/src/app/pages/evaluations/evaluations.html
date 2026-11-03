@@ -1,201 +1,196 @@
 <div class="evaluations-container">
 
 
-<button routerLink="/dashboard">
 
-⬅ Dashboard
+  <!-- RETOUR DASHBOARD -->
 
-</button>
+  <button
 
+    type="button"
 
+    class="back-btn"
 
-<h1>
-📝 Gestion des évaluations
-</h1>
+    (click)="retourDashboard()">
 
+    ⬅ Retour Dashboard
 
+  </button>
 
-<p>
 
-{{message}}
 
-</p>
 
 
+  <h1>
+    📝 Gestion des évaluations
+  </h1>
 
 
 
-<h2>
 
-Ajouter une évaluation
 
-</h2>
+  <p
 
+    *ngIf="message"
 
+    class="message">
 
+    {{message}}
 
+  </p>
 
-<label>
 
-Matière :
 
-</label>
 
 
 
-<select
 
-[(ngModel)]="evaluation.matiere_id"
 
-name="matiere_id"
 
->
+  <!-- FORMULAIRE -->
 
+  <div
 
-<option value="">
+    #formulaire
 
-Choisir une matière
+    class="formulaire">
 
-</option>
 
 
 
-<option
 
-*ngFor="let m of matieres"
+    <h2>
 
-[value]="m.id"
+      {{ modification ? 'Modifier une évaluation' : 'Ajouter une évaluation' }}
 
->
+    </h2>
 
-{{m.nom}}
 
-</option>
 
 
-</select>
 
 
 
 
+    <label>
 
+      Matière :
 
+    </label>
 
 
-<label>
 
-Libellé :
+    <select
 
-</label>
+      [(ngModel)]="evaluation.matiere_id"
 
+      name="matiere_id">
 
-<input
 
-type="text"
+      <option [value]="">
 
-[(ngModel)]="evaluation.libelle"
+        Choisir une matière
 
-name="libelle"
+      </option>
 
-placeholder="Exemple : Devoir 1"
 
->
 
 
+      <option
 
+        *ngFor="let m of matieres"
 
+        [value]="m.id">
 
 
+        {{m.nom}}
 
 
-<label>
+      </option>
 
-Date :
 
-</label>
 
+    </select>
 
-<input
 
-type="date"
 
-[(ngModel)]="evaluation.date"
 
-name="date"
 
->
 
 
 
 
+    <label>
 
+      Libellé :
 
+    </label>
 
 
-<label>
+    <input
 
-Coefficient :
+      type="text"
 
-</label>
+      [(ngModel)]="evaluation.libelle"
 
+      name="libelle"
 
-<input
+      placeholder="Exemple : Devoir 1">
 
-type="number"
+    
 
-[(ngModel)]="evaluation.coefficient"
 
-name="coefficient"
 
-min="1"
 
-max="10"
 
->
 
 
 
 
+    <label>
 
+      Date :
 
+    </label>
 
 
+    <input
 
-<button
+      type="date"
 
-*ngIf="!modification"
+      [(ngModel)]="evaluation.date"
 
-(click)="ajouterEvaluation()"
+      name="date">
 
->
+    
 
-Ajouter
 
-</button>
 
 
 
 
 
-<button
 
-*ngIf="modification"
 
-(click)="enregistrerModification()"
+    <label>
 
->
+      Coefficient :
 
-Modifier
+    </label>
 
-</button>
 
+    <input
 
+      type="number"
 
+      [(ngModel)]="evaluation.coefficient"
 
+      name="coefficient"
 
+      min="1"
 
+      max="10">
 
-<hr>
+    
 
 
 
@@ -203,154 +198,235 @@ Modifier
 
 
 
-<h2>
 
-Liste des évaluations
 
-</h2>
+    <button
 
+      *ngIf="!modification"
 
+      type="button"
 
+      class="save-btn"
 
+      (click)="ajouterEvaluation()">
 
+      ➕ Ajouter
 
-<table>
+    </button>
 
 
-<thead>
 
 
-<tr>
 
 
-<th>
 
-Matière
 
-</th>
+    <button
 
+      *ngIf="modification"
 
-<th>
+      type="button"
 
-Libellé
+      class="save-btn"
 
-</th>
+      (click)="enregistrerModification()">
 
+      💾 Modifier
 
-<th>
+    </button>
 
-Date
 
-</th>
 
 
-<th>
 
-Coefficient
 
-</th>
 
 
-<th>
+    <button
 
-Actions
+      *ngIf="modification"
 
-</th>
+      type="button"
 
+      class="cancel-btn"
 
-</tr>
+      (click)="resetForm()">
 
+      ❌ Annuler
 
-</thead>
+    </button>
 
 
 
+  </div>
 
 
 
 
-<tbody>
 
 
 
-<tr
 
-*ngFor="let e of evaluations"
 
->
+  <hr>
 
 
-<td>
 
-{{e.matiere?.nom}}
 
-</td>
 
 
 
-<td>
 
-{{e.libelle}}
+  <h2>
 
-</td>
+    Liste des évaluations
 
+  </h2>
 
 
-<td>
 
-{{e.date}}
 
-</td>
 
 
 
-<td>
+  <table>
 
-{{e.coefficient}}
 
-</td>
+    <thead>
 
 
+      <tr>
 
-<td>
 
+        <th>
+          Matière
+        </th>
 
-<button
 
-(click)="modifier(e)"
+        <th>
+          Libellé
+        </th>
 
->
 
-✏️ Modifier
+        <th>
+          Date
+        </th>
 
-</button>
 
+        <th>
+          Coefficient
+        </th>
 
 
-<button
+        <th>
+          Actions
+        </th>
 
-(click)="supprimer(e.id)"
 
->
+      </tr>
 
-🗑 Supprimer
 
-</button>
+    </thead>
 
 
-</td>
 
 
 
-</tr>
 
 
+    <tbody>
 
-</tbody>
 
 
+      <tr
 
-</table>
+        *ngFor="let e of evaluations">
+
+
+        <td>
+
+          {{e.matiere?.nom}}
+
+        </td>
+
+
+
+        <td>
+
+          {{e.libelle}}
+
+        </td>
+
+
+
+        <td>
+
+          {{e.date}}
+
+        </td>
+
+
+
+        <td>
+
+          {{e.coefficient}}
+
+        </td>
+
+
+
+        <td>
+
+
+
+          <button
+
+            type="button"
+
+            class="edit-btn"
+
+            (click)="modifier(e)">
+
+
+            ✏️ Modifier
+
+
+          </button>
+
+
+
+
+
+
+          <button
+
+            type="button"
+
+            class="delete-btn"
+
+            (click)="supprimer(e.id)">
+
+
+            🗑 Supprimer
+
+
+          </button>
+
+
+
+        </td>
+
+
+
+      </tr>
+
+
+
+    </tbody>
+
+
+
+  </table>
 
 
 

@@ -62,15 +62,13 @@ h2 {
 
 
 
-
-p {
+.message {
 
   color: green;
 
   font-weight: bold;
 
 }
-
 
 
 
@@ -110,13 +108,94 @@ select {
 
 
 
-button:not(:first-child) {
 
-  background-color: #1976d2;
+
+
+/* RETOUR DASHBOARD */
+
+.back-btn {
+
+  background-color: #2563eb;
+
+  color: white;
+
+  padding: 10px 18px;
+
+  border-radius: 8px;
+
+  border: none;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  margin-bottom: 20px;
+
+}
+
+
+
+.back-btn:hover {
+
+  background-color: #1d4ed8;
+
+}
+
+
+
+
+
+
+
+
+
+/* BOUTON ENREGISTRER / MODIFIER */
+
+.save-btn {
+
+  background-color: #16a34a;
 
   color: white;
 
 }
+
+
+
+.save-btn:hover {
+
+  background-color: #15803d;
+
+}
+
+
+
+
+
+
+
+
+
+/* BOUTON ANNULER */
+
+.cancel-btn {
+
+  background-color: #dc2626;
+
+  color:white;
+
+}
+
+
+
+.cancel-btn:hover {
+
+  background-color:#b91c1c;
+
+}
+
+
+
+
 
 
 
@@ -194,11 +273,23 @@ tr:hover {
 
 
 
-table button:first-child {
 
-  background-color: #ff9800;
 
-  color: white;
+/* ACTION MODIFIER TABLEAU */
+
+.edit-btn {
+
+  background-color: #f59e0b;
+
+  color:white;
+
+}
+
+
+
+.edit-btn:hover {
+
+  background-color:#d97706;
 
 }
 
@@ -206,25 +297,30 @@ table button:first-child {
 
 
 
-table button:last-child {
 
-  background-color: #d32f2f;
 
-  color: white;
+
+
+/* ACTION SUPPRIMER TABLEAU */
+
+.delete-btn {
+
+  background-color:#dc2626;
+
+  color:white;
+
+}
+
+
+
+.delete-btn:hover {
+
+  background-color:#b91c1c;
 
 }
 
 
 
-
-
-.evaluations-container > button:first-child {
-
-  background-color: #555;
-
-  color: white;
-
-}
 
 
 

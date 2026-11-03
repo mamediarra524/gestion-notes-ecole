@@ -5,7 +5,6 @@ import { RouterLink } from '@angular/router';
 
 
 import { NoteService } from '../../services/note';
-import { ClasseService } from '../../services/classe';
 import { EleveService } from '../../services/eleve';
 import { EvaluationService } from '../../services/evaluation';
 import { ClasseMatiereService } from '../../services/classe-matiere';
@@ -59,11 +58,6 @@ evaluationsMatiere:any[]=[];
 
 
 
-// =======================
-// SAISIE
-// =======================
-
-
 classeSaisie:any='';
 
 matiereSaisie:any='';
@@ -71,17 +65,11 @@ matiereSaisie:any='';
 evaluationSaisie:any='';
 
 
+
 notesSaisie:any={};
 
 
 
-
-
-
-
-// =======================
-// FILTRES
-// =======================
 
 
 classeFiltre:any='';
@@ -100,13 +88,6 @@ message:string='';
 
 
 
-
-
-// =======================
-// PAGINATION
-// =======================
-
-
 pageActuelle:number=1;
 
 taillePage:number=10;
@@ -115,14 +96,6 @@ totalPages:number=1;
 
 
 
-
-
-
-
-
-// =======================
-// MODIFICATION
-// =======================
 
 
 noteModification:any=null;
@@ -138,8 +111,6 @@ constructor(
 
 
 private noteService:NoteService,
-
-private classeService:ClasseService,
 
 private eleveService:EleveService,
 
@@ -159,18 +130,12 @@ private cd:ChangeDetectorRef
 
 
 
-
 ngOnInit(){
 
 
 this.chargerNotes();
 
-
 this.chargerClasses();
-
-
-this.chargerMesMatieres();
-
 
 
 }
@@ -201,13 +166,7 @@ this.noteService
 next:(data:any)=>{
 
 
-console.log(
-
-"NOTES RECUES",
-
-data
-
-);
+console.log("NOTES RECUES",data);
 
 
 
@@ -258,11 +217,11 @@ this.message="Erreur chargement notes";
 
 
 // =======================
-// MATIERES DU PROF
+// CLASSES DU PROFESSEUR
 // =======================
 
 
-chargerMesMatieres(){
+chargerClasses(){
 
 
 this.classeMatiereService
@@ -275,13 +234,174 @@ this.classeMatiereService
 next:(data:any)=>{
 
 
-console.log(
+console.log("AFFECTATIONS",data);
 
-"AFFECTATIONS",
 
-data
+
+
+this.classes=[
+
+...new Map(
+
+data.map((a:any)=>[
+
+a.classe.id,
+
+a.classe
+
+])
+
+).values()
+
+];
+
+
+
+this.cd.detectChanges();
+
+
+
+},
+
+
+error:(err)=>{
+
+
+console.log(err);
+
+
+this.message="Erreur chargement classes";
+
+
+}
+
+
+});
+
+
+}
+// =======================
+// ELEVES + MATIERES SELON CLASSE
+// =======================
+
+chargerElevesClasse(){
+
+
+this.elevesClasse=[];
+
+this.notesSaisie={};
+
+
+this.matieres=[];
+
+this.matiereSaisie='';
+
+
+this.evaluationsMatiere=[];
+
+this.evaluationSaisie='';
+
+
+
+
+if(!this.classeSaisie)
+
+return;
+
+
+
+
+
+
+// =======================
+// ELEVES DE LA CLASSE
+// =======================
+
+
+this.eleveService
+
+.getParClasse(Number(this.classeSaisie))
+
+.subscribe({
+
+
+next:(data:any)=>{
+
+
+console.log("ELEVES",data);
+
+
+
+this.elevesClasse=[...data];
+
+
+
+this.elevesClasse.forEach(e=>{
+
+
+this.notesSaisie[e.id]='';
+
+
+});
+
+
+
+this.cd.detectChanges();
+
+
+
+},
+
+
+error:(err)=>{
+
+
+console.log(err);
+
+
+this.message="Erreur chargement élèves";
+
+
+}
+
+
+});
+
+
+
+
+
+
+
+
+
+// =======================
+// MATIERES DE CETTE CLASSE
+// =======================
+
+
+this.classeMatiereService
+
+.getMesAffectations()
+
+.subscribe({
+
+
+next:(data:any)=>{
+
+
+
+const affectations = data.filter((a:any)=>
+
+
+
+Number(a.classe_id) === Number(this.classeSaisie)
+
+
 
 );
+
+
 
 
 
@@ -289,23 +409,38 @@ data
 this.matieres=[
 
 
-
 ...new Map(
 
 
-data.map((a:any)=>[
+affectations.map((a:any)=>[
+
 
 a.matiere.id,
 
+
 a.matiere
 
+
 ])
+
 
 ).values()
 
 
 
 ];
+
+
+
+
+
+console.log(
+
+"MATIERES CLASSE",
+
+this.matieres
+
+);
 
 
 
@@ -343,143 +478,8 @@ this.message="Erreur chargement matières";
 
 
 // =======================
-// CLASSES
-// =======================
-
-
-chargerClasses(){
-
-
-this.classeService
-
-.getClasses()
-
-.subscribe({
-
-
-next:(data:any)=>{
-
-
-this.classes=[...data];
-
-
-this.cd.detectChanges();
-
-
-},
-
-
-error:(err)=>{
-
-
-console.log(err);
-
-
-}
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-
-
-// =======================
-// ELEVES PAR CLASSE
-// =======================
-
-
-chargerElevesClasse(){
-
-
-this.elevesClasse=[];
-
-
-this.notesSaisie={};
-
-
-
-
-
-if(!this.classeSaisie)
-
-return;
-
-
-
-
-
-this.eleveService
-
-.getParClasse(
-
-Number(this.classeSaisie)
-
-)
-
-.subscribe({
-
-
-next:(data:any)=>{
-
-
-this.elevesClasse=[...data];
-
-
-
-this.elevesClasse.forEach(e=>{
-
-
-this.notesSaisie[e.id]='';
-
-
-
-});
-
-
-
-this.cd.detectChanges();
-
-
-},
-
-
-error:(err)=>{
-
-
-console.log(err);
-
-
-this.message="Erreur chargement élèves";
-
-
-}
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-
-
-// =======================
 // EVALUATIONS PAR MATIERE
 // =======================
-
 
 chargerEvaluationsMatiere(){
 
@@ -550,7 +550,18 @@ this.message="Erreur évaluations";
 
 });
 
+
+
 }
+
+
+
+
+
+
+
+
+
 // =======================
 // ENREGISTRER NOTES
 // =======================
@@ -559,11 +570,55 @@ this.message="Erreur évaluations";
 enregistrerNotes(){
 
 
+console.log(
+
+"CLASSE",
+
+this.classeSaisie
+
+);
+
+
+console.log(
+
+"MATIERE",
+
+this.matiereSaisie
+
+);
+
+
+console.log(
+
+"EVALUATION",
+
+this.evaluationSaisie
+
+);
+
+
+console.log(
+
+"NOTES",
+
+this.notesSaisie
+
+);
+
+
+
+
 
 if(!this.evaluationSaisie){
 
 
-this.message="⚠️ Choisir une évaluation";
+
+this.message=
+
+"⚠️ Choisir une évaluation";
+
+
+this.scrollMessage();
 
 
 return;
@@ -575,30 +630,63 @@ return;
 
 
 
-Object.keys(this.notesSaisie)
 
-.forEach(id=>{
+const listeNotes = Object.keys(this.notesSaisie)
 
-
-const valeur=this.notesSaisie[id];
+.filter(id =>
 
 
 
-if(
+this.notesSaisie[id] !== ''
 
-valeur!=='' &&
+&&
 
-valeur!==null &&
-
-valeur!==undefined
-
-){
+this.notesSaisie[id] !== null
 
 
 
-this.noteService
+);
 
-.ajouterNote({
+
+
+
+
+
+if(listeNotes.length===0){
+
+
+this.message=
+
+"⚠️ Aucune note saisie";
+
+
+this.scrollMessage();
+
+
+return;
+
+
+}
+
+
+
+
+
+
+let compteur=0;
+
+
+
+
+
+
+listeNotes.forEach(id=>{
+
+
+
+
+
+const note={
 
 
 eleve_id:Number(id),
@@ -607,50 +695,125 @@ eleve_id:Number(id),
 evaluation_id:Number(this.evaluationSaisie),
 
 
-note:Number(valeur)
+note:Number(this.notesSaisie[id])
 
 
-})
+};
+
+
+
+
+
+
+console.log(
+
+"NOTE ENVOYEE",
+
+note
+
+);
+
+
+
+
+
+
+this.noteService
+
+.ajouterNote(note)
 
 .subscribe({
 
 
-next:()=>{
+
+next:(response)=>{
 
 
-this.message="✅ Notes enregistrées avec succès";
+
+console.log(
+
+"REPONSE",
+
+response
+
+);
+
+
+
+compteur++;
+
+
+
+
+
+if(compteur===listeNotes.length){
+
+
+
+this.message=
+
+"✅ Notes enregistrées avec succès";
+
+
+
 
 
 this.chargerNotes();
+
+
+
 
 
 this.resetSaisie();
 
 
 
-setTimeout(()=>{
 
 
-this.message='';
+this.scrollMessage();
 
 
-},3000);
+
+
+}
 
 
 
 },
 
 
+
+
+
 error:(err)=>{
 
 
-console.log(err);
+console.log(
+
+"ERREUR",
+
+err
+
+);
 
 
-this.message="❌ Erreur enregistrement";
+
+this.message=
+
+"❌ Erreur enregistrement";
+
+
+
+this.scrollMessage();
+
 
 
 }
+
+
+
+});
+
 
 
 });
@@ -658,27 +821,9 @@ this.message="❌ Erreur enregistrement";
 
 
 }
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
 // =======================
-// RESET SAISIE
+// RESET FORMULAIRE
 // =======================
-
 
 resetSaisie(){
 
@@ -692,10 +837,21 @@ this.matiereSaisie='';
 this.evaluationSaisie='';
 
 
+
+
+
 this.elevesClasse=[];
 
 
+this.matieres=[];
+
+
+this.evaluationsMatiere=[];
+
+
+
 this.notesSaisie={};
+
 
 
 }
@@ -708,37 +864,68 @@ this.notesSaisie={};
 
 
 
-/// =======================
-// FILTRES
+// =======================
+// SCROLL MESSAGE
 // =======================
 
+scrollMessage(){
+
+
+setTimeout(()=>{
+
+
+const element=document.querySelector('.message');
+
+
+
+if(element){
+
+
+element.scrollIntoView({
+
+
+behavior:'smooth',
+
+
+block:'center'
+
+
+});
+
+
+}
+
+
+
+},300);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =======================
+// FILTRES
+// =======================
 
 filtrer(){
 
 
-console.log(
-"FILTRES :",
-this.classeFiltre,
-this.matiereFiltre,
-this.recherche
-);
+this.notesFiltrees=this.notes.filter((n:any)=>{
 
 
 
-
-
-this.notesFiltrees = this.notes.filter((n:any)=>{
-
-
-
-
-
-// =======================
-// CLASSE
-// =======================
 
 
 const classeId =
+
 
 n.eleve?.classe?.id ??
 
@@ -754,19 +941,12 @@ const classeOK =
 !this.classeFiltre ||
 
 
-Number(classeId) === Number(this.classeFiltre);
+Number(classeId)===Number(this.classeFiltre);
 
 
 
 
 
-
-
-
-
-// =======================
-// MATIERE
-// =======================
 
 
 const matiereId =
@@ -780,13 +960,14 @@ n.evaluation?.matiere_id;
 
 
 
+
 const matiereOK =
 
 
 !this.matiereFiltre ||
 
 
-Number(matiereId) === Number(this.matiereFiltre);
+Number(matiereId)===Number(this.matiereFiltre);
 
 
 
@@ -795,18 +976,14 @@ Number(matiereId) === Number(this.matiereFiltre);
 
 
 
-
-// =======================
-// RECHERCHE ELEVE
-// =======================
-
-
-const nomEleve =
+const nom =
 
 
 (
 
-(n.eleve?.prenom ?? '')
+n.eleve?.prenom ?? ''
+
+)
 
 +
 
@@ -814,11 +991,12 @@ const nomEleve =
 
 +
 
-(n.eleve?.nom ?? '')
+(
 
-)
+n.eleve?.nom ?? ''
 
-.toLowerCase();
+);
+
 
 
 
@@ -830,14 +1008,15 @@ const rechercheOK =
 !this.recherche ||
 
 
-nomEleve.includes(
+nom
+
+.toLowerCase()
+
+.includes(
 
 this.recherche.toLowerCase()
 
 );
-
-
-
 
 
 
@@ -863,20 +1042,6 @@ rechercheOK
 
 
 
-
-console.log(
-
-"NOTES APRES FILTRE",
-
-this.notesFiltrees
-
-);
-
-
-
-
-
-
 this.pageActuelle=1;
 
 
@@ -891,20 +1056,23 @@ this.mettreAJourPagination();
 
 
 
+
+
+
 // =======================
 // PAGINATION
 // =======================
 
-
 mettreAJourPagination(){
-
 
 
 this.totalPages=Math.ceil(
 
+
 this.notesFiltrees.length /
 
 this.taillePage
+
 
 );
 
@@ -912,7 +1080,7 @@ this.taillePage
 
 
 
-if(this.totalPages < 1){
+if(this.totalPages<1){
 
 
 this.totalPages=1;
@@ -925,7 +1093,8 @@ this.totalPages=1;
 
 
 
-if(this.pageActuelle > this.totalPages){
+
+if(this.pageActuelle>this.totalPages){
 
 
 this.pageActuelle=this.totalPages;
@@ -952,26 +1121,20 @@ this.taillePage;
 
 
 
-const fin =
+
+this.notesPage=
 
 
-debut +
+this.notesFiltrees.slice(
 
-this.taillePage;
-
-
-
-
-
-
-this.notesPage=this.notesFiltrees.slice(
 
 debut,
 
-fin
+
+debut+this.taillePage
+
 
 );
-
 
 
 
@@ -994,9 +1157,7 @@ this.cd.detectChanges();
 pageSuivante(){
 
 
-
-if(this.pageActuelle < this.totalPages){
-
+if(this.pageActuelle<this.totalPages){
 
 
 this.pageActuelle++;
@@ -1005,9 +1166,7 @@ this.pageActuelle++;
 this.mettreAJourPagination();
 
 
-
 }
-
 
 
 }
@@ -1023,9 +1182,7 @@ this.mettreAJourPagination();
 pagePrecedente(){
 
 
-
-if(this.pageActuelle > 1){
-
+if(this.pageActuelle>1){
 
 
 this.pageActuelle--;
@@ -1034,9 +1191,7 @@ this.pageActuelle--;
 this.mettreAJourPagination();
 
 
-
 }
-
 
 
 }
@@ -1053,9 +1208,7 @@ this.mettreAJourPagination();
 // MODIFIER
 // =======================
 
-
 modifierNote(n:any){
-
 
 
 this.noteModification={...n};
@@ -1071,8 +1224,8 @@ this.noteModification={...n};
 
 
 
-enregistrerModification(){
 
+enregistrerModification(){
 
 
 this.noteService
@@ -1095,7 +1248,9 @@ note:Number(this.noteModification.note)
 next:()=>{
 
 
-this.message="✅ Note modifiée";
+this.message=
+
+"✅ Note modifiée";
 
 
 this.noteModification=null;
@@ -1114,7 +1269,9 @@ error:(err)=>{
 console.log(err);
 
 
-this.message="Erreur modification";
+this.message=
+
+"❌ Erreur modification";
 
 
 }
@@ -1139,7 +1296,6 @@ this.message="Erreur modification";
 // SUPPRIMER
 // =======================
 
-
 supprimerNote(id:number){
 
 
@@ -1163,7 +1319,9 @@ this.noteService
 next:()=>{
 
 
-this.message="✅ Note supprimée";
+this.message=
+
+"✅ Note supprimée";
 
 
 this.chargerNotes();
@@ -1173,13 +1331,17 @@ this.chargerNotes();
 },
 
 
+
+
 error:(err)=>{
 
 
 console.log(err);
 
 
-this.message="Erreur suppression";
+this.message=
+
+"❌ Erreur suppression";
 
 
 }

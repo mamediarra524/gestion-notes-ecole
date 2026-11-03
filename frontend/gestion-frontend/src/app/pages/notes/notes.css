@@ -18,6 +18,9 @@
 
 
 
+
+
+
 /* ================================= */
 /* BOUTON RETOUR */
 /* ================================= */
@@ -101,7 +104,6 @@ h2 {
 
 
 
-
 /* ================================= */
 /* MESSAGE */
 /* ================================= */
@@ -125,6 +127,8 @@ h2 {
     margin:20px auto;
 
     max-width:600px;
+
+    scroll-margin-top:120px;
 
 
 }
@@ -178,6 +182,7 @@ h2 {
 
     font-weight:600;
 
+
 }
 
 
@@ -187,7 +192,9 @@ h2 {
 
 
 
+/* ================================= */
 /* INPUTS SELECTS */
+/* ================================= */
 
 
 input,
@@ -225,7 +232,6 @@ select:focus {
 
 
 }
-
 
 
 
@@ -289,7 +295,6 @@ button {
 
 
 
-
 .btn-edit {
 
 
@@ -301,18 +306,6 @@ button {
 
 
 }
-
-
-
-
-.btn-edit:hover {
-
-
-    background:#d97706;
-
-
-}
-
 
 
 
@@ -329,26 +322,6 @@ button {
 
 
 }
-
-
-
-
-.btn-delete:hover {
-
-
-    background:#b91c1c;
-
-
-}
-
-
-
-
-
-
-
-
-
 /* ================================= */
 /* FILTRES */
 /* ================================= */
@@ -398,7 +371,7 @@ button {
 
 
 /* ================================= */
-/* TABLEAU */
+/* TABLEAU NOTES */
 /* ================================= */
 
 
@@ -416,7 +389,14 @@ button {
     0 8px 25px rgba(0,0,0,0.08);
 
 
+    max-height:650px;
+
+    overflow:auto;
+
+
 }
+
+
 
 
 
@@ -428,6 +408,8 @@ table {
     border-collapse:collapse;
 
     margin-top:20px;
+
+    min-width:950px;
 
 
 }
@@ -442,6 +424,13 @@ thead {
     background:#2563eb;
 
     color:white;
+
+
+    position:sticky;
+
+    top:0;
+
+    z-index:10;
 
 
 }
@@ -497,7 +486,50 @@ tbody tr:hover {
 
 
 /* ================================= */
-/* NOTE */
+/* SCROLL TABLEAU ELEVES */
+/* ================================= */
+
+
+.form-card table {
+
+
+    display:block;
+
+    max-height:350px;
+
+    overflow-y:auto;
+
+    overflow-x:auto;
+
+
+}
+
+
+
+
+
+.form-card thead {
+
+
+    position:sticky;
+
+    top:0;
+
+    z-index:5;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ================================= */
+/* STYLE DES NOTES */
 /* ================================= */
 
 
@@ -680,7 +712,9 @@ tbody tr:hover {
 
 .notes-container{
 
+
 padding:15px;
+
 
 }
 
@@ -699,7 +733,7 @@ flex-direction:column;
 .table-card{
 
 
-overflow-x:auto;
+overflow:auto;
 
 
 }

@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 
 import { EvaluationService } from '../../services/evaluation';
@@ -19,9 +19,7 @@ import { MatiereService } from '../../services/matiere';
 
     CommonModule,
 
-    FormsModule,
-
-    RouterLink
+    FormsModule
 
   ],
 
@@ -36,448 +34,496 @@ export class Evaluations implements OnInit {
 
 
 
-evaluations:any[]=[];
+  @ViewChild('formulaire')
 
+  formulaire!: ElementRef;
 
-matieres:any[]=[];
 
 
-message:string='';
 
 
+  evaluations:any[]=[];
 
-modification:boolean=false;
 
+  matieres:any[]=[];
 
-idModification:number|null=null;
 
+  message:string='';
 
 
 
+  modification:boolean=false;
 
-evaluation:any={
 
+  idModification:number|null=null;
 
-  matiere_id:'',
 
-  libelle:'',
 
-  date:'',
 
-  coefficient:1
 
+  evaluation:any={
 
-};
 
+    matiere_id:'',
 
+    libelle:'',
 
+    date:'',
 
+    coefficient:1
 
 
+  };
 
-constructor(
 
-private evaluationService:EvaluationService,
 
-private matiereService:MatiereService,
 
-private cd:ChangeDetectorRef
 
-){}
 
 
+  constructor(
 
+    private evaluationService:EvaluationService,
 
+    private matiereService:MatiereService,
 
+    private cd:ChangeDetectorRef,
 
+    private router:Router
 
-ngOnInit(){
+  ){}
 
 
-this.chargerEvaluations();
 
 
-this.chargerMatieres();
 
+  ngOnInit(){
 
-}
 
+    this.chargerEvaluations();
 
+    this.chargerMatieres();
 
 
+  }
 
 
 
 
 
-chargerEvaluations(){
 
 
-this.evaluationService
 
-.getEvaluations()
 
-.subscribe({
+  retourDashboard(){
 
 
-next:(data:any)=>{
+    this.router.navigate([
 
+      '/dashboard'
 
-console.log(
+    ]);
 
-"EVALUATIONS :",
 
-data
+  }
 
-);
 
 
 
-this.evaluations=[...data];
 
 
-this.cd.detectChanges();
 
 
 
-},
+  chargerEvaluations(){
 
 
-error:(err)=>{
+    this.evaluationService
 
+    .getEvaluations()
 
-console.log(err);
+    .subscribe({
 
 
-this.message="Erreur chargement évaluations";
+      next:(data:any)=>{
 
 
-}
+        console.log(
 
+          "EVALUATIONS :",
 
-});
+          data
 
+        );
 
-}
 
+        this.evaluations=[...data];
 
 
+        this.cd.detectChanges();
 
 
+      },
 
 
+      error:(err)=>{
 
 
-chargerMatieres(){
+        console.log(err);
 
 
-this.matiereService
+        this.message=
 
-.getMatieres()
+        "Erreur chargement évaluations";
 
-.subscribe({
 
+      }
 
-next:(data:any)=>{
 
+    });
 
-this.matieres=[...data];
 
+  }
 
-this.cd.detectChanges();
 
 
-},
 
 
-error:(err)=>{
 
 
-console.log(err);
 
 
-}
+  chargerMatieres(){
 
 
-});
+    this.matiereService
 
+    .getMatieres()
 
-}
+    .subscribe({
 
 
+      next:(data:any)=>{
 
 
+        this.matieres=[...data];
 
 
+        this.cd.detectChanges();
 
 
+      },
 
-ajouterEvaluation(){
 
+      error:(err)=>{
 
 
-this.evaluationService
+        console.log(err);
 
-.ajouterEvaluation(
 
-this.evaluation
+      }
 
-)
 
-.subscribe({
+    });
 
 
+  }
 
-next:()=>{
 
 
-this.message=
 
-"Evaluation ajoutée avec succès";
 
 
 
-this.resetForm();
 
 
-this.chargerEvaluations();
+  ajouterEvaluation(){
 
 
+    this.evaluationService
 
-},
+    .ajouterEvaluation(
 
+      this.evaluation
 
+    )
 
-error:(err)=>{
+    .subscribe({
 
 
-console.log(err);
+      next:()=>{
 
 
-this.message=
+        this.message=
 
-"Erreur ajout évaluation";
+        "Evaluation ajoutée avec succès";
 
 
-}
+        this.resetForm();
 
+        this.chargerEvaluations();
 
 
-});
+      },
 
 
+      error:(err)=>{
 
-}
 
+        console.log(err);
 
 
+        this.message=
 
+        "Erreur ajout évaluation";
 
 
+      }
 
 
+    });
 
-modifier(e:any){
 
+  }
 
 
-this.evaluation={
 
 
-matiere_id:e.matiere_id,
 
 
-libelle:e.libelle,
 
 
-date:e.date,
 
+  modifier(e:any){
 
-coefficient:e.coefficient
 
 
-};
+    this.evaluation={
 
 
+      matiere_id:e.matiere_id,
 
-this.idModification=e.id;
+      libelle:e.libelle,
 
+      date:e.date,
 
-this.modification=true;
+      coefficient:e.coefficient
 
 
+    };
 
-}
 
 
+    this.idModification=e.id;
 
 
+    this.modification=true;
 
 
 
+    setTimeout(()=>{
 
 
-enregistrerModification(){
+      if(this.formulaire){
 
 
+        this.formulaire.nativeElement.scrollIntoView({
 
-if(this.idModification){
+          behavior:'smooth',
 
+          block:'start'
 
+        });
 
-this.evaluationService
 
-.modifierEvaluation(
+      }
 
-this.idModification,
 
-this.evaluation
+    },100);
 
-)
 
-.subscribe({
 
+  }
 
-next:()=>{
 
 
-this.message=
 
-"Evaluation modifiée";
 
 
 
-this.resetForm();
 
 
-this.chargerEvaluations();
+  enregistrerModification(){
 
 
 
-},
+    if(this.idModification===null){
 
+      return;
 
+    }
 
-error:(err)=>{
 
 
-console.log(err);
 
 
-}
+    this.evaluationService
 
+    .modifierEvaluation(
 
+      this.idModification,
 
-});
+      this.evaluation
 
+    )
 
+    .subscribe({
 
-}
 
+      next:()=>{
 
 
-}
+        this.message=
 
+        "Evaluation modifiée avec succès";
 
 
+        this.resetForm();
 
 
+        this.chargerEvaluations();
 
 
+      },
 
 
-supprimer(id:number){
+      error:(err)=>{
 
 
+        console.log(err);
 
-if(confirm(
 
-"Supprimer cette évaluation ?"
+        this.message=
 
-)){
+        "Erreur modification";
 
 
+      }
 
-this.evaluationService
 
-.supprimerEvaluation(id)
+    });
 
-.subscribe({
 
 
+  }
 
-next:()=>{
 
 
-this.message=
 
-"Evaluation supprimée";
 
 
-this.chargerEvaluations();
 
 
 
-},
+  supprimer(id:number){
 
 
 
-error:(err)=>{
+    if(confirm(
 
+      "Supprimer cette évaluation ?"
 
-console.log(err);
+    )){
 
 
-}
+      this.evaluationService
 
+      .supprimerEvaluation(id)
 
+      .subscribe({
 
-});
 
+        next:()=>{
 
 
-}
+          this.message=
 
+          "Evaluation supprimée";
 
 
-}
+          this.chargerEvaluations();
 
 
+        },
 
 
+        error:(err)=>{
 
 
+          console.log(err);
 
 
+          this.message=
 
-resetForm(){
+          "Erreur suppression";
 
 
+        }
 
-this.evaluation={
 
+      });
 
-matiere_id:'',
 
-libelle:'',
+    }
 
-date:'',
 
-coefficient:1
+  }
 
 
-};
 
 
 
-this.modification=false;
 
 
-this.idModification=null;
 
 
+  resetForm(){
 
-}
+
+
+    this.evaluation={
+
+
+      matiere_id:'',
+
+      libelle:'',
+
+      date:'',
+
+      coefficient:1
+
+
+    };
+
+
+
+    this.modification=false;
+
+
+    this.idModification=null;
+
+
+
+    window.scrollTo({
+
+      top:0,
+
+      behavior:'smooth'
+
+    });
+
+
+  }
 
 
 

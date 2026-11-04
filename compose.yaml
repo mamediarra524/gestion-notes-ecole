@@ -3,17 +3,24 @@ services:
   postgres:
     image: postgres:16
     container_name: edugestion-postgres
+    restart: unless-stopped
 
     environment:
-      POSTGRES_DB: gestion_notes_ecole
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${POSTGRES_DB:-gestion_notes_ecole}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
 
     ports:
       - "5432:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-gestion_notes_ecole}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 
   backend:
@@ -22,20 +29,23 @@ services:
       dockerfile: Dockerfile
 
     container_name: edugestion-backend
+    restart: unless-stopped
 
     ports:
       - "8000:8000"
 
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
     environment:
+      APP_ENV: local
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_DATABASE: gestion_notes_ecole
-      DB_USERNAME: postgres
-      DB_PASSWORD: password
+      DB_DATABASE: ${POSTGRES_DB:-gestion_notes_ecole}
+      DB_USERNAME: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-password}
 
 
   frontend:
@@ -44,6 +54,7 @@ services:
       dockerfile: Dockerfile
 
     container_name: edugestion-frontend
+    restart: unless-stopped
 
     ports:
       - "4200:4200"
@@ -53,5 +64,4 @@ services:
 
 
 volumes:
-
   postgres_data:

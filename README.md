@@ -2,23 +2,37 @@
 
 ## Projet Full Stack Web
 
-Application web de gestion des notes et des bulletins scolaires pour une école privée.
+**Sujet :** Sujet 06 – Notes et bulletins d'une école  
+**Parcours :** F  
+**Formation :** Certification Full Stack Web  
+**Établissement :** Dakar Institute of Technology – Promotion FSW 008
 
-L'objectif est de remplacer la gestion traditionnelle des notes sur fichiers Excel par une solution centralisée permettant :
-
-- la gestion des classes ;
-- la gestion des élèves ;
-- la gestion des matières ;
-- la gestion des enseignants ;
-- la saisie des notes ;
-- le calcul automatique des moyennes ;
-- la génération des bulletins scolaires PDF.
-
+**Vidéo de présentation :** https://youtu.be/Q63KKnHPNJA
 
 ---
 
-# Technologies utilisées
+# 1. Présentation du projet
 
+Ce projet consiste à développer une application web de gestion des notes et des bulletins scolaires destinée à une école privée.
+
+L'objectif est de remplacer la gestion traditionnelle des notes sur des fichiers Excel par une solution informatique centralisée, sécurisée et facile à utiliser.
+
+L'application permet de gérer les classes, les élèves, les matières, les enseignants, les évaluations et les notes.
+
+Elle permet également de calculer automatiquement les moyennes des élèves et de consulter leurs résultats scolaires.
+
+Les principaux objectifs sont :
+
+- Centraliser les informations scolaires.
+- Faciliter la gestion administrative.
+- Permettre aux enseignants de saisir les notes de leurs matières.
+- Automatiser le calcul des moyennes.
+- Améliorer le suivi des résultats scolaires.
+- Sécuriser l'accès aux différentes fonctionnalités selon les rôles.
+
+---
+
+# 2. Technologies utilisées
 
 ## Backend
 
@@ -28,7 +42,6 @@ L'objectif est de remplacer la gestion traditionnelle des notes sur fichiers Exc
 - Laravel Sanctum
 - PostgreSQL
 
-
 ## Frontend
 
 - Angular
@@ -36,135 +49,226 @@ L'objectif est de remplacer la gestion traditionnelle des notes sur fichiers Exc
 - HTML5
 - CSS3
 
-
 ## Infrastructure
 
 - Docker
 - Docker Compose
 - PostgreSQL 16
 
-
 ---
 
-# Architecture du projet
+# 3. Architecture du projet
 
-```
+Le projet adopte une architecture séparant le backend et le frontend.
+
+Le backend Laravel expose une API REST qui communique avec la base de données PostgreSQL.
+
+Le frontend Angular consomme cette API pour afficher les données et permettre aux utilisateurs d'interagir avec l'application.
+
+Structure principale :
+
+```text
 gestion-notes-ecole/
-
+│
+├── README.md
+├── NOTE_IA.md
+├── compose.yaml
+├── .env.example
+│
+├── docs/
+│   ├── schema/
+│   │   └── schema.png
+│   │
+│   └── captures/
+│       ├── connexion.png
+│       ├── dashboard-admin.png
+│       ├── gestion-classes.png
+│       ├── saisie-notes.png
+│       └── bulletin.png
+│
 ├── backend/
 │   ├── app/
 │   ├── database/
 │   ├── routes/
+│   ├── tests/
 │   ├── Dockerfile
 │   └── composer.json
 │
-├── frontend/
-│   └── gestion-frontend/
-│       ├── src/
-│       ├── Dockerfile
-│       └── package.json
-│
-├── docs/
-│   ├── captures/
-│   └── schema/
-│
-├── compose.yaml
-├── README.md
-└── NOTE_IA.md
+└── frontend/
+    └── gestion-frontend/
+        ├── src/
+        ├── Dockerfile
+        └── package.json
 ```
 
+---
+
+# 4. Fonctionnalités de l'application
+
+## 4.1 Administration
+
+L'administrateur dispose d'un espace lui permettant de gérer les informations de l'école.
+
+Il peut :
+
+- Ajouter, modifier et supprimer des classes.
+- Ajouter, modifier et supprimer des élèves.
+- Ajouter, modifier et supprimer des matières.
+- Ajouter, modifier et supprimer des enseignants.
+- Gérer les affectations entre les classes, les matières et les enseignants.
+- Consulter le tableau de bord.
+- Suivre les statistiques de l'établissement.
+
+## 4.2 Enseignant
+
+L'enseignant dispose d'un espace personnel sécurisé.
+
+Il peut :
+
+- Se connecter à son espace.
+- Consulter ses affectations.
+- Consulter les classes dans lesquelles il intervient.
+- Choisir une classe.
+- Choisir une matière qui lui est affectée.
+- Sélectionner une évaluation.
+- Saisir les notes des élèves.
+- Modifier les notes.
+- Supprimer les notes.
+- Consulter les résultats scolaires.
+
+Un enseignant ne peut saisir des notes que pour les matières qui lui sont attribuées.
+
+## 4.3 Gestion des évaluations
+
+Les évaluations permettent d'organiser la saisie des notes.
+
+Chaque évaluation possède notamment :
+
+- Un libellé.
+- Une date.
+- Un coefficient.
+- Une matière associée.
+
+Les notes sont associées aux élèves et aux évaluations.
+
+## 4.4 Bulletins scolaires
+
+Le système permet de calculer les résultats scolaires des élèves.
+
+Les éléments prévus dans le bulletin sont :
+
+- Les matières.
+- Les moyennes par matière.
+- Les coefficients.
+- La moyenne générale.
+- Le classement.
+- Les appréciations.
+- La mention.
+
+La génération et le téléchargement des bulletins PDF dépendent de l'implémentation disponible dans l'application.
 
 ---
 
-# Fonctionnalités
+# 5. Gestion des rôles et sécurité
 
+L'application utilise Laravel Sanctum pour sécuriser les échanges entre Angular et Laravel.
 
-## Administration
+Deux rôles principaux sont définis :
 
-L'administrateur peut :
+### ADMIN
 
-- gérer les classes ;
-- gérer les élèves ;
-- gérer les matières ;
-- gérer les enseignants ;
-- consulter les statistiques de l'école.
+L'administrateur accède aux fonctionnalités de gestion de l'école et au tableau de bord.
 
+### ENSEIGNANT
 
-## Enseignant
+L'enseignant accède uniquement aux fonctionnalités autorisées pour son rôle, notamment ses affectations et la saisie des notes.
 
-L'enseignant peut :
-
-- se connecter à son espace ;
-- consulter ses affectations ;
-- choisir une classe ;
-- choisir une matière ;
-- sélectionner une évaluation ;
-- saisir les notes des élèves ;
-- modifier les notes ;
-- supprimer les notes ;
-- consulter les résultats.
-
-
-## Bulletins scolaires
-
-Le système permet :
-
-- le calcul des moyennes par matière ;
-- le calcul de la moyenne générale ;
-- le classement des élèves ;
-- l'affichage des appréciations ;
-- la génération d'un bulletin PDF.
-
+Les routes protégées vérifient l'authentification et les autorisations avant de permettre l'accès aux ressources.
 
 ---
 
-# Modèle de données
+# 6. Modèle de données
 
-
-Les principales entités sont :
+Le modèle de données repose sur les principales entités suivantes :
 
 - User
 - Classe
-- Élève
-- Matière
+- Eleve
+- Matiere
 - Enseignant
 - ClasseMatiere
 - Evaluation
 - Note
-- Bulletin
 
+## Relations principales
 
-Relations principales :
-
+- Un utilisateur possède un rôle.
+- Un enseignant est associé à un compte utilisateur.
 - Une classe possède plusieurs élèves.
-- Une classe possède plusieurs matières.
-- Une matière appartient à plusieurs classes.
-- Un enseignant possède plusieurs affectations.
+- Une classe peut être associée à plusieurs matières.
+- Une matière peut être associée à plusieurs classes.
+- Les enseignants possèdent des affectations.
 - Une évaluation appartient à une matière.
-- Une note appartient à un élève et une évaluation.
-- Un bulletin appartient à un élève.
+- Une évaluation possède plusieurs notes.
+- Une note appartient à un élève.
+- Un élève possède plusieurs notes.
 
+## Schéma de la base de données
+
+Le schéma relationnel est disponible dans :
+
+`docs/schema/schema.png`
 
 ---
 
-# Installation
+# 7. Installation et lancement du projet
 
+## 7.1 Prérequis
 
-## Prérequis
+Pour installer et exécuter le projet, les outils suivants sont nécessaires :
 
-Installer :
+- Git
+- Docker Desktop
+- Docker Compose
 
-- PHP 8.2+
+Pour une installation manuelle complémentaire :
+
+- PHP 8.2 ou supérieur
 - Composer
 - Node.js
 - Angular CLI
-- Docker Desktop
+- PostgreSQL
 
+## 7.2 Récupération du projet
 
----
+Cloner le dépôt GitHub :
 
-# Installation avec Docker
+```bash
+git clone https://github.com/mamediarra524/gestion-notes-ecole.git
+```
 
+Entrer dans le dossier :
+
+```bash
+cd gestion-notes-ecole
+```
+
+## 7.3 Configuration de l'environnement
+
+Créer les fichiers d'environnement nécessaires à partir des fichiers `.env.example` fournis dans le projet.
+
+Vérifier particulièrement la configuration de la connexion PostgreSQL :
+
+- DB_CONNECTION
+- DB_HOST
+- DB_PORT
+- DB_DATABASE
+- DB_USERNAME
+- DB_PASSWORD
+
+Les fichiers `.env` contenant des informations locales ou sensibles ne doivent pas être publiés sur GitHub.
+
+## 7.4 Lancement avec Docker
 
 Depuis la racine du projet :
 
@@ -172,344 +276,298 @@ Depuis la racine du projet :
 docker compose up -d --build
 ```
 
-
-Vérifier les conteneurs :
+Vérifier l'état des conteneurs :
 
 ```bash
 docker compose ps
 ```
 
-
----
-
-# Installation Backend Laravel
-
-
-Entrer dans le backend :
+Consulter les journaux :
 
 ```bash
-cd backend
+docker compose logs
 ```
 
+Les services démarrent selon la configuration définie dans `compose.yaml`.
 
-Installer les dépendances :
+## 7.5 Préparation du backend Laravel
+
+Lorsque les conteneurs sont démarrés, exécuter les commandes Laravel dans le conteneur backend, selon le nom du service défini dans `compose.yaml`.
+
+Installation des dépendances :
 
 ```bash
 composer install
 ```
 
-
-Créer le fichier environnement :
-
-```bash
-cp .env.example .env
-```
-
-
-Générer la clé Laravel :
+Génération de la clé Laravel si nécessaire :
 
 ```bash
 php artisan key:generate
 ```
 
-
----
-
-# Base de données
-
-
-Nom de la base :
-
-```
-gestion_notes_ecole
-```
-
-
-Migration :
+Exécution des migrations :
 
 ```bash
 php artisan migrate
 ```
 
-
-Charger les données de démonstration :
+Chargement des données de démonstration :
 
 ```bash
 php artisan db:seed
 ```
 
-
-Recréer complètement la base :
+Pour réinitialiser entièrement la base de données :
 
 ```bash
 php artisan migrate:fresh --seed
 ```
 
+**Attention :** cette dernière commande supprime les données existantes avant de recréer les tables.
 
----
+## 7.6 Accès à l'application
 
-# Démarrer l'API Laravel
+L'application Angular est accessible à l'adresse configurée dans le projet :
 
-
-```bash
-php artisan serve
-```
-
-
-API disponible :
-
-```
-http://127.0.0.1:8000
-```
-
-
----
-
-# Installation Frontend Angular
-
-
-Aller dans le frontend :
-
-```bash
-cd frontend/gestion-frontend
-```
-
-
-Installer les dépendances :
-
-```bash
-npm install
-```
-
-
-Démarrer Angular :
-
-```bash
-ng serve
-```
-
-
-Application disponible :
-
-```
+```text
 http://localhost:4200
 ```
 
+L'API Laravel est accessible à :
+
+```text
+http://127.0.0.1:8000
+```
+
+Ces adresses correspondent à la configuration locale de développement et doivent être adaptées si les ports Docker sont différents.
 
 ---
 
-# Comptes de démonstration
+# 8. Comptes de démonstration
 
+Les comptes suivants sont prévus pour la démonstration.
 
 ## Administrateur
 
 Email :
 
-```
+```text
 admin@ecole.com
 ```
 
 Mot de passe :
 
-```
+```text
 password
 ```
 
 Rôle :
 
-```
+```text
 ADMIN
 ```
-
 
 ## Enseignant
 
 Email :
 
-```
+```text
 prof.math@ecole.com
 ```
 
 Mot de passe :
 
-```
+```text
 password
 ```
 
 Rôle :
 
-```
+```text
 ENSEIGNANT
 ```
 
+Ces identifiants sont réservés à l'environnement de démonstration.
 
 ---
 
-# Données de démonstration
+# 9. Données de démonstration
 
+Les données de démonstration chargées par les seeders comprennent :
 
-La base contient :
+| Élément | Quantité |
+|---|---:|
+| Élèves | 60 |
+| Classes | 5 |
+| Matières | 5 |
+| Enseignants | 5 |
+| Évaluations | 15 |
+| Notes | 900 |
 
-- 60 élèves
-- 5 classes
-- 5 matières
-- 5 enseignants
-- 15 évaluations
-- 900 notes
-
-
----
-
-# Tableau de bord
-
-
-Le tableau de bord affiche :
-
-
-## Nombre d'élèves
-
-```
-COUNT(élèves)
-```
-
-
-## Nombre de classes
-
-```
-COUNT(classes)
-```
-
-
-## Nombre de matières
-
-```
-COUNT(matières)
-```
-
-
-## Nombre d'enseignants
-
-```
-COUNT(enseignants)
-```
-
-
-## Nombre de notes saisies
-
-```
-COUNT(notes)
-```
-
-
-## Moyenne générale
-
-```
-Somme(note × coefficient)
-/
-Somme(coefficients)
-```
-
+Ces données fictives permettent de tester les principales fonctionnalités de l'application.
 
 ---
 
-# Calcul des moyennes
+# 10. Tableau de bord et indicateurs
 
+Le tableau de bord administratif permet de consulter les statistiques générales de l'établissement.
 
-## Moyenne matière
+Les indicateurs sont calculés à partir des données de la base de données.
 
+## 10.1 Nombre d'élèves
+
+Formule :
+
+```sql
+SELECT COUNT(*) FROM eleves;
 ```
-Somme(notes × coefficient évaluation)
-/
-Somme(coefficients évaluations)
+
+## 10.2 Nombre de classes
+
+Formule :
+
+```sql
+SELECT COUNT(*) FROM classes;
 ```
 
+## 10.3 Nombre de matières
 
-## Moyenne générale
+Formule :
 
+```sql
+SELECT COUNT(*) FROM matieres;
 ```
+
+## 10.4 Nombre d'enseignants
+
+Formule :
+
+```sql
+SELECT COUNT(*) FROM enseignants;
+```
+
+## 10.5 Nombre de notes saisies
+
+Formule :
+
+```sql
+SELECT COUNT(*) FROM notes;
+```
+
+## 10.6 Moyenne générale des notes
+
+La moyenne pondérée globale des notes est calculée selon les coefficients des évaluations :
+
+```text
+Somme(note × coefficient de l'évaluation)
+------------------------------------------------
+Somme des coefficients des évaluations
+```
+
+Les indicateurs effectivement affichés dans le tableau de bord sont ceux implémentés dans l'interface.
+
+---
+
+# 11. Calcul des moyennes et mentions
+
+## 11.1 Moyenne par matière
+
+La moyenne d'une matière est calculée en tenant compte des coefficients des évaluations.
+
+```text
+Moyenne matière =
+Somme(note × coefficient évaluation)
+--------------------------------------
+Somme(coefficients des évaluations)
+```
+
+## 11.2 Moyenne générale
+
+La moyenne générale est calculée en tenant compte des coefficients des matières.
+
+```text
+Moyenne générale =
 Somme(moyenne matière × coefficient matière)
-/
-Somme(coefficients matière)
+------------------------------------------------
+Somme des coefficients des matières
 ```
 
+## 11.3 Mentions
 
-## Mentions
+Les mentions sont attribuées selon la moyenne générale obtenue.
 
 | Moyenne | Mention |
 |---|---|
-| >= 10 | Passable |
-| >= 12 | Assez bien |
-| >= 14 | Bien |
-| >= 16 | Très bien |
+| 10 à moins de 12 | Passable |
+| 12 à moins de 14 | Assez bien |
+| 14 à moins de 16 | Bien |
+| 16 à 20 | Très bien |
+| Moins de 10 | Non admis |
 
+Les notes sont comprises entre 0 et 20.
 
 ---
 
-# Tests réalisés
+# 12. Tests
 
+Les tests automatisés du backend sont exécutés avec PHPUnit via Laravel.
 
-Fonctionnalités testées :
-
-- authentification ;
-- gestion des rôles ;
-- gestion des classes ;
-- gestion des élèves ;
-- gestion des matières ;
-- gestion des enseignants ;
-- affectations ;
-- saisie des notes ;
-- modification des notes ;
-- suppression des notes ;
-- calcul des bulletins ;
-- génération PDF ;
-- fonctionnement Docker PostgreSQL.
-
-
-Commande de test :
+Commande :
 
 ```bash
 php artisan test
 ```
 
+Les tests doivent notamment couvrir :
+
+- L'authentification.
+- Les autorisations selon les rôles.
+- La gestion des classes.
+- La gestion des élèves.
+- La gestion des matières.
+- La gestion des enseignants.
+- La saisie des notes.
+- Les règles métier.
+- Le calcul des moyennes.
+
+Les résultats des tests sont à vérifier lors de l'exécution de la commande.
 
 ---
 
-# Captures d'écran
+# 13. Captures d'écran
 
+Les captures d'écran de l'application sont disponibles dans :
 
-Les captures sont disponibles dans :
-
-```
+```text
 docs/captures/
 ```
 
+Les captures illustrent notamment :
 
-Captures principales :
-
-1. Page de connexion
-2. Dashboard administrateur
-3. Statistiques de l'école
-4. Saisie des notes enseignant
-5. Bulletin scolaire
-
+1. La page de connexion.
+2. Le tableau de bord administrateur.
+3. La gestion des classes et des élèves.
+4. La saisie des notes par l'enseignant.
+5. La consultation des résultats et des bulletins.
 
 ---
 
-# Bibliothèques utilisées
-
+# 14. Bibliothèques et dépendances utilisées
 
 ## Backend
 
 - Laravel Framework
 - Laravel Sanctum
-
+- Composer
 
 ## Frontend
 
+- Angular
 - Angular Router
 - Angular Forms
 - Angular HttpClient
-
+- TypeScript
 
 ## Infrastructure
 
@@ -517,30 +575,64 @@ Captures principales :
 - Docker Compose
 - PostgreSQL
 
+Les versions exactes des dépendances sont disponibles dans les fichiers `composer.json`, `composer.lock` et `package.json`.
 
 ---
 
-# Améliorations possibles
+# 15. Difficultés rencontrées et solutions
 
+Au cours du développement, plusieurs difficultés techniques ont été rencontrées :
 
-- ajout de graphiques statistiques avancés ;
-- gestion des absences ;
-- export Excel des résultats ;
-- notifications utilisateurs ;
-- historique des bulletins.
+- La configuration de la connexion entre Laravel et PostgreSQL.
+- La gestion de l'authentification avec Laravel Sanctum.
+- La séparation des droits entre administrateur et enseignant.
+- La gestion des relations entre les classes, les matières et les enseignants.
+- L'adaptation de la saisie des notes au système basé sur les évaluations.
+- La communication entre Angular et l'API Laravel.
 
+Ces difficultés ont été traitées progressivement grâce aux tests, au débogage et à la vérification des échanges entre le frontend et le backend.
 
 ---
 
-# Auteur
+# 16. Améliorations possibles
 
+Plusieurs fonctionnalités pourraient être ajoutées dans une future version :
 
-Projet réalisé dans le cadre d'un projet Full Stack Web.
+- Gestion des absences et retards.
+- Export des résultats au format Excel.
+- Notifications aux utilisateurs.
+- Historique des bulletins.
+- Amélioration des graphiques statistiques.
+- Suivi des performances scolaires sur plusieurs périodes.
 
+---
 
-Technologies principales :
+# 17. Utilisation de l'intelligence artificielle
 
-Laravel + Angular + PostgreSQL + Docker
+L'utilisation de l'intelligence artificielle dans le cadre de ce projet est détaillée dans le fichier :
+
+`NOTE_IA.md`
+
+Ce document présente les demandes adressées à l'assistant, les objectifs de ces demandes et les parties réalisées et vérifiées par l'apprenant.
+
+---
+
+# 18. Auteur
+
+Projet réalisé individuellement dans le cadre de la Certification Full Stack Web.
+
+**Formation :** Dakar Institute of Technology  
+**Promotion :** FSW 008  
+**Sujet :** Sujet 06 – Notes et bulletins d'une école  
+**Parcours :** F
+
+**Technologies principales :**
+
+Laravel 12 – Angular – PostgreSQL – Docker
+
+---
+
+# Fin du README
 
 
 
